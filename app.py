@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import math
+import os
 import random
+import subprocess
+import urllib.error
+import urllib.request
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
@@ -13,7 +17,17 @@ from fastapi.staticfiles import StaticFiles
 
 from config import load_settings
 from game.rules import checks_remaining_this_turn
-from game.session import add_block, check_junction, end_turn, issue_notice, new_game, question_witness
+from game.session import (
+    TACTIC_LIMITS,
+    add_block,
+    check_junction,
+    end_turn,
+    issue_notice,
+    new_game,
+    place_tactic,
+    question_witness,
+    remove_tactic,
+)
 from game.state import GameState
 from grid_map.graph_loader import all_junction_ids, legal_moves_from
 from grid_map.map_loader import image_for_layer, load_map_metadata
@@ -30,6 +44,13 @@ WEB_DIR = PROJECT_ROOT / "ui" / "web"
 STATIC_DIR = WEB_DIR / "static"
 
 _SESSIONS: dict[str, GameState] = {}
+_LLAMA_PROCESS: subprocess.Popen | None = None
+
+DIFFICULTY_PRESETS = {
+    "easy": {"PHANTOM_GRID_MAX_TURNS": "16", "PHANTOM_GRID_CHECKS_PER_TURN": "3", "PHANTOM_GRID_MEMORY_CORRUPTION_PER_TURN": "0.04"},
+    "normal": {"PHANTOM_GRID_MAX_TURNS": "12", "PHANTOM_GRID_CHECKS_PER_TURN": "2", "PHANTOM_GRID_MEMORY_CORRUPTION_PER_TURN": "0.08"},
+    "hard": {"PHANTOM_GRID_MAX_TURNS": "10", "PHANTOM_GRID_CHECKS_PER_TURN": "1", "PHANTOM_GRID_MEMORY_CORRUPTION_PER_TURN": "0.12"},
+}
 
 
 def build_app() -> gr.Server:
@@ -91,6 +112,25 @@ def build_app() -> gr.Server:
             payload.get("selected_junctions") or [],
         )
 
+    @app.post("/api/place_tactic")
+    async def place_tactic_route(payload: dict[str, Any]) -> dict[str, Any]:
+        return api_place_tactic(
+            payload.get("game_id"),
+            payload.get("tactic_type"),
+            payload.get("junction_id"),
+            payload.get("selected_junctions") or [],
+            payload.get("focused_junction"),
+        )
+
+    @app.post("/api/remove_tactic")
+    async def remove_tactic_route(payload: dict[str, Any]) -> dict[str, Any]:
+        return api_remove_tactic(
+            payload.get("game_id"),
+            payload.get("tactic_id"),
+            payload.get("selected_junctions") or [],
+            payload.get("focused_junction"),
+        )
+
     @app.post("/api/check_junctions")
     async def check_junctions_route(payload: dict[str, Any]) -> dict[str, Any]:
         return api_check_junctions(
@@ -117,10 +157,24 @@ def build_app() -> gr.Server:
             payload.get("focused_junction"),
         )
 
+    @app.get("/api/settings")
+    async def settings_route() -> dict[str, Any]:
+        return api_settings()
+
+    @app.post("/api/settings")
+    async def update_settings_route(payload: dict[str, Any]) -> dict[str, Any]:
+        return api_update_settings(payload)
+
+    @app.post("/api/llama/{action}")
+    async def llama_action_route(action: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        return api_llama_action(action, payload or {})
+
     app.api(new_case, name="new_case")
     app.api(select_junctions, name="select_junctions")
     app.api(api_issue_notice, name="issue_notice")
     app.api(api_add_block, name="add_block")
+    app.api(api_place_tactic, name="place_tactic")
+    app.api(api_remove_tactic, name="remove_tactic")
     app.api(api_check_junctions, name="check_junctions")
     app.api(api_ask_witness, name="ask_witness")
     app.api(api_advance_turn, name="advance_turn")
@@ -215,6 +269,41 @@ def api_add_block(
     return _snapshot(state, selected, focused, message, sound="blockade_set")
 
 
+def api_place_tactic(
+    game_id: str | None,
+    tactic_type: str | None,
+    junction_id: int | None,
+    selected_junctions: list[int] | None = None,
+    focused_junction: int | None = None,
+) -> dict[str, Any]:
+    state = _state_for(game_id)
+    selected, focused = _selection_context(selected_junctions, focused_junction)
+    target = _valid_junction(junction_id) or focused
+    if target is None:
+        return _snapshot(state, selected, focused, "Drop the tactic on a valid junction.", sound="map_select")
+    junction = _junction_by_id(target)
+    if junction is None:
+        return _snapshot(state, selected, focused, "Drop the tactic on a valid junction.", sound="map_select")
+    state, message = place_tactic(state, str(tactic_type or ""), target, int(junction["x"]), int(junction["y"]))
+    _SESSIONS[state.game_id] = state
+    return _snapshot(state, [*selected, target], target, message, sound="blockade_set")
+
+
+def api_remove_tactic(
+    game_id: str | None,
+    tactic_id: str | None,
+    selected_junctions: list[int] | None = None,
+    focused_junction: int | None = None,
+) -> dict[str, Any]:
+    state = _state_for(game_id)
+    selected, focused = _selection_context(selected_junctions, focused_junction)
+    if not tactic_id:
+        return _snapshot(state, selected, focused, "Choose a placed tactic first.", sound="map_select")
+    state, message = remove_tactic(state, tactic_id)
+    _SESSIONS[state.game_id] = state
+    return _snapshot(state, selected, focused, message, sound="map_select")
+
+
 def api_check_junctions(
     game_id: str | None,
     selected_junctions: list[int] | None = None,
@@ -267,6 +356,69 @@ def api_advance_turn(
     state, message = end_turn(state)
     _SESSIONS[state.game_id] = state
     return _snapshot(state, selected, focused, message, sound="turn_advance")
+
+
+def api_settings() -> dict[str, Any]:
+    settings = load_settings()
+    return {
+        "ok": True,
+        "settings": _settings_payload(settings),
+        "llama": _llama_status(settings),
+        "difficulty_presets": {
+            "easy": "Longer case, more checks, slower memory decay.",
+            "normal": "Balanced turn limit, checks, and witness memory decay.",
+            "hard": "Shorter case, fewer checks, faster witness memory decay.",
+        },
+    }
+
+
+def api_update_settings(payload: dict[str, Any]) -> dict[str, Any]:
+    updates: dict[str, str] = {}
+    difficulty = str(payload.get("difficulty") or "").strip().lower()
+    if difficulty in DIFFICULTY_PRESETS:
+        updates.update(DIFFICULTY_PRESETS[difficulty])
+        updates["PHANTOM_GRID_DIFFICULTY"] = difficulty
+
+    field_map = {
+        "llm_model": "PHANTOM_GRID_LLM_MODEL",
+        "llamacpp_model_path": "PHANTOM_GRID_LLAMACPP_MODEL_PATH",
+        "llamacpp_server_bin": "PHANTOM_GRID_LLAMACPP_SERVER_BIN",
+        "llamacpp_base_url": "PHANTOM_GRID_LLAMACPP_BASE_URL",
+        "max_turns": "PHANTOM_GRID_MAX_TURNS",
+        "checks_per_turn": "PHANTOM_GRID_CHECKS_PER_TURN",
+        "memory_corruption_per_turn": "PHANTOM_GRID_MEMORY_CORRUPTION_PER_TURN",
+    }
+    for field, env_key in field_map.items():
+        if field in payload and payload[field] is not None:
+            value = str(payload[field]).strip()
+            if value:
+                updates[env_key] = value
+
+    if updates:
+        _write_env_updates(updates)
+        os.environ.update(updates)
+
+    return api_settings()
+
+
+def api_llama_action(action: str, payload: dict[str, Any]) -> dict[str, Any]:
+    if payload:
+        api_update_settings(payload)
+    settings = load_settings()
+    normalized = action.strip().lower()
+    if normalized == "status":
+        return {"ok": True, "llama": _llama_status(settings), "settings": _settings_payload(settings)}
+    if normalized == "stop":
+        _stop_llama_process()
+        return {"ok": True, "event": "llama-server stopped.", "llama": _llama_status(settings)}
+    if normalized == "restart":
+        _stop_llama_process()
+        started = _start_llama_process(settings)
+        return {"ok": started["ok"], "event": started["event"], "llama": _llama_status(load_settings())}
+    if normalized == "start":
+        started = _start_llama_process(settings)
+        return {"ok": started["ok"], "event": started["event"], "llama": _llama_status(load_settings())}
+    return {"ok": False, "event": f"Unknown llama action: {action}", "llama": _llama_status(settings)}
 
 
 def game_snapshot(game_id: str | None = None) -> dict[str, Any]:
@@ -333,7 +485,10 @@ def _snapshot(
         "lookout": _lookout_payload(state),
         "witness_locations": _witness_locations(state),
         "witness_cards": _witness_cards(state),
+        "previous_statements": _previous_statements(state),
         "active_blocks": _active_blocks_payload(state),
+        "placed_tactics": _placed_tactics_payload(state),
+        "tactic_counts": _tactic_counts_payload(state),
         "events": _public_events(state),
         "asset_prompts": _asset_prompts(),
     }
@@ -409,14 +564,19 @@ def _witness_locations(state: GameState | None) -> list[dict[str, Any]]:
                 "sample_style": witness.personality.get("style", "witness"),
                 "sample_summary": witness.current_summary,
                 "sample_relevance": witness.relevance_score,
+                "viewed": False,
             },
         )
         location["count"] += 1
+        if state and witness.witness_id in state.viewed_witness_ids:
+            location["viewed"] = True
         if witness.relevance_score > location["sample_relevance"]:
+            already_viewed = bool(location.get("viewed"))
             location["sample_witness_id"] = witness.witness_id
             location["sample_style"] = witness.personality.get("style", "witness")
             location["sample_summary"] = witness.current_summary
             location["sample_relevance"] = witness.relevance_score
+            location["viewed"] = already_viewed or (state is not None and witness.witness_id in state.viewed_witness_ids)
     return [
         distribution[junction_id]
         for junction_id in sorted(distribution)
@@ -441,9 +601,34 @@ def _witness_cards(state: GameState | None) -> list[dict[str, Any]]:
                     "style": witness.personality.get("style", "witness"),
                     "summary": witness.current_summary,
                     "questions": [asdict(question) for question in witness.question_history[-2:]],
+                    "viewed": witness.witness_id in state.viewed_witness_ids,
                 }
             )
     return cards[-18:]
+
+
+def _previous_statements(state: GameState | None) -> list[dict[str, Any]]:
+    if state is None:
+        return []
+    statements: list[dict[str, Any]] = []
+    for batch in state.witness_batches:
+        for witness in batch.witnesses:
+            if witness.witness_id not in state.viewed_witness_ids or not witness.question_history:
+                continue
+            latest = witness.question_history[-1]
+            statements.append(
+                {
+                    "id": witness.witness_id,
+                    "turn": latest.turn_number,
+                    "junction_id": witness.junction_id,
+                    "time_label": _time_label(latest.turn_number),
+                    "summary": witness.current_summary,
+                    "question": latest.question,
+                    "answer": latest.answer,
+                    "viewed": True,
+                }
+            )
+    return statements[-8:]
 
 
 def _active_blocks_payload(state: GameState | None) -> list[dict[str, Any]]:
@@ -459,6 +644,31 @@ def _active_blocks_payload(state: GameState | None) -> list[dict[str, Any]]:
             label = f"J{block.junction_id}"
         blocks.append({**asdict(block), "label": label})
     return blocks
+
+
+def _placed_tactics_payload(state: GameState | None) -> list[dict[str, Any]]:
+    if state is None:
+        return []
+    return [asdict(tactic) for tactic in state.placed_tactics]
+
+
+def _tactic_counts_payload(state: GameState | None) -> dict[str, Any]:
+    placed_counts = {key: 0 for key in TACTIC_LIMITS}
+    if state is not None:
+        for tactic in state.placed_tactics:
+            if tactic.tactic_type in placed_counts:
+                placed_counts[tactic.tactic_type] += 1
+    remaining = {
+        key: max(limit - placed_counts.get(key, 0), 0)
+        for key, limit in TACTIC_LIMITS.items()
+    }
+    return {
+        "limits": TACTIC_LIMITS,
+        "placed": placed_counts,
+        "remaining": remaining,
+        "total_limit": sum(TACTIC_LIMITS.values()),
+        "total_remaining": sum(remaining.values()),
+    }
 
 
 def _public_events(state: GameState | None) -> list[dict[str, Any]]:
@@ -483,6 +693,132 @@ def _asset_prompts() -> dict[str, str]:
         "witness_popup": "quick paper card flick with faint bell, playful noir, 0.4 seconds",
         "turn_advance": "old clock tick plus distant city ambience swell, 1 second",
     }
+
+
+def _settings_payload(settings) -> dict[str, Any]:
+    return {
+        "llm_model": settings.llm_model,
+        "llamacpp_model_path": str(settings.llamacpp_model_path or ""),
+        "llamacpp_model_exists": bool(settings.llamacpp_model_path and settings.llamacpp_model_path.exists()),
+        "llamacpp_server_bin": str(settings.llamacpp_server_bin or ""),
+        "llamacpp_server_bin_exists": bool(settings.llamacpp_server_bin and settings.llamacpp_server_bin.exists()),
+        "llamacpp_base_url": settings.llamacpp_base_url,
+        "difficulty": os.getenv("PHANTOM_GRID_DIFFICULTY", _difficulty_from_settings(settings)),
+        "max_turns": settings.max_turns,
+        "checks_per_turn": settings.checks_per_turn,
+        "memory_corruption_per_turn": settings.memory_corruption_per_turn,
+    }
+
+
+def _difficulty_from_settings(settings) -> str:
+    if settings.max_turns >= 16 or settings.checks_per_turn >= 3:
+        return "easy"
+    if settings.max_turns <= 10 or settings.checks_per_turn <= 1:
+        return "hard"
+    return "normal"
+
+
+def _llama_status(settings) -> dict[str, Any]:
+    global _LLAMA_PROCESS
+    if _LLAMA_PROCESS is not None and _LLAMA_PROCESS.poll() is not None:
+        _LLAMA_PROCESS = None
+    reachable = False
+    detail = "Not reachable."
+    try:
+        url = f"{settings.llamacpp_base_url.rstrip('/')}/models"
+        with urllib.request.urlopen(url, timeout=1.5) as response:
+            reachable = 200 <= response.status < 500
+            detail = "Reachable." if reachable else f"HTTP {response.status}."
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        detail = f"Not reachable: {exc.__class__.__name__}."
+    return {
+        "managed_process": _LLAMA_PROCESS is not None,
+        "pid": _LLAMA_PROCESS.pid if _LLAMA_PROCESS is not None else None,
+        "reachable": reachable,
+        "detail": detail,
+    }
+
+
+def _start_llama_process(settings) -> dict[str, Any]:
+    global _LLAMA_PROCESS
+    if _LLAMA_PROCESS is not None and _LLAMA_PROCESS.poll() is None:
+        return {"ok": True, "event": f"llama-server is already managed as PID {_LLAMA_PROCESS.pid}."}
+    if not settings.llamacpp_server_bin or not settings.llamacpp_server_bin.exists():
+        return {"ok": False, "event": "Set a valid llama-server binary path before starting."}
+    if not settings.llamacpp_model_path or not settings.llamacpp_model_path.exists():
+        return {"ok": False, "event": "Set a valid GGUF model path before starting."}
+
+    port = _port_from_base_url(settings.llamacpp_base_url)
+    args = [
+        str(settings.llamacpp_server_bin),
+        "-m",
+        str(settings.llamacpp_model_path),
+        "--port",
+        str(port),
+    ]
+    try:
+        _LLAMA_PROCESS = subprocess.Popen(
+            args,
+            cwd=str(PROJECT_ROOT),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+        )
+    except OSError as exc:
+        return {"ok": False, "event": f"Could not start llama-server: {exc}"}
+    return {"ok": True, "event": f"llama-server started as PID {_LLAMA_PROCESS.pid}."}
+
+
+def _stop_llama_process() -> None:
+    global _LLAMA_PROCESS
+    if _LLAMA_PROCESS is None:
+        return
+    if _LLAMA_PROCESS.poll() is None:
+        _LLAMA_PROCESS.terminate()
+        try:
+            _LLAMA_PROCESS.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            _LLAMA_PROCESS.kill()
+    _LLAMA_PROCESS = None
+
+
+def _port_from_base_url(base_url: str) -> int:
+    try:
+        from urllib.parse import urlparse
+
+        parsed = urlparse(base_url)
+        return parsed.port or 8080
+    except ValueError:
+        return 8080
+
+
+def _write_env_updates(updates: dict[str, str]) -> None:
+    env_path = PROJECT_ROOT / ".env"
+    existing: dict[str, str] = {}
+    order: list[str] = []
+    if env_path.exists():
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            if not raw_line.strip() or raw_line.strip().startswith("#") or "=" not in raw_line:
+                continue
+            key, value = raw_line.split("=", 1)
+            key = key.strip()
+            existing[key] = value.strip().strip('"').strip("'")
+            order.append(key)
+    existing.update(updates)
+    for key in updates:
+        if key not in order:
+            order.append(key)
+    lines = [f"{key}={existing[key]}" for key in order if key in existing]
+    env_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _junction_by_id(junction_id: int) -> dict[str, Any] | None:
+    return next((junction for junction in _junction_records() if int(junction["id"]) == junction_id), None)
+
+
+def _time_label(turn_number: int) -> str:
+    labels = ["morning", "midday", "afternoon", "evening", "night"]
+    return labels[(turn_number - 1) % len(labels)]
 
 
 def _state_for(game_id: str | None, required: bool = True) -> GameState | None:

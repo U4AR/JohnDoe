@@ -29,7 +29,9 @@ def test_map_layers_use_overlay_outputs():
 
 def test_settings_use_requested_gemma_model():
     settings = load_settings()
-    assert settings.llamacpp_model_path == Path(r"D:\Models\gemma-4-e4b-q8\gemma-4-E4B-it-Q8_0.gguf")
+    assert settings.llamacpp_model_path == Path(
+        r"C:\Users\ashis\AppData\Roaming\VoiceKeyboard\VoiceKeyboard\config\models\unsloth__gemma-4-E4B-it-GGUF\gemma-4-E4B-it-Q4_K_M.gguf"
+    )
     assert settings.llamacpp_model_path.exists()
 
 

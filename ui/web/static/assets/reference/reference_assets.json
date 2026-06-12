@@ -1,0 +1,277 @@
+{
+  "assets": {
+    "frame_header": {
+      "file": "/static/assets/reference/frame_header.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        300,
+        7,
+        1328,
+        140
+      ],
+      "description": "Teal and gold top banner frame used as a styling reference; title text remains editable HTML.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "crest_frame": {
+      "file": "/static/assets/reference/crest_frame.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        7,
+        7,
+        284,
+        168
+      ],
+      "description": "Left agency crest panel reference; bureau text is recreated/editable in HTML where practical.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "wanted_card_frame": {
+      "file": "/static/assets/reference/wanted_card_frame.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        14,
+        178,
+        273,
+        621
+      ],
+      "description": "Parchment wanted poster frame and paper texture; suspect facts remain editable HTML.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "suspect_portrait_placeholder": {
+      "file": "/static/assets/reference/suspect_portrait_placeholder.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        43,
+        247,
+        241,
+        470
+      ],
+      "description": "Temporary noir suspect portrait crop used until a replaceable generated portrait is available.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "side_panel_frame": {
+      "file": "/static/assets/reference/side_panel_frame.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        1354,
+        141,
+        1672,
+        932
+      ],
+      "description": "Right teal/gold side panel frame reference for CSS panel styling.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "paper_note_frame": {
+      "file": "/static/assets/reference/paper_note_frame.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        1372,
+        203,
+        1657,
+        501
+      ],
+      "description": "Parchment note frame for lookout and statement panels; text remains editable HTML.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "tactic_tile_frame": {
+      "file": "/static/assets/reference/tactic_tile_frame.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        303,
+        183,
+        507,
+        288
+      ],
+      "description": "Parchment tactic tile frame reference; labels and counts remain editable HTML.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "icon_roadblock": {
+      "file": "/static/assets/reference/icon_roadblock.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        329,
+        198,
+        391,
+        266
+      ],
+      "description": "Barricade tactic icon for roadblock tiles and map tokens.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "icon_junction_lockdown": {
+      "file": "/static/assets/reference/icon_junction_lockdown.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        544,
+        198,
+        604,
+        266
+      ],
+      "description": "Junction barrier tactic icon for lockdown tiles and map tokens.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "icon_patrol_unit": {
+      "file": "/static/assets/reference/icon_patrol_unit.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        743,
+        196,
+        817,
+        269
+      ],
+      "description": "Police helmet tactic icon for patrol unit tiles and map tokens.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "icon_search_team": {
+      "file": "/static/assets/reference/icon_search_team.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        961,
+        205,
+        1024,
+        263
+      ],
+      "description": "Magnifier/team tactic icon for search team tiles and map tokens.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "icon_lookout_board": {
+      "file": "/static/assets/reference/icon_lookout_board.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        1182,
+        205,
+        1236,
+        264
+      ],
+      "description": "Notice-board tactic icon for lookout board tiles and map tokens.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "pin_unviewed_witness": {
+      "file": "/static/assets/reference/pin_unviewed_witness.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        638,
+        345,
+        687,
+        421
+      ],
+      "description": "Red witness lead pin shown before a witness statement is asked.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "pin_viewed_witness": {
+      "file": "/static/assets/reference/pin_viewed_witness.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        1013,
+        345,
+        1064,
+        421
+      ],
+      "description": "Green checked witness pin shown after a witness statement is asked.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "pin_roadblock": {
+      "file": "/static/assets/reference/pin_roadblock.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        786,
+        351,
+        837,
+        405
+      ],
+      "description": "Roadblock map token crop for placed route blocks.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "pin_junction_lockdown": {
+      "file": "/static/assets/reference/pin_junction_lockdown.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        540,
+        871,
+        599,
+        928
+      ],
+      "description": "Junction lockdown token crop for placed junction blocks.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "pin_patrol_unit": {
+      "file": "/static/assets/reference/pin_patrol_unit.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        579,
+        519,
+        630,
+        577
+      ],
+      "description": "Patrol unit map token crop for placed patrols.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "pin_search_team": {
+      "file": "/static/assets/reference/pin_search_team.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        989,
+        450,
+        1044,
+        506
+      ],
+      "description": "Search team map token crop for placed investigations.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "pin_lookout_board": {
+      "file": "/static/assets/reference/pin_lookout_board.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        735,
+        633,
+        792,
+        706
+      ],
+      "description": "Lookout board map token crop for placed public notice boards.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "button_advance_frame": {
+      "file": "/static/assets/reference/button_advance_frame.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        10,
+        775,
+        277,
+        862
+      ],
+      "description": "Blue and gold advance button style reference; button text remains editable HTML.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    },
+    "legend_strip_frame": {
+      "file": "/static/assets/reference/legend_strip_frame.png",
+      "source": "D:\\UserData\\Downloads\\ChatGPT Image Jun 12, 2026, 11_21_30 PM.png",
+      "crop_box": [
+        290,
+        859,
+        1350,
+        931
+      ],
+      "description": "Bottom parchment legend strip reference; legend labels remain editable HTML.",
+      "temporary": true,
+      "editable_text_policy": "Do not bake dynamic text into this asset; recreate labels, counts, and copy in HTML/CSS."
+    }
+  }
+}

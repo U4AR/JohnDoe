@@ -84,6 +84,17 @@ class PoliceBlock:
 
 
 @dataclass
+class PlacedTactic:
+    tactic_id: str
+    tactic_type: str
+    turn_created: int
+    junction_id: int
+    x: int
+    y: int
+    linked_block_id: str | None = None
+
+
+@dataclass
 class JunctionCheck:
     check_id: str
     turn_number: int
@@ -102,6 +113,8 @@ class GameState:
     notices: list[LookoutNotice] = field(default_factory=list)
     witness_batches: list[WitnessBatch] = field(default_factory=list)
     active_blocks: list[PoliceBlock] = field(default_factory=list)
+    placed_tactics: list[PlacedTactic] = field(default_factory=list)
+    viewed_witness_ids: list[str] = field(default_factory=list)
     junction_checks: list[JunctionCheck] = field(default_factory=list)
     game_log: list[dict[str, Any]] = field(default_factory=list)
     result: str | None = None
@@ -123,6 +136,7 @@ class GameState:
         notices = [LookoutNotice(**notice) for notice in data.get("notices", [])]
         batches = [_witness_batch_from_dict(batch) for batch in data.get("witness_batches", [])]
         blocks = [PoliceBlock(**block) for block in data.get("active_blocks", [])]
+        placed_tactics = [PlacedTactic(**tactic) for tactic in data.get("placed_tactics", [])]
         checks = [JunctionCheck(**check) for check in data.get("junction_checks", [])]
         return cls(
             game_id=data["game_id"],
@@ -134,6 +148,8 @@ class GameState:
             notices=notices,
             witness_batches=batches,
             active_blocks=blocks,
+            placed_tactics=placed_tactics,
+            viewed_witness_ids=data.get("viewed_witness_ids", []),
             junction_checks=checks,
             game_log=data.get("game_log", []),
             result=data.get("result"),

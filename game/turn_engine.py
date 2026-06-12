@@ -15,6 +15,12 @@ def advance_turn(state: GameState) -> str:
     apply_culprit_move(state, move)
     corrupt_witnesses_slightly(state)
     state.active_blocks = tick_blocks(state.active_blocks)
+    active_block_ids = {block.block_id for block in state.active_blocks}
+    state.placed_tactics = [
+        tactic
+        for tactic in state.placed_tactics
+        if tactic.linked_block_id is None or tactic.linked_block_id in active_block_ids
+    ]
     state.turn_number += 1
     state.phase = "commissioner_action"
 

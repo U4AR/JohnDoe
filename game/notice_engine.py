@@ -108,6 +108,7 @@ def _response_plan(junctions: list[int], state: GameState, genericness: float, f
     culprit_junction = state.culprit.current_junction
     recent_route = {move.to_junction for move in state.culprit.route_history[-3:]}
     recent_route.add(culprit_junction)
+    lookout_influence = _lookout_influence(state)
 
     for index, junction_id in enumerate(junctions):
         near_culprit = junction_id in recent_route
@@ -116,8 +117,12 @@ def _response_plan(junctions: list[int], state: GameState, genericness: float, f
             base += 2
         if near_culprit:
             base += 2
+        if junction_id in lookout_influence:
+            base += lookout_influence[junction_id]
         witnesses = max(1, base)
         relevance_bias = 0.18 + (0.55 if near_culprit else 0.0) + (0.18 * (1.0 - false_positive))
+        if junction_id in lookout_influence:
+            relevance_bias += 0.08
         plan.append(
             {
                 "junction_id": junction_id,
@@ -126,6 +131,17 @@ def _response_plan(junctions: list[int], state: GameState, genericness: float, f
             }
         )
     return plan
+
+
+def _lookout_influence(state: GameState) -> dict[int, int]:
+    influence: dict[int, int] = {}
+    for tactic in state.placed_tactics:
+        if tactic.tactic_type != "lookout_board":
+            continue
+        influence[tactic.junction_id] = max(influence.get(tactic.junction_id, 0), 3)
+        for neighbor in adjacent_junctions(tactic.junction_id)[:4]:
+            influence[neighbor] = max(influence.get(neighbor, 0), 1)
+    return influence
 
 
 def _clamp(value: float, minimum: float = 0.0, maximum: float = 1.0) -> float:

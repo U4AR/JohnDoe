@@ -4,91 +4,157 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Phantom Grid</title>
-    <link rel="stylesheet" href="/static/app.css?v=2" />
+    <link rel="stylesheet" href="/static/app.css?v=11" />
   </head>
   <body>
-    <section class="start-scene open" id="startScene" aria-live="polite">
-      <div class="briefing-stack">
-        <div class="case-file">
-          <p class="kicker">Commissioner Briefing</p>
-          <h1>Phantom Grid</h1>
-          <button id="startBriefingButton" class="case-button" type="button">Open File</button>
-        </div>
-        <div class="case-file active" id="caseFile">
-          <p class="kicker">Case File</p>
-          <h2 id="briefingTitle">Phantom Grid</h2>
-          <p id="briefingBody">A new case is waiting on the desk.</p>
-          <dl class="briefing-facts" id="briefingFacts"></dl>
-          <div class="briefing-actions">
-            <button id="briefingBack" class="icon-button" type="button">Back</button>
-            <span id="briefingProgress">Case file 1/1</span>
-            <button id="briefingNext" class="case-button" type="button">Begin</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <main class="desk hidden" id="gameScene" aria-hidden="true">
-      <header class="top-strip">
-        <div>
-          <p class="kicker">Shadow Commission London</p>
-          <h1>Phantom Grid</h1>
-        </div>
-        <div class="case-clock" id="caseClock">
-          <span>Turn</span>
-          <strong>-</strong>
-        </div>
-        <div class="top-actions">
-          <button id="soundToggle" class="icon-button" type="button" title="Toggle sound">Sound</button>
-          <button id="newCaseButton" class="case-button" type="button">Open Case</button>
-        </div>
-      </header>
-
-      <section class="playfield">
-        <aside class="case-rail">
-          <img class="suspect-card" src="/assets/suspect" alt="" />
-          <div class="mini-board">
-            <span>Status</span>
-            <strong id="caseStatus">Ready</strong>
-          </div>
-          <div class="mini-board">
-            <span>Searches</span>
-            <strong id="checksRemaining">-</strong>
-          </div>
-          <button id="checkButton" class="rail-button danger" type="button">Search</button>
-          <button id="advanceButton" class="rail-button" type="button">Advance</button>
-        </aside>
-
-        <section class="map-stage" aria-label="Investigation map">
-          <div class="layer-tabs" id="layerTabs"></div>
-          <div class="map-wrap" id="mapWrap">
-            <img id="mapImage" alt="London junction map" draggable="false" />
-            <div id="selectionLayer" class="overlay-layer"></div>
-            <div id="witnessLayer" class="overlay-layer"></div>
-          </div>
-          <div class="ticker" id="eventTicker">Click junctions to mark a search net.</div>
-          <section class="blockade-tray" id="blockadeTray" aria-live="polite"></section>
+    <main class="game-board" id="gameScene" aria-live="polite">
+      <header class="top-banner">
+        <section class="bureau-crest" aria-label="Lantern Watch Bureau">
+          <img src="/static/assets/reference/crest_frame.png" alt="" />
         </section>
 
-        <aside class="lookout-board" id="lookoutBoard">
-          <div class="board-head">
-            <span>Lookout Board</span>
-            <button id="raiseLookoutButton" type="button">Raise</button>
-          </div>
-          <textarea id="noticeText" spellcheck="false">Request high-confidence reports of a grey raincoat carrying a red folder at the selected junction.</textarea>
-          <div class="chalk-note" id="lookoutMeta">No witness pins yet.</div>
+        <section class="title-panel" aria-label="Case title">
+          <h1 id="gameTitle" contenteditable="true" spellcheck="false">Phantom Grid</h1>
+          <p id="gameSubtitle" contenteditable="true" spellcheck="false">Catch John Doe before he vanishes again!</p>
+        </section>
+
+        <section class="turn-panel" aria-label="Turn counter">
+          <span>Turn</span>
+          <strong id="caseClock">-</strong>
+          <small id="turnPhase">Evening</small>
+        </section>
+
+        <button id="settingsButton" class="gear-button" type="button" title="Settings" aria-label="Open settings">
+          <span aria-hidden="true">&#9881;</span>
+        </button>
+      </header>
+
+      <section class="table-grid">
+        <aside class="left-rail">
+          <section class="wanted-card" aria-label="Wanted poster">
+            <h2>Wanted</h2>
+            <img class="suspect-image" src="/static/assets/reference/suspect_portrait_placeholder.png" alt="" />
+            <dl>
+              <dt>Alias</dt>
+              <dd>John Doe</dd>
+              <dt>Description</dt>
+              <dd id="wantedDescription">Male, approx. 35-45. Gray raincoat. Carries red folder.</dd>
+            </dl>
+            <strong>&pound;5,000 Reward</strong>
+            <small>Dead or Alive</small>
+          </section>
+
+          <section class="active-units" aria-label="Active unit counts">
+            <h2>Active Units</h2>
+            <div class="unit-row" id="unitIcons"></div>
+            <strong id="activeUnitsText">12 / 12 left</strong>
+          </section>
+
+          <button id="advanceButton" class="advance-button" type="button">Advance Turn</button>
+          <button id="newCaseButton" class="new-case-button" type="button">New Case</button>
+        </aside>
+
+        <section class="center-stage">
+          <section class="tactic-strip" aria-label="Drag tactics onto the map">
+            <h2>Drag Tactics Onto The Map</h2>
+            <div id="tacticTray" class="tactic-tray"></div>
+          </section>
+
+          <section class="map-shell" aria-label="Investigation map">
+            <nav class="layer-tabs" id="layerTabs" aria-label="Map layers"></nav>
+            <div class="map-wrap" id="mapWrap">
+              <div class="map-canvas" id="mapCanvas">
+                <img id="mapImage" alt="London junction map" draggable="false" />
+                <div id="selectionLayer" class="overlay-layer"></div>
+                <div id="witnessLayer" class="overlay-layer"></div>
+                <div id="tacticLayer" class="overlay-layer"></div>
+              </div>
+              <div class="map-controls" aria-label="Map zoom and pan controls">
+                <button id="zoomOutButton" type="button" aria-label="Zoom out">-</button>
+                <output id="zoomValue">145%</output>
+                <button id="zoomInButton" type="button" aria-label="Zoom in">+</button>
+                <button id="zoomResetButton" type="button">Reset</button>
+              </div>
+              <div id="mapMessage" class="map-message">Drop tactics on junctions. Drag the map to navigate.</div>
+            </div>
+            <footer class="legend-strip" id="legendStrip"></footer>
+          </section>
+        </section>
+
+        <aside class="right-rail">
+          <section class="lookout-board">
+            <h2>Lookout Board</h2>
+            <article class="paper-note">
+              <h3>Public Notice</h3>
+              <textarea id="noticeText" spellcheck="false">Request high-confidence reports of a grey raincoat carrying a red folder at the selected junction.</textarea>
+              <button id="raiseLookoutButton" type="button">Raise Notice</button>
+              <p id="lookoutMeta">No witness pins yet.</p>
+            </article>
+          </section>
+
+          <section class="statements-panel">
+            <h2>Previous Witness Statements</h2>
+            <div id="statementList" class="statement-list"></div>
+          </section>
         </aside>
       </section>
 
-      <section class="witness-drawer" id="witnessDrawer" aria-live="polite">
-        <div class="drawer-head">
-          <span>Witnesses</span>
-          <button id="closeWitnesses" type="button">Close</button>
-        </div>
-        <div id="witnessCards" class="witness-cards"></div>
-      </section>
+      <div class="event-ticker" id="eventTicker">Opening the board...</div>
     </main>
 
-    <script type="module" src="/static/app.js?v=4"></script>
+    <section id="detailPopup" class="detail-popup" hidden aria-live="polite"></section>
+
+    <dialog id="settingsDialog" class="settings-dialog">
+      <form method="dialog" class="settings-panel">
+        <header>
+          <h2>Settings</h2>
+          <button id="settingsCloseButton" type="button" aria-label="Close settings">x</button>
+        </header>
+
+        <section class="settings-grid">
+          <label>
+            Sound
+            <select id="soundSetting">
+              <option value="on">On</option>
+              <option value="off">Off</option>
+            </select>
+          </label>
+          <label>
+            Difficulty
+            <select id="difficultySetting">
+              <option value="easy">Easy</option>
+              <option value="normal">Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+          <label>
+            Model Name
+            <input id="modelNameSetting" type="text" autocomplete="off" />
+          </label>
+          <label>
+            GGUF Model Path
+            <input id="modelPathSetting" type="text" autocomplete="off" />
+          </label>
+          <label>
+            llama-server Path
+            <input id="serverBinSetting" type="text" autocomplete="off" />
+          </label>
+          <label>
+            Base URL
+            <input id="baseUrlSetting" type="text" autocomplete="off" />
+          </label>
+        </section>
+
+        <p id="llamaStatusText" class="llama-status">llama-server status unknown.</p>
+        <div class="settings-actions">
+          <button id="settingsSaveButton" type="button">Save</button>
+          <button id="llamaStartButton" type="button">Start Server</button>
+          <button id="llamaRestartButton" type="button">Restart Server</button>
+          <button id="llamaStopButton" type="button">Stop Server</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/static/app.js?v=11"></script>
   </body>
 </html>
