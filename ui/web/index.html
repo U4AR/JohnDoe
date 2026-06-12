@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="/static/app.css" />
   </head>
   <body>
+    <section class="start-modal open" id="startModal" aria-modal="true" role="dialog">
+      <div class="start-window">
+        <div class="case-file" id="caseFile">
+          <p class="kicker">Commissioner Briefing</p>
+          <h2 id="briefingTitle">Phantom Grid</h2>
+          <p id="briefingBody">A new case is waiting on the desk.</p>
+          <dl class="briefing-facts" id="briefingFacts"></dl>
+          <div class="briefing-actions">
+            <button id="briefingBack" class="icon-button" type="button">Back</button>
+            <span id="briefingProgress">Case file 1/1</span>
+            <button id="briefingNext" class="case-button" type="button">Begin</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <main class="desk">
       <header class="top-strip">
         <div>
@@ -68,6 +84,6 @@
       </section>
     </main>
 
-    <script type="module" src="/static/app.js"></script>
+    <script type="module" src="/static/app.js?v=2"></script>
   </body>
 </html>

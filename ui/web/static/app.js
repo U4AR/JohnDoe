@@ -22,6 +22,13 @@ const els = {
   witnessDrawer: document.querySelector("#witnessDrawer"),
   witnessCards: document.querySelector("#witnessCards"),
   closeWitnesses: document.querySelector("#closeWitnesses"),
+  startModal: document.querySelector("#startModal"),
+  briefingTitle: document.querySelector("#briefingTitle"),
+  briefingBody: document.querySelector("#briefingBody"),
+  briefingFacts: document.querySelector("#briefingFacts"),
+  briefingBack: document.querySelector("#briefingBack"),
+  briefingNext: document.querySelector("#briefingNext"),
+  briefingProgress: document.querySelector("#briefingProgress"),
 };
 
 const state = {
@@ -36,7 +43,33 @@ const state = {
   sound: true,
   pointer: null,
   expandedWitnessJunction: null,
+  briefingDeck: [],
+  briefingIndex: 0,
 };
+
+const CASE_SEEDS = [
+  {
+    title: "The Aldgate Ledger",
+    crime: "A courier carrying a sealed council ledger vanished after a staged street collision near Aldgate.",
+    suspect: "Witnesses describe a slim figure in a grey raincoat, leather gloves, and a red document folder held flat against the ribs.",
+    lastSeen: "The last reliable sighting places the runner beside Junction 100, turning away from a taxi rank as the rain thickened.",
+    motive: "The ledger names payments routed through a false charity office.",
+  },
+  {
+    title: "The Blackfriars Exchange",
+    crime: "A safe-deposit key changed hands during a blackout, then the receiving clerk was found unconscious behind a shuttered kiosk.",
+    suspect: "The robber kept their face low under a dark brim, but several reports agree on a grey raincoat and a red folder.",
+    lastSeen: "A newspaper seller saw the suspect pause near Junction 100 before disappearing into the evening transport crowd.",
+    motive: "The stolen key opens a box tied to a missing witness in a Commission inquiry.",
+  },
+  {
+    title: "The Limehouse Packet",
+    crime: "An evidence packet from the river-police archive was lifted during a diversion at a tram crossing.",
+    suspect: "The culprit moved calmly, carrying a red folder and wearing a raincoat too clean for the weather.",
+    lastSeen: "Two late commuters place the suspect near Junction 100, looking back once before choosing a route out.",
+    motive: "The packet contains route notes for a paid escape network.",
+  },
+];
 
 function api(path, payload = {}) {
   return fetch(`/api/${path}`, {
@@ -65,14 +98,40 @@ async function boot() {
   const snapshot = await fetch("/api/snapshot").then((response) => response.json());
   applySnapshot(snapshot, false);
   bindEvents();
+  if (!state.gameId) {
+    showStartMenu();
+  } else {
+    els.startModal.classList.remove("open");
+  }
 }
 
 function bindEvents() {
   els.newCaseButton.addEventListener("click", async () => {
-    const snapshot = await api("new_case", {});
-    state.selected = [];
-    state.focused = null;
-    applySnapshot(snapshot);
+    startBriefing();
+  });
+
+  els.briefingBack.addEventListener("click", () => {
+    if (!state.briefingDeck.length || state.briefingIndex === 0) {
+      showStartMenu();
+      return;
+    }
+    state.briefingIndex -= 1;
+    renderBriefing();
+    playSound("map_select");
+  });
+
+  els.briefingNext.addEventListener("click", async () => {
+    if (!state.briefingDeck.length) {
+      startBriefing();
+      return;
+    }
+    if (state.briefingIndex < state.briefingDeck.length - 1) {
+      state.briefingIndex += 1;
+      renderBriefing();
+      playSound("witness_popup");
+      return;
+    }
+    await openBriefedCase();
   });
 
   els.raiseLookoutButton.addEventListener("click", async () => {
@@ -129,6 +188,110 @@ function bindEvents() {
   els.witnessCards.addEventListener("click", handleWitnessClick);
   window.addEventListener("resize", renderMapOverlays);
   els.mapImage.addEventListener("load", renderMapOverlays);
+}
+
+function showStartMenu() {
+  state.briefingDeck = [];
+  state.briefingIndex = 0;
+  els.startModal.classList.add("open");
+  els.briefingTitle.textContent = "Phantom Grid";
+  els.briefingBody.textContent = "A new file has arrived from the Shadow Commission. The board is locked until the case is opened.";
+  renderFacts([
+    ["Role", "Commissioner"],
+    ["City", "London"],
+    ["Method", "Track witnesses, block routes, search junctions"],
+  ]);
+  els.briefingBack.disabled = true;
+  els.briefingNext.textContent = "Open File";
+  els.briefingProgress.textContent = "Awaiting case";
+}
+
+function startBriefing() {
+  state.briefingDeck = buildCaseBriefing();
+  state.briefingIndex = 0;
+  els.startModal.classList.add("open");
+  renderBriefing();
+  playSound("lookout_raise");
+}
+
+function buildCaseBriefing() {
+  const caseData = CASE_SEEDS[Math.floor(Math.random() * CASE_SEEDS.length)];
+  return [
+    {
+      title: caseData.title,
+      body: caseData.crime,
+      facts: [
+        ["Crime", "Theft and flight"],
+        ["Priority", "Recover evidence before turn 12"],
+        ["Pressure", "Witness memory degrades each turn"],
+      ],
+    },
+    {
+      title: "Suspect Description",
+      body: caseData.suspect,
+      facts: [
+        ["Garment", "Grey raincoat"],
+        ["Object", "Red folder"],
+        ["Behaviour", "Avoids direct lines and doubles back"],
+      ],
+    },
+    {
+      title: "Last Seen",
+      body: caseData.lastSeen,
+      facts: [
+        ["Starting Lead", "Junction 100"],
+        ["Likely Escape", "Taxi, bus, or subway route"],
+        ["Notice Text", DEFAULT_NOTICE],
+      ],
+    },
+    {
+      title: "Commission Order",
+      body: `${caseData.motive} Open the board and build a net before the trail cools.`,
+      facts: [
+        ["Open Actions", "Search, lookout, blockade"],
+        ["Witness Cards", "Ask follow-up questions after reports arrive"],
+        ["Board Status", "Ready"],
+      ],
+    },
+  ];
+}
+
+function renderBriefing() {
+  const card = state.briefingDeck[state.briefingIndex];
+  if (!card) {
+    showStartMenu();
+    return;
+  }
+  els.briefingTitle.textContent = card.title;
+  els.briefingBody.textContent = card.body;
+  renderFacts(card.facts);
+  els.briefingBack.disabled = false;
+  els.briefingNext.textContent = state.briefingIndex === state.briefingDeck.length - 1 ? "Open Board" : "Next";
+  els.briefingProgress.textContent = `Case file ${state.briefingIndex + 1}/${state.briefingDeck.length}`;
+}
+
+function renderFacts(facts) {
+  els.briefingFacts.innerHTML = "";
+  facts.forEach(([label, value]) => {
+    const term = document.createElement("dt");
+    term.textContent = label;
+    const detail = document.createElement("dd");
+    detail.textContent = value;
+    els.briefingFacts.append(term, detail);
+  });
+}
+
+async function openBriefedCase() {
+  const snapshot = await api("new_case", {});
+  els.noticeText.value = DEFAULT_NOTICE;
+  applySnapshot(snapshot);
+  state.selected = [DEFAULT_FOCUSED_JUNCTION];
+  state.focused = DEFAULT_FOCUSED_JUNCTION;
+  renderMapOverlays();
+  renderTray();
+  applySnapshot(await api("select_junctions", payload()));
+  els.startModal.classList.remove("open");
+  playSound("turn_advance");
 }
 
 function applySnapshot(snapshot, makeNoise = true) {

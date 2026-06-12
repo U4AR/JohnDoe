@@ -42,6 +42,108 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.start-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  place-items: center;
+  padding: 18px;
+  background:
+    linear-gradient(rgba(16, 10, 6, 0.74), rgba(16, 10, 6, 0.84)),
+    url("/assets/maps/normal") center / cover no-repeat;
+}
+
+.start-modal.open {
+  display: grid;
+}
+
+.start-window {
+  width: min(760px, 100%);
+  max-height: min(720px, calc(100vh - 36px));
+  overflow: auto;
+  padding: 14px;
+  background:
+    linear-gradient(135deg, rgba(248, 237, 207, 0.18), rgba(248, 237, 207, 0.04)),
+    rgba(24, 18, 12, 0.88);
+  border: 1px solid rgba(248, 237, 207, 0.28);
+  box-shadow: var(--shadow);
+}
+
+.case-file {
+  min-height: 430px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto auto;
+  gap: 16px;
+  padding: clamp(18px, 4vw, 34px);
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08)),
+    var(--paper-bright);
+  border: 1px solid rgba(24, 18, 12, 0.22);
+}
+
+.case-file .kicker {
+  color: rgba(24, 18, 12, 0.54);
+}
+
+.case-file h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 0.92;
+  letter-spacing: 0;
+}
+
+.case-file p {
+  margin: 0;
+  color: rgba(24, 18, 12, 0.82);
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  line-height: 1.45;
+}
+
+.briefing-facts {
+  display: grid;
+  grid-template-columns: minmax(110px, auto) minmax(0, 1fr);
+  align-content: start;
+  gap: 8px 12px;
+  margin: 0;
+  padding: 14px;
+  background: rgba(49, 94, 81, 0.1);
+  border-left: 5px solid #315e51;
+}
+
+.briefing-facts dt,
+.briefing-actions span {
+  color: rgba(24, 18, 12, 0.58);
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.briefing-facts dd {
+  min-width: 0;
+  margin: 0;
+  color: rgba(24, 18, 12, 0.82);
+  line-height: 1.35;
+}
+
+.briefing-actions {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.briefing-actions span {
+  justify-self: center;
+}
+
 .desk {
   min-height: 100vh;
   display: grid;
@@ -627,5 +729,14 @@ h1 {
 
   .witness-popup {
     width: min(230px, 62vw);
+  }
+
+  .briefing-actions,
+  .briefing-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .briefing-actions span {
+    justify-self: start;
   }
 }
