@@ -201,6 +201,7 @@ function showStartMenu() {
   state.briefingIndex = 0;
   els.startScene.classList.add("open");
   els.gameScene.classList.add("hidden");
+  els.gameScene.setAttribute("aria-hidden", "true");
   els.briefingTitle.textContent = "Phantom Grid";
   els.briefingBody.textContent = "A new file has arrived from the Shadow Commission. The board is locked until the case is opened.";
   renderFacts([
@@ -218,6 +219,7 @@ function startBriefing() {
   state.briefingIndex = 0;
   els.startScene.classList.add("open");
   els.gameScene.classList.add("hidden");
+  els.gameScene.setAttribute("aria-hidden", "true");
   renderBriefing();
   playSound("lookout_raise");
 }
@@ -225,6 +227,7 @@ function startBriefing() {
 function showGameScene() {
   els.startScene.classList.remove("open");
   els.gameScene.classList.remove("hidden");
+  els.gameScene.removeAttribute("aria-hidden");
   window.requestAnimationFrame(renderMapOverlays);
 }
 

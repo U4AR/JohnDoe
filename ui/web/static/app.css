@@ -52,13 +52,18 @@ button:disabled {
 }
 
 .start-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   min-height: 100vh;
   display: none;
   place-items: center;
   padding: 18px;
   background:
-    linear-gradient(rgba(16, 10, 6, 0.62), rgba(16, 10, 6, 0.88)),
-    url("/assets/maps/normal") center / cover no-repeat;
+    linear-gradient(115deg, rgba(255, 235, 186, 0.08), transparent 34%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 18px),
+    linear-gradient(135deg, #100a06, #2a1a10 52%, #12100d);
+  overflow: auto;
 }
 
 .start-scene.open {
