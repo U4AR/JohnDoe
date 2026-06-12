@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 480" role="img" aria-label="Anonymous suspect silhouette">
+  <defs>
+    <linearGradient id="paper" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2a3034"/>
+      <stop offset="1" stop-color="#111315"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#82898a"/>
+      <stop offset="1" stop-color="#3f4548"/>
+    </linearGradient>
+  </defs>
+  <rect width="360" height="480" fill="url(#paper)"/>
+  <path d="M30 404c30-76 73-117 130-124h40c58 7 101 48 130 124v76H30z" fill="url(#coat)"/>
+  <path d="M112 258c8-47 23-87 68-87s60 40 68 87l-32 37h-72z" fill="#161717"/>
+  <path d="M84 174c42-31 151-31 193 0l-16 34H100z" fill="#202427"/>
+  <path d="M116 196c20 21 107 21 128 0l-9 59c-30 16-79 16-109 0z" fill="#0b0c0d"/>
+  <path d="M216 316h74v52h-74z" fill="#ad2f2b" transform="rotate(-8 253 342)"/>
+  <path d="M216 316h74" stroke="#e7c1a8" stroke-width="5" opacity=".6" transform="rotate(-8 253 342)"/>
+  <path d="M30 404c42 16 94 25 150 25s108-9 150-25v76H30z" fill="#272e31" opacity=".8"/>
+  <circle cx="142" cy="226" r="5" fill="#d8b24c" opacity=".9"/>
+  <circle cx="218" cy="226" r="5" fill="#d8b24c" opacity=".9"/>
+</svg>

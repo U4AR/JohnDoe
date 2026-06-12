@@ -1,0 +1,2930 @@
+{
+  "junctions": [
+    {
+      "base_neighbors": [
+        5,
+        6
+      ],
+      "district": null,
+      "id": 1,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 424,
+      "y": 79
+    },
+    {
+      "base_neighbors": [
+        3,
+        15,
+        28
+      ],
+      "district": null,
+      "id": 2,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 949,
+      "y": 69
+    },
+    {
+      "base_neighbors": [
+        2,
+        4
+      ],
+      "district": null,
+      "id": 3,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1028,
+      "y": 78
+    },
+    {
+      "base_neighbors": [
+        3,
+        16
+      ],
+      "district": null,
+      "id": 4,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 13,
+      "x": 1059,
+      "y": 103
+    },
+    {
+      "base_neighbors": [
+        1,
+        12,
+        13,
+        17
+      ],
+      "district": null,
+      "id": 5,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 353,
+      "y": 119
+    },
+    {
+      "base_neighbors": [
+        1,
+        7,
+        13,
+        24
+      ],
+      "district": null,
+      "id": 6,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 434,
+      "y": 128
+    },
+    {
+      "base_neighbors": [
+        6,
+        8,
+        18,
+        24
+      ],
+      "district": null,
+      "id": 7,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 562,
+      "y": 123
+    },
+    {
+      "base_neighbors": [
+        7,
+        19
+      ],
+      "district": null,
+      "id": 8,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 628,
+      "y": 114
+    },
+    {
+      "base_neighbors": [
+        10,
+        39
+      ],
+      "district": null,
+      "id": 9,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 99,
+      "y": 153
+    },
+    {
+      "base_neighbors": [
+        9,
+        11,
+        23
+      ],
+      "district": null,
+      "id": 10,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 143,
+      "y": 146
+    },
+    {
+      "base_neighbors": [
+        10,
+        12,
+        23
+      ],
+      "district": null,
+      "id": 11,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 233,
+      "y": 151
+    },
+    {
+      "base_neighbors": [
+        5,
+        11,
+        17,
+        34
+      ],
+      "district": null,
+      "id": 12,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 289,
+      "y": 142
+    },
+    {
+      "base_neighbors": [
+        5,
+        6,
+        24
+      ],
+      "district": null,
+      "id": 13,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 392,
+      "y": 153
+    },
+    {
+      "base_neighbors": [
+        26,
+        27,
+        28,
+        36
+      ],
+      "district": null,
+      "id": 14,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 719,
+      "y": 152
+    },
+    {
+      "base_neighbors": [
+        2,
+        20,
+        28,
+        29
+      ],
+      "district": null,
+      "id": 15,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 925,
+      "y": 133
+    },
+    {
+      "base_neighbors": [
+        4,
+        21,
+        30
+      ],
+      "district": null,
+      "id": 16,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1054,
+      "y": 148
+    },
+    {
+      "base_neighbors": [
+        5,
+        12
+      ],
+      "district": null,
+      "id": 17,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 317,
+      "y": 172
+    },
+    {
+      "base_neighbors": [
+        7,
+        19,
+        25
+      ],
+      "district": null,
+      "id": 18,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 573,
+      "y": 173
+    },
+    {
+      "base_neighbors": [
+        8,
+        18
+      ],
+      "district": null,
+      "id": 19,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 624,
+      "y": 158
+    },
+    {
+      "base_neighbors": [
+        15,
+        29,
+        30
+      ],
+      "district": null,
+      "id": 20,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 976,
+      "y": 163
+    },
+    {
+      "base_neighbors": [
+        16,
+        30,
+        32
+      ],
+      "district": null,
+      "id": 21,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1114,
+      "y": 162
+    },
+    {
+      "base_neighbors": [
+        33,
+        47
+      ],
+      "district": null,
+      "id": 22,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1243,
+      "y": 179
+    },
+    {
+      "base_neighbors": [
+        10,
+        11,
+        34,
+        39,
+        49
+      ],
+      "district": null,
+      "id": 23,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 211,
+      "y": 202
+    },
+    {
+      "base_neighbors": [
+        6,
+        7,
+        13
+      ],
+      "district": null,
+      "id": 24,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 424,
+      "y": 184
+    },
+    {
+      "base_neighbors": [
+        18,
+        35
+      ],
+      "district": null,
+      "id": 25,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 543,
+      "y": 198
+    },
+    {
+      "base_neighbors": [
+        14,
+        27,
+        43
+      ],
+      "district": null,
+      "id": 26,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 696,
+      "y": 187
+    },
+    {
+      "base_neighbors": [
+        14,
+        26
+      ],
+      "district": null,
+      "id": 27,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 738,
+      "y": 202
+    },
+    {
+      "base_neighbors": [
+        2,
+        14,
+        15,
+        36,
+        44
+      ],
+      "district": null,
+      "id": 28,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 817,
+      "y": 191
+    },
+    {
+      "base_neighbors": [
+        15,
+        20,
+        37
+      ],
+      "district": null,
+      "id": 29,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 927,
+      "y": 188
+    },
+    {
+      "base_neighbors": [
+        16,
+        20,
+        21,
+        45,
+        53
+      ],
+      "district": null,
+      "id": 30,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1044,
+      "y": 202
+    },
+    {
+      "base_neighbors": [
+        33,
+        48
+      ],
+      "district": null,
+      "id": 31,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1396,
+      "y": 193
+    },
+    {
+      "base_neighbors": [
+        21,
+        46
+      ],
+      "district": null,
+      "id": 32,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1125,
+      "y": 214
+    },
+    {
+      "base_neighbors": [
+        22,
+        31,
+        47,
+        48,
+        59,
+        62
+      ],
+      "district": null,
+      "id": 33,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1319,
+      "y": 225
+    },
+    {
+      "base_neighbors": [
+        12,
+        23,
+        40,
+        49,
+        54
+      ],
+      "district": null,
+      "id": 34,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 242,
+      "y": 237
+    },
+    {
+      "base_neighbors": [
+        25,
+        42
+      ],
+      "district": null,
+      "id": 35,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 498,
+      "y": 238
+    },
+    {
+      "base_neighbors": [
+        14,
+        28,
+        44,
+        51,
+        52
+      ],
+      "district": null,
+      "id": 36,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 796,
+      "y": 246
+    },
+    {
+      "base_neighbors": [
+        29,
+        45
+      ],
+      "district": null,
+      "id": 37,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 946,
+      "y": 228
+    },
+    {
+      "base_neighbors": [
+        46,
+        47
+      ],
+      "district": null,
+      "id": 38,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1188,
+      "y": 249
+    },
+    {
+      "base_neighbors": [
+        9,
+        23,
+        54
+      ],
+      "district": null,
+      "id": 39,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 139,
+      "y": 263
+    },
+    {
+      "base_neighbors": [
+        34,
+        41,
+        49,
+        55
+      ],
+      "district": null,
+      "id": 40,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 282,
+      "y": 259
+    },
+    {
+      "base_neighbors": [
+        40,
+        42,
+        55
+      ],
+      "district": null,
+      "id": 41,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 368,
+      "y": 266
+    },
+    {
+      "base_neighbors": [
+        35,
+        41,
+        55,
+        71
+      ],
+      "district": null,
+      "id": 42,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 419,
+      "y": 259
+    },
+    {
+      "base_neighbors": [
+        26,
+        50,
+        87
+      ],
+      "district": null,
+      "id": 43,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 682,
+      "y": 263
+    },
+    {
+      "base_neighbors": [
+        28,
+        36,
+        52,
+        53
+      ],
+      "district": null,
+      "id": 44,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 851,
+      "y": 257
+    },
+    {
+      "base_neighbors": [
+        30,
+        37,
+        53
+      ],
+      "district": null,
+      "id": 45,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 984,
+      "y": 259
+    },
+    {
+      "base_neighbors": [
+        32,
+        38
+      ],
+      "district": null,
+      "id": 46,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1133,
+      "y": 264
+    },
+    {
+      "base_neighbors": [
+        22,
+        33,
+        38,
+        59
+      ],
+      "district": null,
+      "id": 47,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1243,
+      "y": 265
+    },
+    {
+      "base_neighbors": [
+        31,
+        33
+      ],
+      "district": null,
+      "id": 48,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1367,
+      "y": 265
+    },
+    {
+      "base_neighbors": [
+        23,
+        34,
+        40,
+        54,
+        65
+      ],
+      "district": null,
+      "id": 49,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 247,
+      "y": 279
+    },
+    {
+      "base_neighbors": [
+        43,
+        66
+      ],
+      "district": null,
+      "id": 50,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 621,
+      "y": 288
+    },
+    {
+      "base_neighbors": [
+        36,
+        67
+      ],
+      "district": null,
+      "id": 51,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 748,
+      "y": 292
+    },
+    {
+      "base_neighbors": [
+        36,
+        44
+      ],
+      "district": null,
+      "id": 52,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 819,
+      "y": 282
+    },
+    {
+      "base_neighbors": [
+        30,
+        44,
+        45,
+        56
+      ],
+      "district": null,
+      "id": 53,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 973,
+      "y": 278
+    },
+    {
+      "base_neighbors": [
+        34,
+        39,
+        49
+      ],
+      "district": null,
+      "id": 54,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 203,
+      "y": 303
+    },
+    {
+      "base_neighbors": [
+        40,
+        41,
+        42,
+        71
+      ],
+      "district": null,
+      "id": 55,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 397,
+      "y": 311
+    },
+    {
+      "base_neighbors": [
+        53,
+        57,
+        69
+      ],
+      "district": null,
+      "id": 56,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 974,
+      "y": 321
+    },
+    {
+      "base_neighbors": [
+        56,
+        58
+      ],
+      "district": null,
+      "id": 57,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1056,
+      "y": 318
+    },
+    {
+      "base_neighbors": [
+        57,
+        60
+      ],
+      "district": null,
+      "id": 58,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1102,
+      "y": 323
+    },
+    {
+      "base_neighbors": [
+        33,
+        47,
+        61,
+        62
+      ],
+      "district": null,
+      "id": 59,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 1244,
+      "y": 318
+    },
+    {
+      "base_neighbors": [
+        58,
+        61
+      ],
+      "district": null,
+      "id": 60,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 1156,
+      "y": 340
+    },
+    {
+      "base_neighbors": [
+        59,
+        60,
+        62,
+        79
+      ],
+      "district": null,
+      "id": 61,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1188,
+      "y": 338
+    },
+    {
+      "base_neighbors": [
+        33,
+        59,
+        61,
+        63,
+        73,
+        84,
+        88
+      ],
+      "district": null,
+      "id": 62,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1264,
+      "y": 347
+    },
+    {
+      "base_neighbors": [
+        62,
+        73
+      ],
+      "district": null,
+      "id": 63,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 1322,
+      "y": 333
+    },
+    {
+      "base_neighbors": [
+        70,
+        86
+      ],
+      "district": null,
+      "id": 64,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 58,
+      "y": 365
+    },
+    {
+      "base_neighbors": [
+        49,
+        75
+      ],
+      "district": null,
+      "id": 65,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 281,
+      "y": 354
+    },
+    {
+      "base_neighbors": [
+        50,
+        76,
+        77,
+        78
+      ],
+      "district": null,
+      "id": 66,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 565,
+      "y": 353
+    },
+    {
+      "base_neighbors": [
+        51,
+        68,
+        83,
+        87
+      ],
+      "district": null,
+      "id": 67,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 768,
+      "y": 352
+    },
+    {
+      "base_neighbors": [
+        67,
+        69,
+        72
+      ],
+      "district": null,
+      "id": 68,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 871,
+      "y": 350
+    },
+    {
+      "base_neighbors": [
+        56,
+        68,
+        72
+      ],
+      "district": null,
+      "id": 69,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 931,
+      "y": 348
+    },
+    {
+      "base_neighbors": [
+        64,
+        74,
+        82,
+        86
+      ],
+      "district": null,
+      "id": 70,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 157,
+      "y": 388
+    },
+    {
+      "base_neighbors": [
+        42,
+        55,
+        75,
+        76,
+        77
+      ],
+      "district": null,
+      "id": 71,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 384,
+      "y": 376
+    },
+    {
+      "base_neighbors": [
+        68,
+        69,
+        83,
+        89
+      ],
+      "district": null,
+      "id": 72,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 846,
+      "y": 388
+    },
+    {
+      "base_neighbors": [
+        62,
+        63,
+        80,
+        84
+      ],
+      "district": null,
+      "id": 73,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1299,
+      "y": 373
+    },
+    {
+      "base_neighbors": [
+        70,
+        75
+      ],
+      "district": null,
+      "id": 74,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 222,
+      "y": 408
+    },
+    {
+      "base_neighbors": [
+        65,
+        71,
+        74
+      ],
+      "district": null,
+      "id": 75,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 296,
+      "y": 399
+    },
+    {
+      "base_neighbors": [
+        66,
+        71,
+        77
+      ],
+      "district": null,
+      "id": 76,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 493,
+      "y": 402
+    },
+    {
+      "base_neighbors": [
+        66,
+        71,
+        76,
+        78,
+        87,
+        108
+      ],
+      "district": null,
+      "id": 77,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 549,
+      "y": 416
+    },
+    {
+      "base_neighbors": [
+        66,
+        77
+      ],
+      "district": null,
+      "id": 78,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 588,
+      "y": 398
+    },
+    {
+      "base_neighbors": [
+        61,
+        84,
+        88
+      ],
+      "district": null,
+      "id": 79,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1170,
+      "y": 408
+    },
+    {
+      "base_neighbors": [
+        73,
+        81,
+        85,
+        92
+      ],
+      "district": null,
+      "id": 80,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 1303,
+      "y": 416
+    },
+    {
+      "base_neighbors": [
+        80,
+        85
+      ],
+      "district": null,
+      "id": 81,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1378,
+      "y": 400
+    },
+    {
+      "base_neighbors": [
+        70,
+        86,
+        98
+      ],
+      "district": null,
+      "id": 82,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 143,
+      "y": 427
+    },
+    {
+      "base_neighbors": [
+        67,
+        72,
+        87,
+        89
+      ],
+      "district": null,
+      "id": 83,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 777,
+      "y": 428
+    },
+    {
+      "base_neighbors": [
+        62,
+        73,
+        79,
+        88,
+        90
+      ],
+      "district": null,
+      "id": 84,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1211,
+      "y": 439
+    },
+    {
+      "base_neighbors": [
+        80,
+        81
+      ],
+      "district": null,
+      "id": 85,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1397,
+      "y": 437
+    },
+    {
+      "base_neighbors": [
+        64,
+        70,
+        82,
+        98
+      ],
+      "district": null,
+      "id": 86,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 98,
+      "y": 449
+    },
+    {
+      "base_neighbors": [
+        43,
+        67,
+        77,
+        83,
+        89,
+        94,
+        108,
+        112,
+        113
+      ],
+      "district": null,
+      "id": 87,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 13,
+      "x": 757,
+      "y": 463
+    },
+    {
+      "base_neighbors": [
+        62,
+        79,
+        84,
+        90,
+        94,
+        95
+      ],
+      "district": null,
+      "id": 88,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1132,
+      "y": 458
+    },
+    {
+      "base_neighbors": [
+        72,
+        83,
+        87,
+        113
+      ],
+      "district": null,
+      "id": 89,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 851,
+      "y": 472
+    },
+    {
+      "base_neighbors": [
+        84,
+        88,
+        91,
+        95,
+        121
+      ],
+      "district": null,
+      "id": 90,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1221,
+      "y": 488
+    },
+    {
+      "base_neighbors": [
+        90,
+        92
+      ],
+      "district": null,
+      "id": 91,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 1277,
+      "y": 489
+    },
+    {
+      "base_neighbors": [
+        80,
+        91
+      ],
+      "district": null,
+      "id": 92,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1319,
+      "y": 485
+    },
+    {
+      "base_neighbors": [
+        97,
+        99
+      ],
+      "district": null,
+      "id": 93,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 386,
+      "y": 511
+    },
+    {
+      "base_neighbors": [
+        87,
+        88,
+        95,
+        119,
+        131
+      ],
+      "district": null,
+      "id": 94,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1048,
+      "y": 505
+    },
+    {
+      "base_neighbors": [
+        88,
+        90,
+        94,
+        121
+      ],
+      "district": null,
+      "id": 95,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 1145,
+      "y": 514
+    },
+    {
+      "base_neighbors": [
+        97,
+        101,
+        105,
+        107
+      ],
+      "district": null,
+      "id": 96,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 257,
+      "y": 532
+    },
+    {
+      "base_neighbors": [
+        93,
+        96,
+        101
+      ],
+      "district": null,
+      "id": 97,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 352,
+      "y": 530
+    },
+    {
+      "base_neighbors": [
+        82,
+        86,
+        103,
+        104
+      ],
+      "district": null,
+      "id": 98,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 134,
+      "y": 551
+    },
+    {
+      "base_neighbors": [
+        93,
+        100,
+        101
+      ],
+      "district": null,
+      "id": 99,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 13,
+      "x": 430,
+      "y": 556
+    },
+    {
+      "base_neighbors": [
+        99,
+        102,
+        106
+      ],
+      "district": null,
+      "id": 100,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 475,
+      "y": 557
+    },
+    {
+      "base_neighbors": [
+        96,
+        97,
+        99,
+        105,
+        110
+      ],
+      "district": null,
+      "id": 101,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 377,
+      "y": 584
+    },
+    {
+      "base_neighbors": [
+        100,
+        106,
+        108,
+        112,
+        115
+      ],
+      "district": null,
+      "id": 102,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 652,
+      "y": 575
+    },
+    {
+      "base_neighbors": [
+        98,
+        104,
+        109,
+        114,
+        122
+      ],
+      "district": null,
+      "id": 103,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 146,
+      "y": 599
+    },
+    {
+      "base_neighbors": [
+        98,
+        103
+      ],
+      "district": null,
+      "id": 104,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 223,
+      "y": 605
+    },
+    {
+      "base_neighbors": [
+        96,
+        101,
+        107,
+        110
+      ],
+      "district": null,
+      "id": 105,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 325,
+      "y": 605
+    },
+    {
+      "base_neighbors": [
+        100,
+        102,
+        115
+      ],
+      "district": null,
+      "id": 106,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 579,
+      "y": 600
+    },
+    {
+      "base_neighbors": [
+        96,
+        105,
+        109,
+        110
+      ],
+      "district": null,
+      "id": 107,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 265,
+      "y": 620
+    },
+    {
+      "base_neighbors": [
+        77,
+        87,
+        102,
+        112
+      ],
+      "district": null,
+      "id": 108,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 682,
+      "y": 622
+    },
+    {
+      "base_neighbors": [
+        103,
+        107
+      ],
+      "district": null,
+      "id": 109,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 209,
+      "y": 647
+    },
+    {
+      "base_neighbors": [
+        101,
+        105,
+        107,
+        117
+      ],
+      "district": null,
+      "id": 110,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 349,
+      "y": 650
+    },
+    {
+      "base_neighbors": [],
+      "district": null,
+      "id": 111,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 487,
+      "y": 656
+    },
+    {
+      "base_neighbors": [
+        87,
+        102,
+        108,
+        113,
+        116
+      ],
+      "district": null,
+      "id": 112,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 770,
+      "y": 637
+    },
+    {
+      "base_neighbors": [
+        87,
+        89,
+        112,
+        116
+      ],
+      "district": null,
+      "id": 113,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 836,
+      "y": 637
+    },
+    {
+      "base_neighbors": [
+        103,
+        122
+      ],
+      "district": null,
+      "id": 114,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 95,
+      "y": 685
+    },
+    {
+      "base_neighbors": [
+        102,
+        106,
+        123,
+        124
+      ],
+      "district": null,
+      "id": 115,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 551,
+      "y": 688
+    },
+    {
+      "base_neighbors": [
+        112,
+        113,
+        119
+      ],
+      "district": null,
+      "id": 116,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 871,
+      "y": 692
+    },
+    {
+      "base_neighbors": [
+        110,
+        118,
+        126,
+        132
+      ],
+      "district": null,
+      "id": 117,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 409,
+      "y": 719
+    },
+    {
+      "base_neighbors": [
+        117,
+        126
+      ],
+      "district": null,
+      "id": 118,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 472,
+      "y": 722
+    },
+    {
+      "base_neighbors": [
+        94,
+        116,
+        120,
+        131
+      ],
+      "district": null,
+      "id": 119,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 925,
+      "y": 731
+    },
+    {
+      "base_neighbors": [
+        119,
+        130,
+        131,
+        138,
+        147
+      ],
+      "district": null,
+      "id": 120,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 980,
+      "y": 724
+    },
+    {
+      "base_neighbors": [
+        90,
+        95,
+        125
+      ],
+      "district": null,
+      "id": 121,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 13,
+      "x": 1169,
+      "y": 727
+    },
+    {
+      "base_neighbors": [
+        103,
+        114
+      ],
+      "district": null,
+      "id": 122,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 91,
+      "y": 745
+    },
+    {
+      "base_neighbors": [
+        115,
+        124
+      ],
+      "district": null,
+      "id": 123,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 574,
+      "y": 743
+    },
+    {
+      "base_neighbors": [
+        115,
+        123
+      ],
+      "district": null,
+      "id": 124,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 622,
+      "y": 740
+    },
+    {
+      "base_neighbors": [
+        121,
+        131,
+        139,
+        144
+      ],
+      "district": null,
+      "id": 125,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 1075,
+      "y": 740
+    },
+    {
+      "base_neighbors": [
+        117,
+        118,
+        132,
+        133
+      ],
+      "district": null,
+      "id": 126,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 445,
+      "y": 763
+    },
+    {
+      "base_neighbors": [
+        133,
+        136
+      ],
+      "district": null,
+      "id": 127,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 542,
+      "y": 763
+    },
+    {
+      "base_neighbors": [
+        129,
+        141,
+        150
+      ],
+      "district": null,
+      "id": 128,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 716,
+      "y": 769
+    },
+    {
+      "base_neighbors": [
+        128,
+        130,
+        137
+      ],
+      "district": null,
+      "id": 129,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 773,
+      "y": 766
+    },
+    {
+      "base_neighbors": [
+        120,
+        129,
+        137
+      ],
+      "district": null,
+      "id": 130,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 835,
+      "y": 767
+    },
+    {
+      "base_neighbors": [
+        94,
+        119,
+        120,
+        125,
+        138,
+        139
+      ],
+      "district": null,
+      "id": 131,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 986,
+      "y": 768
+    },
+    {
+      "base_neighbors": [
+        117,
+        126,
+        140,
+        142,
+        145
+      ],
+      "district": null,
+      "id": 132,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 415,
+      "y": 799
+    },
+    {
+      "base_neighbors": [
+        126,
+        127,
+        136
+      ],
+      "district": null,
+      "id": 133,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 488,
+      "y": 788
+    },
+    {
+      "base_neighbors": [
+        144,
+        147
+      ],
+      "district": null,
+      "id": 134,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1159,
+      "y": 787
+    },
+    {
+      "base_neighbors": [
+        142,
+        149
+      ],
+      "district": null,
+      "id": 135,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 267,
+      "y": 827
+    },
+    {
+      "base_neighbors": [
+        127,
+        133,
+        140,
+        146
+      ],
+      "district": null,
+      "id": 136,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 530,
+      "y": 812
+    },
+    {
+      "base_neighbors": [
+        129,
+        130,
+        143
+      ],
+      "district": null,
+      "id": 137,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 839,
+      "y": 811
+    },
+    {
+      "base_neighbors": [
+        120,
+        131,
+        139,
+        144,
+        147
+      ],
+      "district": null,
+      "id": 138,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 958,
+      "y": 806
+    },
+    {
+      "base_neighbors": [
+        125,
+        131,
+        138,
+        144,
+        147
+      ],
+      "district": null,
+      "id": 139,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 1016,
+      "y": 806
+    },
+    {
+      "base_neighbors": [
+        132,
+        136,
+        145,
+        146
+      ],
+      "district": null,
+      "id": 140,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 467,
+      "y": 844
+    },
+    {
+      "base_neighbors": [
+        128,
+        150,
+        151
+      ],
+      "district": null,
+      "id": 141,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 737,
+      "y": 845
+    },
+    {
+      "base_neighbors": [
+        132,
+        135,
+        145,
+        149
+      ],
+      "district": null,
+      "id": 142,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 391,
+      "y": 872
+    },
+    {
+      "base_neighbors": [
+        137,
+        150
+      ],
+      "district": null,
+      "id": 143,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 839,
+      "y": 854
+    },
+    {
+      "base_neighbors": [
+        125,
+        134,
+        138,
+        139,
+        147
+      ],
+      "district": null,
+      "id": 144,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 1103,
+      "y": 857
+    },
+    {
+      "base_neighbors": [
+        132,
+        140,
+        142,
+        149
+      ],
+      "district": null,
+      "id": 145,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 448,
+      "y": 890
+    },
+    {
+      "base_neighbors": [
+        136,
+        140,
+        148,
+        151
+      ],
+      "district": null,
+      "id": 146,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 572,
+      "y": 899
+    },
+    {
+      "base_neighbors": [
+        120,
+        134,
+        138,
+        139,
+        144
+      ],
+      "district": null,
+      "id": 147,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 10,
+      "x": 1003,
+      "y": 881
+    },
+    {
+      "base_neighbors": [
+        146,
+        151
+      ],
+      "district": null,
+      "id": 148,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 620,
+      "y": 919
+    },
+    {
+      "base_neighbors": [
+        135,
+        142,
+        145
+      ],
+      "district": null,
+      "id": 149,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 11,
+      "x": 301,
+      "y": 932
+    },
+    {
+      "base_neighbors": [
+        128,
+        141,
+        143,
+        151
+      ],
+      "district": null,
+      "id": 150,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 9,
+      "x": 811,
+      "y": 934
+    },
+    {
+      "base_neighbors": [
+        141,
+        146,
+        148,
+        150
+      ],
+      "district": null,
+      "id": 151,
+      "layers_present": [
+        "bus",
+        "normal",
+        "subway",
+        "taxi"
+      ],
+      "nearest_landmarks": [],
+      "radius": 12,
+      "x": 686,
+      "y": 958
+    }
+  ],
+  "schema_version": 1
+}

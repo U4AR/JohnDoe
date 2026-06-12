@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Map Junction Corrector</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #172019;
+        --muted: #697568;
+        --paper: #f5efe0;
+        --panel: rgba(255, 250, 237, 0.94);
+        --accent: #b85634;
+        --line: #d9ceb6;
+        --shadow: 0 22px 70px rgba(35, 26, 10, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at 10% 0%, rgba(223, 170, 81, 0.28), transparent 32rem),
+          radial-gradient(circle at 94% 8%, rgba(58, 112, 92, 0.2), transparent 28rem),
+          linear-gradient(135deg, #efe2c5 0%, #f9f3e8 48%, #e6d4ae 100%);
+      }
+
+      header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1rem;
+        align-items: end;
+        padding: 1.25rem clamp(1rem, 3vw, 2rem) 0.75rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.9rem, 4vw, 3.9rem);
+        letter-spacing: -0.055em;
+        line-height: 0.9;
+      }
+
+      .subtitle {
+        margin: 0.45rem 0 0;
+        color: var(--muted);
+        max-width: 62rem;
+        font-size: 1rem;
+      }
+
+      .status {
+        justify-self: end;
+        min-width: min(26rem, 90vw);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.7rem 1rem;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        font-family: "Lucida Console", Monaco, monospace;
+        font-size: 0.82rem;
+        color: #374138;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: minmax(16rem, 21rem) 1fr;
+        gap: 1rem;
+        padding: 0.5rem clamp(1rem, 3vw, 2rem) 1.5rem;
+      }
+
+      aside,
+      .stage {
+        border: 1px solid var(--line);
+        border-radius: 1.25rem;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      aside {
+        padding: 1rem;
+        align-self: start;
+        position: sticky;
+        top: 1rem;
+      }
+
+      .section-title {
+        margin: 0.8rem 0 0.55rem;
+        color: #2e3a30;
+        font-size: 0.78rem;
+        font-family: "Lucida Console", Monaco, monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .tabs,
+      .modes,
+      .actions {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      button {
+        width: 100%;
+        border: 1px solid #c9ba9d;
+        border-radius: 0.85rem;
+        padding: 0.72rem 0.8rem;
+        color: var(--ink);
+        background: #fff9ec;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        border-color: #aa7c51;
+      }
+
+      button.active {
+        color: #fff9ec;
+        border-color: #6b3b25;
+        background: #7c442a;
+      }
+
+      button.primary {
+        text-align: center;
+        color: #fff9ec;
+        border-color: #5e3421;
+        background: var(--accent);
+        font-weight: 700;
+      }
+
+      button.danger {
+        color: #7c231e;
+      }
+
+      .facts {
+        display: grid;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .facts strong {
+        color: var(--ink);
+      }
+
+      .stage {
+        overflow: hidden;
+      }
+
+      .canvas-wrap {
+        position: relative;
+        min-height: 70vh;
+        overflow: auto;
+        padding: 1rem;
+        background:
+          linear-gradient(90deg, rgba(90, 74, 45, 0.06) 1px, transparent 1px),
+          linear-gradient(rgba(90, 74, 45, 0.06) 1px, transparent 1px);
+        background-size: 30px 30px;
+      }
+
+      canvas {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: auto;
+        border-radius: 0.55rem;
+        background: #fff;
+        box-shadow: 0 16px 50px rgba(35, 26, 10, 0.22);
+        cursor: crosshair;
+      }
+
+      .hint {
+        padding: 0.8rem 1rem 1rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+        border-top: 1px solid var(--line);
+      }
+
+      @media (max-width: 900px) {
+        header,
+        main {
+          display: block;
+        }
+
+        .status {
+          justify-self: auto;
+          margin-top: 1rem;
+        }
+
+        aside {
+          position: static;
+          margin-bottom: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Map Junction Corrector</h1>
+        <p class="subtitle">
+          One shared junction layer, four live map views. Routes stay separate per map and are written back to each map graph.
+        </p>
+      </div>
+      <div id="status" class="status">Loading map data...</div>
+    </header>
+
+    <main>
+      <aside>
+        <p class="section-title">Map View</p>
+        <div id="tabs" class="tabs"></div>
+
+        <p class="section-title">Tool</p>
+        <div class="modes">
+          <button data-mode="move" class="active">Move / select junction</button>
+          <button data-mode="add">Add junction</button>
+          <button data-mode="route">Draw route between 2 junctions</button>
+          <button data-mode="delete" class="danger">Delete junction or route</button>
+        </div>
+
+        <p class="section-title">Save</p>
+        <div class="actions">
+          <button id="save" class="primary">Save all graph files</button>
+        </div>
+
+        <div class="facts">
+          <div><strong id="nodeCount">0</strong> shared junctions</div>
+          <div><strong id="edgeCount">0</strong> routes on current map</div>
+          <div>Selected: <strong id="selected">none</strong></div>
+          <div>Mode: <strong id="modeLabel">Move</strong></div>
+        </div>
+      </aside>
+
+      <section class="stage">
+        <div class="canvas-wrap">
+          <canvas id="mapCanvas"></canvas>
+        </div>
+        <div id="hint" class="hint">
+          Move: drag a junction. Add: click the map. Route: click two junctions. Delete: click a route or junction.
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

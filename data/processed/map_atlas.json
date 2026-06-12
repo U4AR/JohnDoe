@@ -1,0 +1,9 @@
+{
+  "districts": [],
+  "landmarks": [],
+  "notes": [
+    "Add fictional landmarks here as the board is named.",
+    "Lookout parsing should prefer this file over free-form image inference when possible."
+  ],
+  "schema_version": 1
+}

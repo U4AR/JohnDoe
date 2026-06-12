@@ -1,0 +1,11 @@
+{
+  "case_table_background": "top-down view of a moody London detective desk, paper map, pins, string, chalk dust, warm lamp light, stylized game UI background, no text",
+  "suspect_placeholder": "anonymous noir suspect silhouette in a grey raincoat holding a red folder, graphic novel style, transparent background, no text",
+  "witness_card_set": "four small portrait cards of London street witnesses, varied ages and moods, 1930s detective board style, consistent illustration style, no text",
+  "lookout_board_texture": "green-black chalkboard with faint chalk smudges and taped paper edges, game UI texture, no readable text",
+  "map_select": "short tactile wooden token tap on a board, warm room tone, 0.3 seconds",
+  "blockade_set": "metal stamp clack with soft paper thud, detective office, 0.5 seconds",
+  "lookout_raise": "chalk scrape and corkboard paper rustle, subtle, 0.8 seconds",
+  "witness_popup": "quick paper card flick with faint bell, playful noir, 0.4 seconds",
+  "turn_advance": "old clock tick plus distant city ambience swell, 1 second"
+}

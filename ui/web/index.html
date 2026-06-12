@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Phantom Grid</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <main class="desk">
+      <header class="top-strip">
+        <div>
+          <p class="kicker">Shadow Commission London</p>
+          <h1>Phantom Grid</h1>
+        </div>
+        <div class="case-clock" id="caseClock">
+          <span>Turn</span>
+          <strong>-</strong>
+        </div>
+        <div class="top-actions">
+          <button id="soundToggle" class="icon-button" type="button" title="Toggle sound">Sound</button>
+          <button id="newCaseButton" class="case-button" type="button">Open Case</button>
+        </div>
+      </header>
+
+      <section class="playfield">
+        <aside class="case-rail">
+          <img class="suspect-card" src="/assets/suspect" alt="" />
+          <div class="mini-board">
+            <span>Status</span>
+            <strong id="caseStatus">Ready</strong>
+          </div>
+          <div class="mini-board">
+            <span>Searches</span>
+            <strong id="checksRemaining">-</strong>
+          </div>
+          <button id="checkButton" class="rail-button danger" type="button">Search</button>
+          <button id="advanceButton" class="rail-button" type="button">Advance</button>
+        </aside>
+
+        <section class="map-stage" aria-label="Investigation map">
+          <div class="layer-tabs" id="layerTabs"></div>
+          <div class="map-wrap" id="mapWrap">
+            <img id="mapImage" alt="London junction map" draggable="false" />
+            <div id="selectionLayer" class="overlay-layer"></div>
+            <div id="witnessLayer" class="overlay-layer"></div>
+          </div>
+          <div class="ticker" id="eventTicker">Click junctions to mark a search net.</div>
+          <section class="blockade-tray" id="blockadeTray" aria-live="polite"></section>
+        </section>
+
+        <aside class="lookout-board" id="lookoutBoard">
+          <div class="board-head">
+            <span>Lookout Board</span>
+            <button id="raiseLookoutButton" type="button">Raise</button>
+          </div>
+          <textarea id="noticeText" spellcheck="false">Request high-confidence reports of a grey raincoat carrying a red folder at the selected junction.</textarea>
+          <div class="chalk-note" id="lookoutMeta">No witness pins yet.</div>
+        </aside>
+      </section>
+
+      <section class="witness-drawer" id="witnessDrawer" aria-live="polite">
+        <div class="drawer-head">
+          <span>Witnesses</span>
+          <button id="closeWitnesses" type="button">Close</button>
+        </div>
+        <div id="witnessCards" class="witness-cards"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/static/app.js"></script>
+  </body>
+</html>
