@@ -22,7 +22,9 @@ const els = {
   witnessDrawer: document.querySelector("#witnessDrawer"),
   witnessCards: document.querySelector("#witnessCards"),
   closeWitnesses: document.querySelector("#closeWitnesses"),
-  startModal: document.querySelector("#startModal"),
+  startScene: document.querySelector("#startScene"),
+  gameScene: document.querySelector("#gameScene"),
+  startBriefingButton: document.querySelector("#startBriefingButton"),
   briefingTitle: document.querySelector("#briefingTitle"),
   briefingBody: document.querySelector("#briefingBody"),
   briefingFacts: document.querySelector("#briefingFacts"),
@@ -101,12 +103,16 @@ async function boot() {
   if (!state.gameId) {
     showStartMenu();
   } else {
-    els.startModal.classList.remove("open");
+    showGameScene();
   }
 }
 
 function bindEvents() {
   els.newCaseButton.addEventListener("click", async () => {
+    startBriefing();
+  });
+
+  els.startBriefingButton.addEventListener("click", () => {
     startBriefing();
   });
 
@@ -193,7 +199,8 @@ function bindEvents() {
 function showStartMenu() {
   state.briefingDeck = [];
   state.briefingIndex = 0;
-  els.startModal.classList.add("open");
+  els.startScene.classList.add("open");
+  els.gameScene.classList.add("hidden");
   els.briefingTitle.textContent = "Phantom Grid";
   els.briefingBody.textContent = "A new file has arrived from the Shadow Commission. The board is locked until the case is opened.";
   renderFacts([
@@ -209,9 +216,16 @@ function showStartMenu() {
 function startBriefing() {
   state.briefingDeck = buildCaseBriefing();
   state.briefingIndex = 0;
-  els.startModal.classList.add("open");
+  els.startScene.classList.add("open");
+  els.gameScene.classList.add("hidden");
   renderBriefing();
   playSound("lookout_raise");
+}
+
+function showGameScene() {
+  els.startScene.classList.remove("open");
+  els.gameScene.classList.remove("hidden");
+  window.requestAnimationFrame(renderMapOverlays);
 }
 
 function buildCaseBriefing() {
@@ -290,7 +304,7 @@ async function openBriefedCase() {
   renderMapOverlays();
   renderTray();
   applySnapshot(await api("select_junctions", payload()));
-  els.startModal.classList.remove("open");
+  showGameScene();
   playSound("turn_advance");
 }
 

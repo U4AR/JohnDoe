@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="/static/app.css" />
   </head>
   <body>
-    <section class="start-modal open" id="startModal" aria-modal="true" role="dialog">
-      <div class="start-window">
-        <div class="case-file" id="caseFile">
+    <section class="start-scene open" id="startScene" aria-live="polite">
+      <div class="briefing-stack">
+        <div class="case-file">
           <p class="kicker">Commissioner Briefing</p>
+          <h1>Phantom Grid</h1>
+          <button id="startBriefingButton" class="case-button" type="button">Open File</button>
+        </div>
+        <div class="case-file active" id="caseFile">
+          <p class="kicker">Case File</p>
           <h2 id="briefingTitle">Phantom Grid</h2>
           <p id="briefingBody">A new case is waiting on the desk.</p>
           <dl class="briefing-facts" id="briefingFacts"></dl>
@@ -23,7 +28,7 @@
       </div>
     </section>
 
-    <main class="desk">
+    <main class="desk hidden" id="gameScene">
       <header class="top-strip">
         <div>
           <p class="kicker">Shadow Commission London</p>
@@ -84,6 +89,6 @@
       </section>
     </main>
 
-    <script type="module" src="/static/app.js?v=2"></script>
+    <script type="module" src="/static/app.js?v=3"></script>
   </body>
 </html>

@@ -47,35 +47,34 @@ button:disabled {
   opacity: 0.45;
 }
 
-.start-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
+.hidden {
+  display: none !important;
+}
+
+.start-scene {
+  min-height: 100vh;
   display: none;
   place-items: center;
   padding: 18px;
   background:
-    linear-gradient(rgba(16, 10, 6, 0.74), rgba(16, 10, 6, 0.84)),
+    linear-gradient(rgba(16, 10, 6, 0.62), rgba(16, 10, 6, 0.88)),
     url("/assets/maps/normal") center / cover no-repeat;
 }
 
-.start-modal.open {
+.start-scene.open {
   display: grid;
 }
 
-.start-window {
+.briefing-stack {
   width: min(760px, 100%);
-  max-height: min(720px, calc(100vh - 36px));
-  overflow: auto;
-  padding: 14px;
-  background:
-    linear-gradient(135deg, rgba(248, 237, 207, 0.18), rgba(248, 237, 207, 0.04)),
-    rgba(24, 18, 12, 0.88);
-  border: 1px solid rgba(248, 237, 207, 0.28);
-  box-shadow: var(--shadow);
+  min-height: min(620px, calc(100vh - 36px));
+  display: grid;
+  place-items: center;
+  position: relative;
 }
 
 .case-file {
+  width: min(680px, 100%);
   min-height: 430px;
   display: grid;
   grid-template-rows: auto auto 1fr auto auto;
@@ -86,6 +85,19 @@ button:disabled {
     linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08)),
     var(--paper-bright);
   border: 1px solid rgba(24, 18, 12, 0.22);
+  box-shadow: var(--shadow);
+}
+
+.briefing-stack > .case-file:first-child {
+  position: absolute;
+  transform: translate(-20px, -18px) rotate(-2deg);
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.briefing-stack > .case-file.active {
+  position: relative;
+  z-index: 1;
 }
 
 .case-file .kicker {
@@ -97,6 +109,10 @@ button:disabled {
   font-size: clamp(2rem, 5vw, 4rem);
   line-height: 0.92;
   letter-spacing: 0;
+}
+
+.case-file h1 {
+  color: rgba(24, 18, 12, 0.82);
 }
 
 .case-file p {
