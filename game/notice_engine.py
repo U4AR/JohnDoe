@@ -34,9 +34,9 @@ SPECIFIC_WORDS = {
 }
 
 
-def create_lookout_notice(state: GameState, text: str) -> LookoutNotice:
+def create_lookout_notice(state: GameState, text: str, anchor_junction: int | None = None) -> LookoutNotice:
     notice_number = len(state.notices) + 1
-    parsed = parse_notice(text, state)
+    parsed = parse_notice(text, state, anchor_junction=anchor_junction)
     return LookoutNotice(
         notice_id=f"notice_{notice_number:03d}",
         turn_number=state.turn_number,
@@ -49,7 +49,7 @@ def create_lookout_notice(state: GameState, text: str) -> LookoutNotice:
     )
 
 
-def parse_notice(text: str, state: GameState) -> dict:
+def parse_notice(text: str, state: GameState, anchor_junction: int | None = None) -> dict:
     clean = " ".join(text.strip().split())
     lowered = clean.lower()
     mentioned = [int(value) for value in re.findall(r"\bjunction\s*(\d+)\b|\bj\s*(\d+)\b", lowered) for value in value if value]
@@ -62,11 +62,13 @@ def parse_notice(text: str, state: GameState) -> dict:
     words = set(re.findall(r"[a-z]+", lowered))
     generic_hits = len(words & GENERIC_WORDS)
     specific_hits = len(words & SPECIFIC_WORDS)
-    has_location = bool(mentioned)
+    anchor = anchor_junction if anchor_junction in valid_ids else None
+    has_location = bool(mentioned or anchor)
 
-    if mentioned:
-        relevant = _expand_junctions(mentioned[:3])
-        parsed_location = ", ".join(f"Junction {junction_id}" for junction_id in mentioned[:3])
+    if mentioned or anchor:
+        anchors = list(dict.fromkeys([*([anchor] if anchor is not None else []), *mentioned[:3]]))
+        relevant = _expand_junctions(anchors)
+        parsed_location = ", ".join(f"Junction {junction_id}" for junction_id in anchors)
     elif any(word in lowered for word in ("all", "everyone", "city", "anywhere")):
         relevant = _citywide_sample(state.culprit.current_junction)
         parsed_location = "city-wide"
@@ -87,11 +89,12 @@ def parse_notice(text: str, state: GameState) -> dict:
 
 
 def _expand_junctions(junctions: list[int]) -> list[int]:
-    expanded: list[int] = []
+    expanded: list[int] = list(dict.fromkeys(junctions))
     for junction_id in junctions:
-        expanded.append(junction_id)
-        expanded.extend(adjacent_junctions(junction_id)[:4])
-    return sorted(set(expanded))
+        for neighbor in adjacent_junctions(junction_id)[:4]:
+            if neighbor not in expanded:
+                expanded.append(neighbor)
+    return expanded
 
 
 def _citywide_sample(anchor: int) -> list[int]:

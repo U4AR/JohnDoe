@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from .culprit_engine import apply_culprit_move, choose_rule_based_move
 from .police_actions import tick_blocks
 from .state import GameState
+from .story_engine import apply_turn_bundle, generate_turn_bundle
 from .witness_engine import corrupt_witnesses_slightly
 from .win_conditions import culprit_has_escaped
 
 
-def advance_turn(state: GameState) -> str:
+def advance_turn(state: GameState, use_model: bool = False) -> str:
     if state.result:
         return "Game is already complete."
 
-    move = choose_rule_based_move(state)
-    apply_culprit_move(state, move)
+    move, story, witnesses, venues = generate_turn_bundle(state, use_model=use_model)
+    apply_turn_bundle(state, move, story, witnesses, venues)
     corrupt_witnesses_slightly(state)
     state.active_blocks = tick_blocks(state.active_blocks)
     active_block_ids = {block.block_id for block in state.active_blocks}

@@ -18,6 +18,10 @@ def save_game_state(game_dir: Path, state: dict[str, Any] | GameState) -> None:
     write_json(game_dir / "game_state.json", data)
     culprit = data.get("culprit", {})
     write_json(game_dir / "culprit_private_state.json", culprit)
+    write_json(game_dir / "story" / "story_segments.json", data.get("story_segments", []))
+    write_json(game_dir / "story" / "story_memory.json", data.get("story_memory", {}))
+    write_json(game_dir / "story" / "case_landmarks.json", data.get("case_landmarks", []))
+    write_json(game_dir / "story" / "potential_witnesses.json", data.get("potential_witnesses", []))
     for notice in data.get("notices", []):
         write_json(game_dir / "notices" / f"{notice['notice_id']}.json", notice)
     for batch in data.get("witness_batches", []):

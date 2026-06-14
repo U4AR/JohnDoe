@@ -129,19 +129,22 @@ def build_game_graph(registry: dict[str, Any], layer_graphs: dict[str, dict]) ->
 
 
 def build_metadata(raw_maps_dir: Path, layer_graphs: dict[str, dict]) -> dict[str, Any]:
+    def portable(path: Path) -> str:
+        return str(path.relative_to(PROJECT_ROOT))
+
     return {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "images": {layer: str(_display_image_for_layer(raw_maps_dir, layer)) for layer in LAYERS},
+        "images": {layer: portable(_display_image_for_layer(raw_maps_dir, layer)) for layer in LAYERS},
         "source_images": {
-            "normal": str(raw_maps_dir / "images" / "normal.png"),
-            "taxi": str(raw_maps_dir / "images" / "taxi.png"),
-            "bus": str(raw_maps_dir / "images" / "bus.png"),
-            "subway": str(raw_maps_dir / "images" / "subway.png"),
+            "normal": portable(raw_maps_dir / "images" / "normal.png"),
+            "taxi": portable(raw_maps_dir / "images" / "taxi.png"),
+            "bus": portable(raw_maps_dir / "images" / "bus.png"),
+            "subway": portable(raw_maps_dir / "images" / "subway.png"),
         },
         "layers": {
             layer: {
-                "folder": str(raw_maps_dir / LAYERS[layer]),
+                "folder": portable(raw_maps_dir / LAYERS[layer]),
                 "node_count": len(graph.get("nodes", [])),
                 "edge_count": len(graph.get("edges", [])),
             }

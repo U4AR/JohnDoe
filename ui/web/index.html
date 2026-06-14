@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Phantom Grid</title>
-    <link rel="stylesheet" href="/static/app.css?v=11" />
+    <link rel="stylesheet" href="/static/app.css?v=14" />
   </head>
   <body>
     <main class="game-board" id="gameScene" aria-live="polite">
@@ -36,7 +36,7 @@
             <img class="suspect-image" src="/static/assets/reference/suspect_portrait_placeholder.png" alt="" />
             <dl>
               <dt>Alias</dt>
-              <dd>John Doe</dd>
+              <dd id="wantedAlias">John Doe</dd>
               <dt>Description</dt>
               <dd id="wantedDescription">Male, approx. 35-45. Gray raincoat. Carries red folder.</dd>
             </dl>
@@ -52,6 +52,10 @@
 
           <button id="advanceButton" class="advance-button" type="button">Advance Turn</button>
           <button id="newCaseButton" class="new-case-button" type="button">New Case</button>
+          <div class="case-control-row">
+            <button id="stopGameButton" type="button">Stop Game</button>
+            <button id="restartGameButton" type="button">Restart</button>
+          </div>
         </aside>
 
         <section class="center-stage">
@@ -83,12 +87,11 @@
 
         <aside class="right-rail">
           <section class="lookout-board">
-            <h2>Lookout Board</h2>
+            <h2>Commissioner's Notepad</h2>
             <article class="paper-note">
-              <h3>Public Notice</h3>
-              <textarea id="noticeText" spellcheck="false">Request high-confidence reports of a grey raincoat carrying a red folder at the selected junction.</textarea>
-              <button id="raiseLookoutButton" type="button">Raise Notice</button>
-              <p id="lookoutMeta">No witness pins yet.</p>
+              <h3>Case Notes</h3>
+              <textarea id="notesText" spellcheck="true" placeholder="Write deductions, routes, descriptions, and questions here..."></textarea>
+              <p id="notesStatus">Saved with this case.</p>
             </article>
           </section>
 
@@ -102,7 +105,85 @@
       <div class="event-ticker" id="eventTicker">Opening the board...</div>
     </main>
 
+    <section id="setupOverlay" class="setup-overlay" aria-live="polite">
+      <div class="setup-card">
+        <small>Phantom Grid Local AI</small>
+        <h2 id="setupTitle">Preparing Your Investigation Desk</h2>
+        <p id="setupMessage">Checking the bundled llama.cpp runtime and MiniCPM-o model...</p>
+
+        <section id="setupPicker" class="setup-picker" hidden>
+          <p class="setup-picker-intro">Pick the model and hardware Phantom Grid should run on. You can change these later from Settings.</p>
+          <div class="setup-picker-grid">
+            <label>
+              Model variant
+              <select id="pickerQuantization"></select>
+              <small id="pickerQuantHint">Smaller variants fit lower-VRAM cards; larger ones give cleaner answers.</small>
+            </label>
+            <label>
+              Run on
+              <select id="pickerDevice"></select>
+              <small id="pickerDeviceHint">Detected from your system. Pick CPU to skip GPU acceleration.</small>
+            </label>
+            <label>
+              GPU offload
+              <select id="pickerGpuLayers"></select>
+              <small>How many transformer layers to load onto the GPU. Auto is safe.</small>
+            </label>
+            <label>
+              Context length
+              <select id="pickerContext"></select>
+              <small>Larger context handles longer cases but uses more VRAM.</small>
+            </label>
+          </div>
+        </section>
+
+        <progress id="setupProgress" max="100" value="0"></progress>
+        <span id="setupProgressText">Checking setup</span>
+        <button id="setupStartButton" class="setup-start-button" type="button" disabled>Preparing Local AI...</button>
+        <button id="setupSettingsButton" class="setup-settings-button" type="button">Advanced Settings</button>
+      </div>
+    </section>
+
     <section id="detailPopup" class="detail-popup" hidden aria-live="polite"></section>
+
+    <dialog id="caseIntroDialog" class="case-intro-dialog">
+      <section class="case-intro-shell" tabindex="-1">
+        <header class="case-intro-heading">
+          <div>
+            <small>Lantern Watch Bureau / Priority Dossier</small>
+            <h2 id="caseIntroTitle">A New Case</h2>
+            <p id="caseIntroKicker"></p>
+          </div>
+          <span class="case-stamp">Case Open</span>
+        </header>
+        <div class="case-intro-cards">
+          <article class="intro-card crime-card">
+            <span class="intro-card-number">01</span>
+            <small>The Crime</small>
+            <h3 id="caseIntroCrime"></h3>
+            <p id="caseIntroNarrative"></p>
+            <dl><dt>Stolen</dt><dd id="caseIntroStolen"></dd><dt>Victim</dt><dd id="caseIntroVictim"></dd></dl>
+          </article>
+          <article class="intro-card suspect-card">
+            <span class="intro-card-number">02</span>
+            <small>The Thief</small>
+            <img src="/static/assets/reference/suspect_portrait_placeholder.png" alt="Silhouette of the wanted thief" />
+            <h3 id="caseIntroAlias"></h3>
+            <p id="caseIntroDescription"></p>
+          </article>
+          <article class="intro-card sightings-card">
+            <span class="intro-card-number">03</span>
+            <small>The Trail</small>
+            <h3>Last Seen</h3>
+            <ol id="caseIntroSightings"></ol>
+          </article>
+        </div>
+        <footer>
+          <p>Study the trail. The thief is already moving.</p>
+          <button id="beginInvestigationButton" type="button">Begin Investigation</button>
+        </footer>
+      </section>
+    </dialog>
 
     <dialog id="settingsDialog" class="settings-dialog">
       <form method="dialog" class="settings-panel">
@@ -112,6 +193,37 @@
         </header>
 
         <section class="settings-grid">
+          <label class="settings-wide">
+            Text AI Backend
+            <select id="providerSetting">
+              <option value="minicpm_omni">OpenBMB MiniCPM-o (default)</option>
+              <option value="llama_cpp_server">Custom GGUF via llama.cpp</option>
+              <option value="external_llama_cpp_server">User-started llama.cpp server</option>
+            </select>
+          </label>
+          <div id="customModelSettings" class="settings-subgrid settings-wide" hidden>
+            <label class="settings-wide">
+              GGUF Model Path
+              <input id="modelPathSetting" type="text" autocomplete="off" placeholder="C:\\Models\\model.gguf" />
+            </label>
+            <label class="settings-wide">
+              llama-server Executable
+              <input id="serverBinSetting" type="text" autocomplete="off" />
+            </label>
+          </div>
+          <div id="llamaConnectionSettings" class="settings-subgrid settings-wide" hidden>
+            <label>
+              llama.cpp API URL
+              <input id="baseUrlSetting" type="text" autocomplete="off" />
+            </label>
+            <label>
+              Model ID
+              <input id="llmModelSetting" type="text" autocomplete="off" placeholder="Model ID from /v1/models" />
+            </label>
+            <p id="externalServerHint" class="settings-hint settings-wide" hidden>
+              Start and configure llama-server yourself. Phantom Grid only sends OpenAI-compatible requests to this URL.
+            </p>
+          </div>
           <label>
             Sound
             <select id="soundSetting">
@@ -128,33 +240,120 @@
             </select>
           </label>
           <label>
-            Model Name
-            <input id="modelNameSetting" type="text" autocomplete="off" />
+            Comni Gateway URL
+            <input id="gatewayUrlSetting" type="text" autocomplete="off" />
           </label>
           <label>
-            GGUF Model Path
-            <input id="modelPathSetting" type="text" autocomplete="off" />
+            Comni Launcher Path
+            <input id="launcherPathSetting" type="text" autocomplete="off" />
           </label>
           <label>
-            llama-server Path
-            <input id="serverBinSetting" type="text" autocomplete="off" />
+            Comni Checkout Directory
+            <input id="comniCheckoutSetting" type="text" autocomplete="off" />
           </label>
           <label>
-            Base URL
-            <input id="baseUrlSetting" type="text" autocomplete="off" />
+            llama.cpp-omni Root
+            <input id="omniRootSetting" type="text" autocomplete="off" />
+          </label>
+          <label>
+            MiniCPM-o Model Directory
+            <input id="modelDirSetting" type="text" autocomplete="off" />
+          </label>
+          <label>
+            Quantization
+            <select id="quantizationSetting"></select>
+          </label>
+          <label>
+            Context Length
+            <select id="contextLengthSetting">
+              <option value="4096">4,096</option>
+              <option value="8192">8,192</option>
+              <option value="16384">16,384</option>
+              <option value="24576">24,576</option>
+              <option value="32768">32,768</option>
+            </select>
+          </label>
+          <label>
+            GPU Device
+            <select id="gpuDeviceSetting"></select>
+          </label>
+          <label>
+            Voice in Text Chat
+            <select id="witnessChatTtsSetting">
+              <option value="1">On — slower (~40 s extra per reply)</option>
+              <option value="0">Off — text only, fast</option>
+            </select>
+          </label>
+          <label>
+            GPU Layers
+            <input id="gpuLayersSetting" type="text" placeholder="auto, 0, or an explicit count" autocomplete="off" />
+          </label>
+          <label>
+            Witness Voice Directory
+            <input id="voiceDirSetting" type="text" autocomplete="off" />
           </label>
         </section>
 
-        <p id="llamaStatusText" class="llama-status">llama-server status unknown.</p>
+        <p id="llamaStatusText" class="llama-status">AI backend status unknown.</p>
         <div class="settings-actions">
           <button id="settingsSaveButton" type="button">Save</button>
-          <button id="llamaStartButton" type="button">Start Server</button>
-          <button id="llamaRestartButton" type="button">Restart Server</button>
-          <button id="llamaStopButton" type="button">Stop Server</button>
+          <button id="llamaStartButton" type="button">Start Backend</button>
+          <button id="llamaRestartButton" type="button">Restart Backend</button>
+          <button id="llamaStopButton" type="button">Stop Backend</button>
         </div>
       </form>
     </dialog>
 
-    <script type="module" src="/static/app.js?v=11"></script>
+    <dialog id="noticeDialog" class="notice-dialog">
+      <form method="dialog" class="notice-panel">
+        <header>
+          <div><small>Public appeal at <span id="noticeJunctionLabel">selected junction</span></small><h2>Issue Public Notice</h2></div>
+          <button id="noticeCloseButton" type="button" aria-label="Close notice">x</button>
+        </header>
+        <textarea id="noticeText" spellcheck="true"></textarea>
+        <p id="lookoutMeta">The wording controls which existing witnesses recognize the appeal.</p>
+        <div class="dialog-actions">
+          <button id="raiseLookoutButton" type="button">Publish Notice</button>
+          <button id="noticeCancelButton" type="button">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="witnessDialog" class="witness-dialog">
+      <section class="witness-interview-shell">
+        <header>
+          <div>
+            <small>Witness Interview</small>
+            <h2 id="witnessName">Witness</h2>
+            <p id="witnessProfile"></p>
+          </div>
+          <div class="interview-status"><span id="witnessConnection">Text ready</span><button id="witnessCloseButton" type="button">End Interview</button></div>
+        </header>
+        <div class="witness-summary" id="witnessSummary"></div>
+        <div class="witness-transcript" id="witnessTranscript" aria-live="polite"></div>
+        <footer>
+          <div class="speech-controls">
+            <button id="autoSpeechButton" type="button">Start Auto Speech</button>
+            <button id="pushToTalkButton" type="button">Hold to Talk</button>
+            <button id="stopAudioButton" type="button">Stop Voice</button>
+            <meter id="micLevel" min="0" max="1" value="0"></meter>
+          </div>
+          <div class="text-chat-row">
+            <textarea id="witnessMessage" placeholder="Ask the witness a question..."></textarea>
+            <button id="sendWitnessMessage" type="button">Send</button>
+          </div>
+        </footer>
+      </section>
+    </dialog>
+
+    <dialog id="storyDialog" class="story-dialog">
+      <section class="story-reveal-shell">
+        <header><div><small>Private Case Record</small><h2>John Doe: Turn-by-Turn Story</h2></div><button id="storyCloseButton" type="button">Close</button></header>
+        <div id="storyTimeline" class="story-timeline"></div>
+        <footer id="storyFooter"></footer>
+      </section>
+    </dialog>
+
+    <script type="module" src="/static/app.js?v=16"></script>
   </body>
 </html>

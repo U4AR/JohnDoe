@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from config import load_settings
+from grid_map.atlas import validate_map_atlas
 from grid_map.graph_loader import legal_moves_from
 from grid_map.storage import read_json
 
@@ -21,8 +22,10 @@ def test_junction_100_has_legal_moves():
 def test_map_atlas_schema_is_ready():
     settings = load_settings()
     atlas = read_json(settings.map_atlas_path)
-    assert atlas["schema_version"] == 1
-    assert "landmarks" in atlas
+    assert atlas["schema_version"] == 2
+    assert atlas["districts"]
+    assert atlas["landmarks"]
+    assert validate_map_atlas(atlas) == []
 
 
 def test_processed_metadata_images_exist():

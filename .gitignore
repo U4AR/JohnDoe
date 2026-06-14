@@ -4,6 +4,10 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 *.log
+tmp/
+runtime/
+*runtimesnapshot.json
+data/voices/*.wav
 
 data/games/*
 !data/games/.gitkeep

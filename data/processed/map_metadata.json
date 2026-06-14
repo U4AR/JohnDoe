@@ -1,38 +1,38 @@
 {
-  "generated_at": "2026-06-12T16:31:03.242337+00:00",
+  "generated_at": "2026-06-13T13:02:35.720307+00:00",
   "images": {
-    "bus": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\bus_cv_out\\graph_on_map.png",
-    "normal": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\normal_cv_out\\junctions_labelled.png",
-    "subway": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\subway_cv_out\\graph_on_map.png",
-    "taxi": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\taxi_cv_out\\graph_on_map.png"
+    "bus": "data\\raw\\maps\\bus_cv_out\\graph_on_map.png",
+    "normal": "data\\raw\\maps\\normal_cv_out\\junctions_labelled.png",
+    "subway": "data\\raw\\maps\\subway_cv_out\\graph_on_map.png",
+    "taxi": "data\\raw\\maps\\taxi_cv_out\\graph_on_map.png"
   },
   "layers": {
     "bus": {
       "edge_count": 150,
-      "folder": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\bus_cv_out",
+      "folder": "data\\raw\\maps\\bus_cv_out",
       "node_count": 151
     },
     "normal": {
       "edge_count": 255,
-      "folder": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\normal_cv_out",
+      "folder": "data\\raw\\maps\\normal_cv_out",
       "node_count": 151
     },
     "subway": {
       "edge_count": 17,
-      "folder": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\subway_cv_out",
+      "folder": "data\\raw\\maps\\subway_cv_out",
       "node_count": 151
     },
     "taxi": {
       "edge_count": 194,
-      "folder": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\taxi_cv_out",
+      "folder": "data\\raw\\maps\\taxi_cv_out",
       "node_count": 151
     }
   },
   "schema_version": 1,
   "source_images": {
-    "bus": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\images\\bus.png",
-    "normal": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\images\\normal.png",
-    "subway": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\images\\subway.png",
-    "taxi": "C:\\temp\\shadow_commission_london_maps_backup_20260611_183156\\data\\raw\\maps\\images\\taxi.png"
+    "bus": "data\\raw\\maps\\images\\bus.png",
+    "normal": "data\\raw\\maps\\images\\normal.png",
+    "subway": "data\\raw\\maps\\images\\subway.png",
+    "taxi": "data\\raw\\maps\\images\\taxi.png"
   }
 }

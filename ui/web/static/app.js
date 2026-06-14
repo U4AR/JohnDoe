@@ -58,6 +58,8 @@ const els = {
   turnPhase: document.querySelector("#turnPhase"),
   settingsButton: document.querySelector("#settingsButton"),
   newCaseButton: document.querySelector("#newCaseButton"),
+  stopGameButton: document.querySelector("#stopGameButton"),
+  restartGameButton: document.querySelector("#restartGameButton"),
   advanceButton: document.querySelector("#advanceButton"),
   activeUnitsText: document.querySelector("#activeUnitsText"),
   unitIcons: document.querySelector("#unitIcons"),
@@ -71,13 +73,13 @@ const els = {
   tacticLayer: document.querySelector("#tacticLayer"),
   mapMessage: document.querySelector("#mapMessage"),
   legendStrip: document.querySelector("#legendStrip"),
-  noticeText: document.querySelector("#noticeText"),
-  raiseLookoutButton: document.querySelector("#raiseLookoutButton"),
-  lookoutMeta: document.querySelector("#lookoutMeta"),
+  notesText: document.querySelector("#notesText"),
+  notesStatus: document.querySelector("#notesStatus"),
   statementList: document.querySelector("#statementList"),
   eventTicker: document.querySelector("#eventTicker"),
   detailPopup: document.querySelector("#detailPopup"),
   wantedDescription: document.querySelector("#wantedDescription"),
+  wantedAlias: document.querySelector("#wantedAlias"),
   gameTitle: document.querySelector("#gameTitle"),
   gameSubtitle: document.querySelector("#gameSubtitle"),
   zoomOutButton: document.querySelector("#zoomOutButton"),
@@ -88,15 +90,79 @@ const els = {
   settingsCloseButton: document.querySelector("#settingsCloseButton"),
   soundSetting: document.querySelector("#soundSetting"),
   difficultySetting: document.querySelector("#difficultySetting"),
-  modelNameSetting: document.querySelector("#modelNameSetting"),
+  providerSetting: document.querySelector("#providerSetting"),
+  customModelSettings: document.querySelector("#customModelSettings"),
+  llamaConnectionSettings: document.querySelector("#llamaConnectionSettings"),
+  externalServerHint: document.querySelector("#externalServerHint"),
   modelPathSetting: document.querySelector("#modelPathSetting"),
   serverBinSetting: document.querySelector("#serverBinSetting"),
   baseUrlSetting: document.querySelector("#baseUrlSetting"),
+  llmModelSetting: document.querySelector("#llmModelSetting"),
+  gatewayUrlSetting: document.querySelector("#gatewayUrlSetting"),
+  launcherPathSetting: document.querySelector("#launcherPathSetting"),
+  comniCheckoutSetting: document.querySelector("#comniCheckoutSetting"),
+  omniRootSetting: document.querySelector("#omniRootSetting"),
+  modelDirSetting: document.querySelector("#modelDirSetting"),
+  quantizationSetting: document.querySelector("#quantizationSetting"),
+  contextLengthSetting: document.querySelector("#contextLengthSetting"),
+  gpuLayersSetting: document.querySelector("#gpuLayersSetting"),
+  voiceDirSetting: document.querySelector("#voiceDirSetting"),
   llamaStatusText: document.querySelector("#llamaStatusText"),
   settingsSaveButton: document.querySelector("#settingsSaveButton"),
   llamaStartButton: document.querySelector("#llamaStartButton"),
   llamaRestartButton: document.querySelector("#llamaRestartButton"),
   llamaStopButton: document.querySelector("#llamaStopButton"),
+  noticeDialog: document.querySelector("#noticeDialog"),
+  noticeCloseButton: document.querySelector("#noticeCloseButton"),
+  noticeCancelButton: document.querySelector("#noticeCancelButton"),
+  noticeJunctionLabel: document.querySelector("#noticeJunctionLabel"),
+  noticeText: document.querySelector("#noticeText"),
+  raiseLookoutButton: document.querySelector("#raiseLookoutButton"),
+  lookoutMeta: document.querySelector("#lookoutMeta"),
+  witnessDialog: document.querySelector("#witnessDialog"),
+  witnessCloseButton: document.querySelector("#witnessCloseButton"),
+  witnessName: document.querySelector("#witnessName"),
+  witnessProfile: document.querySelector("#witnessProfile"),
+  witnessSummary: document.querySelector("#witnessSummary"),
+  witnessTranscript: document.querySelector("#witnessTranscript"),
+  witnessConnection: document.querySelector("#witnessConnection"),
+  witnessMessage: document.querySelector("#witnessMessage"),
+  sendWitnessMessage: document.querySelector("#sendWitnessMessage"),
+  autoSpeechButton: document.querySelector("#autoSpeechButton"),
+  pushToTalkButton: document.querySelector("#pushToTalkButton"),
+  stopAudioButton: document.querySelector("#stopAudioButton"),
+  micLevel: document.querySelector("#micLevel"),
+  storyDialog: document.querySelector("#storyDialog"),
+  storyCloseButton: document.querySelector("#storyCloseButton"),
+  storyTimeline: document.querySelector("#storyTimeline"),
+  storyFooter: document.querySelector("#storyFooter"),
+  caseIntroDialog: document.querySelector("#caseIntroDialog"),
+  caseIntroTitle: document.querySelector("#caseIntroTitle"),
+  caseIntroKicker: document.querySelector("#caseIntroKicker"),
+  caseIntroCrime: document.querySelector("#caseIntroCrime"),
+  caseIntroNarrative: document.querySelector("#caseIntroNarrative"),
+  caseIntroStolen: document.querySelector("#caseIntroStolen"),
+  caseIntroVictim: document.querySelector("#caseIntroVictim"),
+  caseIntroAlias: document.querySelector("#caseIntroAlias"),
+  caseIntroDescription: document.querySelector("#caseIntroDescription"),
+  caseIntroSightings: document.querySelector("#caseIntroSightings"),
+  beginInvestigationButton: document.querySelector("#beginInvestigationButton"),
+  setupOverlay: document.querySelector("#setupOverlay"),
+  setupTitle: document.querySelector("#setupTitle"),
+  setupMessage: document.querySelector("#setupMessage"),
+  setupProgress: document.querySelector("#setupProgress"),
+  setupProgressText: document.querySelector("#setupProgressText"),
+  setupStartButton: document.querySelector("#setupStartButton"),
+  setupSettingsButton: document.querySelector("#setupSettingsButton"),
+  setupPicker: document.querySelector("#setupPicker"),
+  pickerQuantization: document.querySelector("#pickerQuantization"),
+  pickerDevice: document.querySelector("#pickerDevice"),
+  pickerGpuLayers: document.querySelector("#pickerGpuLayers"),
+  pickerContext: document.querySelector("#pickerContext"),
+  pickerDeviceHint: document.querySelector("#pickerDeviceHint"),
+  pickerQuantHint: document.querySelector("#pickerQuantHint"),
+  gpuDeviceSetting: document.querySelector("#gpuDeviceSetting"),
+  witnessChatTtsSetting: document.querySelector("#witnessChatTtsSetting"),
 };
 
 const state = {
@@ -118,6 +184,25 @@ const state = {
   suppressMapClick: false,
   settings: null,
   appScale: 1,
+  game: null,
+  notesDirty: false,
+  notesTimer: null,
+  activeWitness: null,
+  witnessSocket: null,
+  mediaStream: null,
+  captureContext: null,
+  captureNode: null,
+  speechMode: null,
+  pushRecording: false,
+  pushDrainUntil: 0,
+  playbackContext: null,
+  playbackSources: [],
+  playbackTime: 0,
+  setup: null,
+  setupTimer: null,
+  runtimeOptions: null,
+  pickerHydrated: false,
+  activeIntroGameId: null,
 };
 
 function emptyCounts() {
@@ -158,12 +243,16 @@ async function boot() {
   adjustAppScale();
   restoreEditableTitle();
   bindEvents();
-  const snapshot = await fetch("/api/snapshot").then((response) => response.json());
+  const requestedGameId = new URLSearchParams(window.location.search).get("game_id");
+  const snapshotUrl = requestedGameId
+    ? `/api/snapshot?game_id=${encodeURIComponent(requestedGameId)}`
+    : "/api/snapshot";
+  const snapshot = await fetch(snapshotUrl).then((response) => response.json());
   applySnapshot(snapshot, false);
-  if (!state.gameId) {
-    await openNewCase(false);
-  }
+  showOpeningForFreshCase(snapshot);
+  if (!state.gameId) flash("Preparing the local AI runtime...", "map_select", false);
   renderLegend();
+  ensureLocalAI();
 }
 
 function adjustAppScale() {
@@ -177,19 +266,17 @@ function bindEvents() {
   bindEditableTitle(els.gameTitle, "phantomGridTitle");
   bindEditableTitle(els.gameSubtitle, "phantomGridSubtitle");
   els.newCaseButton.addEventListener("click", () => openNewCase(true));
+  els.stopGameButton.addEventListener("click", () => finishGame("stopped"));
+  els.restartGameButton.addEventListener("click", () => restartGame());
   els.settingsButton.addEventListener("click", openSettings);
   els.advanceButton.addEventListener("click", async () => {
     if (!state.gameId) return openNewCase(true);
     applySnapshot(await api("advance_turn", payload()));
   });
-  els.raiseLookoutButton.addEventListener("click", async () => {
-    if (!state.gameId) await openNewCase(false);
-    if (!state.focused) {
-      state.focused = DEFAULT_FOCUSED_JUNCTION;
-      state.selected = [DEFAULT_FOCUSED_JUNCTION];
-    }
-    applySnapshot(await api("issue_notice", payload({ notice_text: els.noticeText.value || DEFAULT_NOTICE })));
-  });
+  els.raiseLookoutButton.addEventListener("click", publishNotice);
+  els.noticeCloseButton.addEventListener("click", () => els.noticeDialog.close());
+  els.noticeCancelButton.addEventListener("click", () => els.noticeDialog.close());
+  els.notesText.addEventListener("input", scheduleNotesSave);
 
   els.mapWrap.addEventListener("click", handleMapClick);
   els.mapWrap.addEventListener("pointerdown", startMapPan);
@@ -226,9 +313,166 @@ function bindEvents() {
   els.mapImage.addEventListener("load", () => resetMapView(false));
   els.settingsCloseButton.addEventListener("click", () => els.settingsDialog.close());
   els.settingsSaveButton.addEventListener("click", saveSettings);
+  els.providerSetting.addEventListener("change", renderBackendFields);
   els.llamaStartButton.addEventListener("click", () => runLlamaAction("start"));
   els.llamaRestartButton.addEventListener("click", () => runLlamaAction("restart"));
   els.llamaStopButton.addEventListener("click", () => runLlamaAction("stop"));
+  els.setupStartButton.addEventListener("click", handleSetupStart);
+  els.setupSettingsButton.addEventListener("click", openSettings);
+  els.witnessCloseButton.addEventListener("click", closeWitnessInterview);
+  els.sendWitnessMessage.addEventListener("click", sendWitnessText);
+  els.witnessMessage.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); sendWitnessText(); }
+  });
+  els.autoSpeechButton.addEventListener("click", toggleAutoSpeech);
+  els.pushToTalkButton.addEventListener("pointerdown", startPushToTalk);
+  els.pushToTalkButton.addEventListener("pointerup", stopPushToTalk);
+  els.pushToTalkButton.addEventListener("pointercancel", stopPushToTalk);
+  window.addEventListener("pointerup", () => { if (state.pushRecording) stopPushToTalk(); });
+  els.stopAudioButton.addEventListener("click", stopPlayback);
+  els.storyCloseButton.addEventListener("click", () => els.storyDialog.close());
+  els.beginInvestigationButton.addEventListener("click", dismissCaseIntroduction);
+}
+
+async function ensureLocalAI() {
+  clearTimeout(state.setupTimer);
+  try {
+    const setup = await fetch("/api/setup/status").then((response) => response.json());
+    if (!state.runtimeOptions) await loadRuntimeOptions();
+    renderSetup(setup);
+    if (setup.service_ready) return;
+    // Files-ready but service not running: bring it up automatically with the
+    // settings the user already picked. We do NOT auto-start the heavy download
+    // — that waits for the user to confirm picker choices.
+    if (setup.files_ready && !setup.installing) {
+      const restarted = await fetch("/api/setup/start", { method: "POST" }).then((response) => response.json());
+      renderSetup(restarted);
+    }
+    const next = setup.installing || setup.files_ready ? 2000 : 4000;
+    state.setupTimer = setTimeout(ensureLocalAI, next);
+  } catch (error) {
+    renderSetup({ state: "error", message: error.message || "Setup status could not be read.", progress: 0 });
+  }
+}
+
+async function loadRuntimeOptions() {
+  try {
+    const data = await fetch("/api/runtime/options").then((response) => response.json());
+    state.runtimeOptions = data;
+    populatePicker(data);
+  } catch (error) {
+    els.pickerDeviceHint.textContent = error.message || "Could not detect runtime options; using defaults.";
+  }
+}
+
+function populatePicker(options) {
+  if (!options || state.pickerHydrated) return;
+  const current = options.current || {};
+  fillSelect(els.pickerQuantization, options.quantizations || [], (item) => ({
+    value: item.id, label: item.label, selected: item.id === current.minicpm_quantization,
+  }));
+  fillSelect(els.pickerDevice, options.devices || [], (item) => ({
+    value: item.id, label: item.label, selected: item.id === current.minicpm_gpu_device,
+  }));
+  fillSelect(els.pickerGpuLayers, options.gpu_layer_presets || [], (item) => ({
+    value: item.id, label: item.label, selected: String(item.id) === String(current.llamacpp_gpu_layers),
+  }));
+  fillSelect(els.pickerContext, options.context_length_presets || [], (item) => ({
+    value: String(item.id), label: item.label, selected: Number(item.id) === Number(current.llamacpp_context_length),
+  }));
+  // Mirror the GPU-device dropdown in the settings dialog using the same list.
+  fillSelect(els.gpuDeviceSetting, options.devices || [], (item) => ({
+    value: item.id, label: item.label, selected: item.id === current.minicpm_gpu_device,
+  }));
+  state.pickerHydrated = true;
+}
+
+function fillSelect(select, items, mapper) {
+  if (!select) return;
+  select.innerHTML = "";
+  items.forEach((item) => {
+    const { value, label, selected } = mapper(item);
+    const option = document.createElement("option");
+    option.value = String(value);
+    option.textContent = label;
+    if (selected) option.selected = true;
+    select.append(option);
+  });
+}
+
+function renderSetup(setup) {
+  state.setup = setup;
+  const ready = Boolean(setup.service_ready);
+  const installing = Boolean(setup.installing) || (setup.files_ready && !setup.service_ready) || setup.state === "running";
+  const errored = setup.state === "error";
+  // Show the picker only at the moment when nothing is downloading or running.
+  // Once setup is in flight, hide it so the progress UI takes over.
+  const showPicker = !ready && !installing && !errored && Boolean(state.runtimeOptions);
+
+  els.setupOverlay.classList.toggle("ready", ready);
+  els.setupOverlay.hidden = Boolean(state.gameId);
+  els.setupPicker.hidden = !showPicker;
+  els.setupProgress.hidden = showPicker;
+  els.setupProgressText.hidden = showPicker;
+  els.setupProgress.value = Number(setup.progress || 0);
+  els.setupMessage.textContent = setup.message || "Preparing the local AI runtime...";
+  els.setupProgressText.textContent = ready ? "Everything is ready" : `${Math.round(setup.progress || 0)}% - ${setup.stage || "setup"}`;
+
+  if (ready) {
+    els.setupTitle.textContent = "The Investigation Desk Is Ready";
+    els.setupStartButton.textContent = "Start Game";
+    els.setupStartButton.disabled = false;
+    return;
+  }
+  if (errored) {
+    els.setupTitle.textContent = "Local AI Setup Needs Attention";
+    els.setupStartButton.textContent = "Retry Setup";
+    els.setupStartButton.disabled = false;
+    return;
+  }
+  if (showPicker) {
+    els.setupTitle.textContent = "Set Up Your Local AI";
+    els.setupStartButton.textContent = "Download & Install With These Settings";
+    els.setupStartButton.disabled = false;
+    return;
+  }
+  els.setupTitle.textContent = setup.files_ready ? "Starting Local AI" : "Preparing Your Investigation Desk";
+  els.setupStartButton.textContent = setup.files_ready ? "Loading Model..." : "Downloading and Installing...";
+  els.setupStartButton.disabled = true;
+}
+
+function pickerPayload() {
+  return {
+    minicpm_quantization: els.pickerQuantization?.value || undefined,
+    minicpm_gpu_device: els.pickerDevice?.value || undefined,
+    llamacpp_gpu_layers: els.pickerGpuLayers?.value || undefined,
+    llamacpp_context_length: els.pickerContext?.value ? Number(els.pickerContext.value) : undefined,
+  };
+}
+
+async function handleSetupStart() {
+  if (state.setup?.service_ready) {
+    els.setupStartButton.disabled = true;
+    els.setupStartButton.textContent = "Opening Case...";
+    await openNewCase(true);
+    if (state.gameId) els.setupOverlay.hidden = true;
+    return;
+  }
+  els.setupStartButton.disabled = true;
+  els.setupStartButton.textContent = "Starting...";
+  // If the picker is visible, post the chosen options. Otherwise this is a
+  // retry or service-restart — backend uses whatever's already in .env.
+  const payload = els.setupPicker.hidden ? {} : pickerPayload();
+  try {
+    await fetch("/api/setup/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    flash(error.message || "Could not start setup.", "map_select");
+  }
+  ensureLocalAI();
 }
 
 function restoreEditableTitle() {
@@ -273,21 +517,72 @@ function populateSettings(data) {
   const settings = data.settings || {};
   els.soundSetting.value = state.sound ? "on" : "off";
   els.difficultySetting.value = settings.difficulty || "normal";
-  els.modelNameSetting.value = settings.llm_model || "";
+  els.providerSetting.value = settings.llm_provider || "minicpm_omni";
   els.modelPathSetting.value = settings.llamacpp_model_path || "";
   els.serverBinSetting.value = settings.llamacpp_server_bin || "";
   els.baseUrlSetting.value = settings.llamacpp_base_url || "http://127.0.0.1:8080/v1";
-  renderLlamaStatus(data.llama, settings);
+  els.llmModelSetting.value = settings.llm_model || "";
+  renderBackendFields();
+  els.gatewayUrlSetting.value = settings.omni_gateway_url || "http://127.0.0.1:8006";
+  els.launcherPathSetting.value = settings.omni_launcher_path || "";
+  els.comniCheckoutSetting.value = settings.comni_checkout_path || "";
+  els.omniRootSetting.value = settings.llamacpp_omni_root || "";
+  els.modelDirSetting.value = settings.minicpm_model_dir || "";
+  els.contextLengthSetting.value = String(settings.llamacpp_context_length || 8192);
+  els.gpuLayersSetting.value = settings.llamacpp_gpu_layers || "auto";
+  els.voiceDirSetting.value = settings.witness_voice_dir || "";
+  if (state.runtimeOptions?.devices && !els.gpuDeviceSetting.options.length) {
+    fillSelect(els.gpuDeviceSetting, state.runtimeOptions.devices, (item) => ({
+      value: item.id, label: item.label, selected: item.id === (settings.minicpm_gpu_device || "auto"),
+    }));
+  } else {
+    els.gpuDeviceSetting.value = settings.minicpm_gpu_device || "auto";
+  }
+  els.witnessChatTtsSetting.value = settings.witness_chat_tts === false ? "0" : "1";
+  const models = data.model_scan?.models || [];
+  els.quantizationSetting.innerHTML = models.length ? "" : '<option value="">No compatible models found</option>';
+  models.forEach((model) => {
+    const option = document.createElement("option");
+    option.value = model.filename;
+    option.textContent = `${model.quantization} (${formatBytes(model.size_bytes)})`;
+    option.selected = model.filename === settings.minicpm_quantization;
+    els.quantizationSetting.append(option);
+  });
+  renderLlamaStatus(data.llama || data.omni, settings);
 }
 
 function settingsPayload() {
   return {
-    difficulty: els.difficultySetting.value,
-    llm_model: els.modelNameSetting.value,
+    llm_provider: els.providerSetting.value,
     llamacpp_model_path: els.modelPathSetting.value,
     llamacpp_server_bin: els.serverBinSetting.value,
     llamacpp_base_url: els.baseUrlSetting.value,
+    llm_model: els.llmModelSetting.value,
+    difficulty: els.difficultySetting.value,
+    omni_gateway_url: els.gatewayUrlSetting.value,
+    omni_launcher_path: els.launcherPathSetting.value,
+    comni_checkout_path: els.comniCheckoutSetting.value,
+    llamacpp_omni_root: els.omniRootSetting.value,
+    minicpm_model_dir: els.modelDirSetting.value,
+    minicpm_quantization: els.quantizationSetting.value,
+    llamacpp_context_length: Number(els.contextLengthSetting.value),
+    llamacpp_gpu_layers: els.gpuLayersSetting.value,
+    minicpm_gpu_device: els.gpuDeviceSetting.value,
+    witness_chat_tts: els.witnessChatTtsSetting.value === "1",
+    witness_voice_dir: els.voiceDirSetting.value,
   };
+}
+
+function renderBackendFields() {
+  const managed = els.providerSetting.value === "llama_cpp_server";
+  const external = els.providerSetting.value === "external_llama_cpp_server";
+  els.customModelSettings.hidden = !managed;
+  els.llamaConnectionSettings.hidden = !(managed || external);
+  els.externalServerHint.hidden = !external;
+  els.llmModelSetting.disabled = managed;
+  els.llamaStartButton.disabled = external;
+  els.llamaRestartButton.disabled = external;
+  els.llamaStopButton.disabled = external;
 }
 
 async function saveSettings() {
@@ -314,34 +609,106 @@ async function runLlamaAction(action) {
     if (data.settings) {
       state.settings = data.settings;
     }
-    renderLlamaStatus(data.llama, data.settings || state.settings || {});
-    flash(data.event || "llama-server status updated.", data.ok ? "blockade_set" : "map_select");
+    renderLlamaStatus(data.llama || data.omni, data.settings || state.settings || {});
+    flash(data.event || "AI backend status updated.", data.ok ? "blockade_set" : "map_select");
   } catch (error) {
-    flash(error.message || "Could not control llama-server.", "map_select");
+    flash(error.message || "Could not control the AI backend.", "map_select");
   }
 }
 
 function renderLlamaStatus(llama, settings) {
-  const server = settings.llamacpp_server_bin_exists ? "server path ok" : "server path missing";
-  const model = settings.llamacpp_model_exists ? "model path ok" : "model path missing";
-  const reach = llama?.reachable ? "reachable" : "not reachable";
+  const custom = settings.llm_provider === "llama_cpp_server";
+  const external = settings.llm_provider === "external_llama_cpp_server";
+  const backend = custom || external ? (settings.llm_model || "llama.cpp") : "OpenBMB MiniCPM-o";
+  const launcher = external
+    ? "user-managed server"
+    : custom
+    ? (settings.llamacpp_model_exists && settings.llamacpp_server_bin_exists ? "model and server paths ok" : "model or server path missing")
+    : (settings.omni_launcher_exists ? "launcher path ok" : "launcher path missing");
+  const reach = llama?.ready ? "ready" : llama?.reachable ? "reachable, not ready" : "not reachable";
   const pid = llama?.pid ? ` PID ${llama.pid}` : "";
-  els.llamaStatusText.textContent = `llama-server: ${reach}${pid}. ${server}; ${model}. ${llama?.detail || ""}`;
+  let detail = typeof llama?.detail === "string" ? llama.detail : "";
+  if (!detail && (custom || external) && Array.isArray(llama?.detail?.data)) {
+    detail = `${llama.detail.data.length} model${llama.detail.data.length === 1 ? "" : "s"} loaded`;
+  } else if (!detail && llama?.detail?.workers) {
+    const workers = llama.detail.workers;
+    detail = `${workers.idle_workers || 0} of ${workers.total_workers || 0} workers idle`;
+  }
+  els.llamaStatusText.textContent = `${backend}: ${reach}${pid}. ${launcher}. Context ${settings.llamacpp_context_length || 8192}; GPU layers ${settings.llamacpp_gpu_layers || "auto"}. ${detail}`;
 }
 
 async function openNewCase(makeNoise) {
   closePopup();
-  els.noticeText.value = DEFAULT_NOTICE;
-  const snapshot = await api("new_case", {});
-  applySnapshot(snapshot, makeNoise);
-  state.selected = [DEFAULT_FOCUSED_JUNCTION];
-  state.focused = DEFAULT_FOCUSED_JUNCTION;
-  applySnapshot(await api("select_junctions", payload()), makeNoise);
+  try {
+    const snapshot = await api("new_case", {});
+    applySnapshot(snapshot, makeNoise);
+    state.selected = [DEFAULT_FOCUSED_JUNCTION];
+    state.focused = DEFAULT_FOCUSED_JUNCTION;
+    applySnapshot(await api("select_junctions", payload()), makeNoise);
+    showCaseIntroduction(snapshot.case_introduction, snapshot.game?.initial_description, snapshot.game?.game_id, true);
+  } catch (error) {
+    flash(error.message || "MiniCPM-o must be ready before a case can start.", "map_select");
+    await openSettings();
+  }
+}
+
+function showOpeningForFreshCase(snapshot) {
+  if (!snapshot?.game || snapshot.game.turn !== 1 || snapshot.game.result || snapshot.game.phase === "complete") return;
+  showCaseIntroduction(
+    snapshot.case_introduction,
+    snapshot.game.initial_description,
+    snapshot.game.game_id,
+  );
+}
+
+function introSeenKey(gameId) {
+  return `phantomGridIntroSeen:${gameId}`;
+}
+
+function showCaseIntroduction(intro, description, gameId, force = false) {
+  if (!intro || !els.caseIntroDialog) return;
+  if (!force && gameId && sessionStorage.getItem(introSeenKey(gameId)) === "1") return;
+  state.activeIntroGameId = gameId || state.gameId;
+  els.caseIntroTitle.textContent = intro.case_title || "A New Case";
+  els.caseIntroKicker.textContent = intro.kicker || "A thief has vanished into London.";
+  els.caseIntroCrime.textContent = titleCase(intro.crime || "A daring theft");
+  els.caseIntroNarrative.textContent = intro.narrative || "The trail is already growing cold.";
+  els.caseIntroStolen.textContent = intro.stolen_item || "Unknown valuables";
+  els.caseIntroVictim.textContent = intro.victim || "Name withheld";
+  els.caseIntroAlias.textContent = intro.culprit_alias || "John Doe";
+  els.caseIntroDescription.textContent = description || "Description unavailable.";
+  els.caseIntroSightings.innerHTML = (intro.last_seen || []).map((sighting, index) => `
+    <li class="sighting-${escapeHtml(sighting.confidence || "unconfirmed")}">
+      <span>${String(index + 1).padStart(2, "0")}</span>
+      <div><small>${escapeHtml(sighting.label || "Report")}</small><strong>${escapeHtml(sighting.location || `Junction ${sighting.junction_id}`)}</strong><p>${escapeHtml(sighting.detail || "")}</p></div>
+    </li>
+  `).join("");
+  if (!els.caseIntroDialog.open) els.caseIntroDialog.showModal();
+  const shell = els.caseIntroDialog.querySelector(".case-intro-shell");
+  shell.scrollTop = 0;
+  shell.focus({ preventScroll: true });
+}
+
+function dismissCaseIntroduction() {
+  if (state.activeIntroGameId) sessionStorage.setItem(introSeenKey(state.activeIntroGameId), "1");
+  state.activeIntroGameId = null;
+  els.caseIntroDialog.close();
+}
+
+function titleCase(value) {
+  return String(value).replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 function applySnapshot(snapshot, makeNoise = true) {
   if (!snapshot || !snapshot.ok) return;
   state.gameId = snapshot.game?.game_id || state.gameId;
+  if (state.gameId) {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("game_id") !== state.gameId) {
+      url.searchParams.set("game_id", state.gameId);
+      window.history.replaceState({}, "", url);
+    }
+  }
   state.map = snapshot.map || state.map;
   state.selected = snapshot.selection?.junctions || state.selected;
   state.focused = snapshot.selection?.focused ?? state.focused;
@@ -350,6 +717,9 @@ function applySnapshot(snapshot, makeNoise = true) {
   state.previousStatements = snapshot.previous_statements || [];
   state.placedTactics = snapshot.placed_tactics || [];
   state.tacticCounts = snapshot.tactic_counts || state.tacticCounts;
+  state.game = snapshot.game || state.game;
+  if (snapshot.case_introduction?.culprit_alias) els.wantedAlias.textContent = snapshot.case_introduction.culprit_alias;
+  if (!state.notesDirty && typeof snapshot.notes === "string") els.notesText.value = snapshot.notes;
 
   renderGame(snapshot.game);
   renderTacticTray();
@@ -360,6 +730,9 @@ function applySnapshot(snapshot, makeNoise = true) {
   renderStatements();
   renderActiveUnits();
 
+  if (snapshot.notice_prompt?.open) openNoticeDialog(snapshot.notice_prompt);
+  if (snapshot.game?.result && snapshot.story_available) loadStoryReveal();
+
   if (snapshot.event) {
     flash(snapshot.event, snapshot.sound, makeNoise);
   }
@@ -369,17 +742,23 @@ function renderGame(game) {
   if (!game) {
     els.caseClock.textContent = "-";
     els.turnPhase.textContent = "Evening";
+    els.advanceButton.disabled = true;
+    els.stopGameButton.disabled = true;
     return;
   }
+  const complete = Boolean(game.result || game.phase === "complete");
   els.caseClock.textContent = `${game.turn} / ${game.max_turns}`;
   els.turnPhase.textContent = turnPhase(game.turn);
   els.wantedDescription.textContent = game.initial_description || els.wantedDescription.textContent;
+  els.advanceButton.disabled = complete;
+  els.stopGameButton.disabled = complete;
 }
 
 function renderTacticTray() {
   els.tacticTray.innerHTML = "";
+  const complete = Boolean(state.game?.result || state.game?.phase === "complete");
   for (const [type, tactic] of Object.entries(TACTICS)) {
-    const remaining = state.tacticCounts.remaining?.[type] ?? 0;
+    const remaining = complete ? 0 : (state.tacticCounts.remaining?.[type] ?? 0);
     const limit = state.tacticCounts.limits?.[type] ?? 0;
     const card = document.createElement("button");
     card.type = "button";
@@ -495,6 +874,11 @@ function renderMapOverlays() {
   els.selectionLayer.innerHTML = "";
   els.witnessLayer.innerHTML = "";
   els.tacticLayer.innerHTML = "";
+  const tacticCountsByJunction = new Map();
+  state.placedTactics.forEach((placed) => {
+    tacticCountsByJunction.set(placed.junction_id, (tacticCountsByJunction.get(placed.junction_id) || 0) + 1);
+  });
+  const witnessJunctions = new Set(state.witnesses.map((witness) => witness.junction_id));
 
   const focused = junctionById(state.focused);
   if (focused) {
@@ -512,6 +896,11 @@ function renderMapOverlays() {
     token.className = `witness-token ${witness.viewed ? "viewed" : "unviewed"}`;
     token.dataset.junctionId = String(witness.junction_id);
     token.dataset.witnessId = witness.sample_witness_id || "";
+    if (tacticCountsByJunction.has(witness.junction_id)) {
+      token.classList.add("co-located");
+      token.style.setProperty("--token-offset-x", "-22px");
+    }
+    token.setAttribute("aria-label", `${witness.viewed ? "Viewed" : "Unviewed"} witness at Junction ${witness.junction_id}; ${witness.count} report${witness.count === 1 ? "" : "s"}`);
     token.innerHTML = `
       <img src="${ASSET}${witness.viewed ? "pin_viewed_witness.png" : "pin_unviewed_witness.png"}" alt="" />
       <strong>${witness.count}</strong>
@@ -520,6 +909,7 @@ function renderMapOverlays() {
     els.witnessLayer.append(token);
   });
 
+  const renderedTacticsByJunction = new Map();
   state.placedTactics.forEach((placed) => {
     const tactic = TACTICS[placed.tactic_type];
     if (!tactic) return;
@@ -528,6 +918,16 @@ function renderMapOverlays() {
     token.className = `map-token ${placed.tactic_type}`;
     token.draggable = true;
     token.dataset.tacticId = placed.tactic_id;
+    const tacticIndex = renderedTacticsByJunction.get(placed.junction_id) || 0;
+    renderedTacticsByJunction.set(placed.junction_id, tacticIndex + 1);
+    const colocatedWithWitness = witnessJunctions.has(placed.junction_id);
+    const tacticCount = tacticCountsByJunction.get(placed.junction_id) || 1;
+    if (colocatedWithWitness || tacticCount > 1) {
+      token.classList.add("co-located");
+      const baseOffset = colocatedWithWitness ? 22 : 0;
+      const spreadOffset = (tacticIndex - (tacticCount - 1) / 2) * 34;
+      token.style.setProperty("--token-offset-x", `${baseOffset + spreadOffset}px`);
+    }
     token.innerHTML = `<img src="${ASSET}${tactic.pin}" alt="${escapeHtml(tactic.label)}" />`;
     token.addEventListener("dragstart", (event) => {
       event.dataTransfer.setData("application/x-placed-tactic-id", placed.tactic_id);
@@ -565,7 +965,7 @@ function renderStatements() {
         <span>${escapeHtml(statement.time_label || "")}</span>
       </div>
       <p>${escapeHtml(shortSummary(statement.answer || statement.summary, 118))}</p>
-      <mark aria-label="Viewed">✓</mark>
+      <mark aria-label="Viewed">OK</mark>
     `;
     els.statementList.append(card);
   });
@@ -817,10 +1217,7 @@ function handleWitnessClick(event) {
   event.preventDefault();
   event.stopPropagation();
   const witnessId = token.dataset.witnessId;
-  const junctionId = Number(token.dataset.junctionId);
-  const location = state.witnesses.find((item) => item.junction_id === junctionId);
-  const card = state.witnessCards.find((item) => item.id === witnessId);
-  showWitnessPopup(location, card, event.clientX, event.clientY);
+  openWitnessInterview(witnessId);
 }
 
 function handlePopupClick(event) {
@@ -852,7 +1249,7 @@ function showTacticPopup(placed, x, y) {
   state.selected = [placed.junction_id];
   renderMapOverlays();
   els.detailPopup.innerHTML = `
-    <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">×</button>
+    <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">X</button>
     <img src="${ASSET}${tactic.pin}" alt="" />
     <h3>${escapeHtml(tactic.label)}</h3>
     <p>${escapeHtml(tactic.details)}</p>
@@ -873,7 +1270,7 @@ function showWitnessPopup(location, card, x, y) {
   state.selected = [location.junction_id];
   renderMapOverlays();
   els.detailPopup.innerHTML = `
-    <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">×</button>
+    <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">X</button>
     <img src="${ASSET}${location.viewed ? "pin_viewed_witness.png" : "pin_unviewed_witness.png"}" alt="" />
     <h3>${location.viewed ? "Viewed Witness" : "Unviewed Witness"}</h3>
     <p>${escapeHtml(shortSummary(card?.summary || location.sample_summary || "Potential witness report.", 160))}</p>
@@ -1035,6 +1432,318 @@ function shortSummary(value, limit = 126) {
   const clean = String(value || "Report received.").replace(/\s+/g, " ").trim();
   if (clean.length <= limit) return clean;
   return `${clean.slice(0, limit - 3)}...`;
+}
+
+function openNoticeDialog(prompt) {
+  els.noticeJunctionLabel.textContent = `Junction ${prompt.junction_id}`;
+  els.noticeText.value = prompt.prefill || DEFAULT_NOTICE;
+  els.lookoutMeta.textContent = "The wording controls which existing witnesses recognize the appeal.";
+  if (!els.noticeDialog.open) els.noticeDialog.showModal();
+  els.noticeText.focus();
+}
+
+async function publishNotice() {
+  if (!state.gameId) return;
+  try {
+    const snapshot = await api("issue_notice", payload({ notice_text: els.noticeText.value || DEFAULT_NOTICE }));
+    els.noticeDialog.close();
+    applySnapshot(snapshot);
+  } catch (error) {
+    els.lookoutMeta.textContent = error.message || "Could not publish this notice.";
+  }
+}
+
+function scheduleNotesSave() {
+  state.notesDirty = true;
+  els.notesStatus.textContent = "Saving...";
+  clearTimeout(state.notesTimer);
+  state.notesTimer = setTimeout(saveNotes, 500);
+}
+
+async function saveNotes() {
+  if (!state.gameId) return;
+  try {
+    const response = await fetch(`/api/game/${encodeURIComponent(state.gameId)}/notes`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: els.notesText.value }),
+    });
+    if (!response.ok) throw new Error("Could not save notes");
+    state.notesDirty = false;
+    els.notesStatus.textContent = "Saved with this case.";
+  } catch (error) {
+    els.notesStatus.textContent = error.message || "Notes not saved.";
+  }
+}
+
+async function openWitnessInterview(witnessId) {
+  if (!witnessId || !state.gameId) return;
+  closePopup();
+  try {
+    const response = await fetch(`/api/witness/${encodeURIComponent(state.gameId)}/${encodeURIComponent(witnessId)}`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Could not open witness.");
+    state.activeWitness = data.witness;
+    els.witnessName.textContent = data.witness.name;
+    els.witnessProfile.textContent = `${data.witness.occupation} | Junction ${data.witness.junction_id} | ${data.witness.personality.style || "measured"}`;
+    els.witnessSummary.textContent = data.witness.summary;
+    els.witnessConnection.textContent = "Text ready | speech disconnected";
+    els.witnessTranscript.innerHTML = "";
+    data.witness.transcript.forEach((turn) => {
+      appendChatMessage("user", turn.question);
+      appendChatMessage("witness", turn.answer);
+    });
+    if (!els.witnessDialog.open) els.witnessDialog.showModal();
+    els.witnessMessage.focus();
+  } catch (error) {
+    flash(error.message || "Could not open witness.", "map_select");
+  }
+}
+
+async function sendWitnessText() {
+  const witness = state.activeWitness;
+  const message = els.witnessMessage.value.trim();
+  if (!witness || !message) return;
+  els.witnessMessage.value = "";
+  appendChatMessage("user", message);
+  els.sendWitnessMessage.disabled = true;
+  els.witnessConnection.textContent = "Witness is answering...";
+  try {
+    const response = await fetch(`/api/witness/${encodeURIComponent(state.gameId)}/${encodeURIComponent(witness.id)}/message`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Witness response failed.");
+    appendChatMessage("witness", data.answer);
+    if (data.audio_data) playFloat32Audio(data.audio_data, data.audio_sample_rate || 24000);
+    if (data.snapshot) applySnapshot(data.snapshot, false);
+    els.witnessConnection.textContent = "Text ready";
+  } catch (error) {
+    appendChatMessage("witness", `[Connection error: ${error.message}]`);
+    els.witnessConnection.textContent = "MiniCPM-o unavailable";
+  } finally {
+    els.sendWitnessMessage.disabled = false;
+  }
+}
+
+function appendChatMessage(role, text) {
+  const bubble = document.createElement("article");
+  bubble.className = `chat-message ${role}`;
+  bubble.textContent = text;
+  els.witnessTranscript.append(bubble);
+  els.witnessTranscript.scrollTop = els.witnessTranscript.scrollHeight;
+  return bubble;
+}
+
+async function finishGame(reason) {
+  if (!state.gameId) return;
+  try {
+    const response = await fetch(`/api/game/${encodeURIComponent(state.gameId)}/stop`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reason }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Could not finish case.");
+    if (data.snapshot) applySnapshot(data.snapshot, false);
+    if (els.noticeDialog.open) els.noticeDialog.close();
+    if (els.witnessDialog.open) closeWitnessInterview();
+    showStoryReveal(data.story, reason === "restarted");
+  } catch (error) {
+    flash(error.message || "Could not finish case.", "map_select");
+  }
+}
+
+async function restartGame() {
+  if (!state.gameId) return openNewCase(true);
+  await finishGame("restarted");
+}
+
+async function loadStoryReveal() {
+  if (!state.gameId || els.storyDialog.open) return;
+  const response = await fetch(`/api/game/${encodeURIComponent(state.gameId)}/story`);
+  if (!response.ok) return;
+  const data = await response.json();
+  showStoryReveal(data.story, false);
+}
+
+function showStoryReveal(story, offerRestart) {
+  els.storyTimeline.innerHTML = "";
+  (story.segments || []).forEach((segment) => {
+    const card = document.createElement("article");
+    card.className = "story-card";
+    const facts = (segment.observable_facts || []).map((fact) => `<li>${escapeHtml(fact.text)}</li>`).join("");
+    card.innerHTML = `<h3>Turn ${segment.turn_number}: Junction ${segment.from_junction} to ${segment.to_junction}</h3><p><strong>${escapeHtml(segment.mode)}</strong> | ${segment.changed_disguise ? "disguise changed" : "same disguise"}</p><p>${escapeHtml(segment.narrative)}</p>${facts ? `<ul class="story-facts">${facts}</ul>` : ""}`;
+    els.storyTimeline.append(card);
+  });
+  els.storyFooter.innerHTML = offerRestart ? '<button id="confirmRestartButton" type="button">Confirm New Case</button>' : `<p>Case result: ${escapeHtml(story.result || story.finalized_reason || "complete")}</p>`;
+  if (offerRestart) document.querySelector("#confirmRestartButton").addEventListener("click", async () => {
+    els.storyDialog.close(); state.gameId = null; state.game = null; await openNewCase(true);
+  });
+  if (!els.storyDialog.open) els.storyDialog.showModal();
+}
+
+function formatBytes(value) {
+  if (!value) return "0 B";
+  const units = ["B", "KB", "MB", "GB"];
+  const index = Math.min(Math.floor(Math.log(value) / Math.log(1024)), units.length - 1);
+  return `${(value / (1024 ** index)).toFixed(index > 1 ? 1 : 0)} ${units[index]}`;
+}
+
+async function toggleAutoSpeech() {
+  if (state.speechMode === "auto") return stopSpeechSession();
+  state.speechMode = "auto";
+  els.autoSpeechButton.classList.add("active");
+  els.autoSpeechButton.textContent = "Stop Auto Speech";
+  await startSpeechSession();
+}
+
+async function startPushToTalk(event) {
+  event.preventDefault();
+  state.speechMode = "push";
+  state.pushRecording = true;
+  state.pushDrainUntil = 0;
+  els.pushToTalkButton.classList.add("recording");
+  els.pushToTalkButton.textContent = "Listening...";
+  if (!state.witnessSocket || state.witnessSocket.readyState > 1) await startSpeechSession();
+}
+
+function stopPushToTalk() {
+  state.pushRecording = false;
+  state.pushDrainUntil = Date.now() + 1000;
+  els.pushToTalkButton.classList.remove("recording");
+  els.pushToTalkButton.textContent = "Hold to Talk";
+}
+
+async function startSpeechSession() {
+  if (!state.activeWitness || !state.gameId) return;
+  try {
+    if (!state.mediaStream) {
+      state.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+    }
+    const proto = location.protocol === "https:" ? "wss" : "ws";
+    const url = `${proto}://${location.host}/ws/witness/${encodeURIComponent(state.gameId)}/${encodeURIComponent(state.activeWitness.id)}`;
+    const socket = new WebSocket(url);
+    state.witnessSocket = socket;
+    els.witnessConnection.textContent = "Connecting speech...";
+    socket.onopen = () => socket.send(JSON.stringify({ type: "prepare", config: {} }));
+    socket.onmessage = (event) => handleSpeechMessage(JSON.parse(event.data));
+    socket.onclose = () => {
+      els.witnessConnection.textContent = "Speech disconnected | text ready";
+      stopCapture();
+      state.witnessSocket = null;
+      state.speechMode = null;
+      els.autoSpeechButton.classList.remove("active");
+      els.autoSpeechButton.textContent = "Start Auto Speech";
+    };
+    socket.onerror = () => { els.witnessConnection.textContent = "Speech connection failed"; };
+  } catch (error) {
+    els.witnessConnection.textContent = error.message || "Microphone permission failed";
+    state.speechMode = null;
+  }
+}
+
+async function handleSpeechMessage(message) {
+  if (message.type === "queued" || message.type === "queue_update") {
+    els.witnessConnection.textContent = `Speech queued #${message.position}`;
+  } else if (message.type === "prepared") {
+    els.witnessConnection.textContent = state.speechMode === "auto" ? "Listening automatically" : "Push to talk ready";
+    await startCapture();
+  } else if (message.type === "vad_state") {
+    els.witnessConnection.textContent = message.speaking ? "Listening..." : "Waiting for speech";
+  } else if (message.type === "generating") {
+    appendChatMessage("user", "[Spoken question]");
+    state.currentAssistantBubble = appendChatMessage("witness", "");
+    els.witnessConnection.textContent = "Witness is answering...";
+  } else if (message.type === "chunk") {
+    if (message.text_delta) {
+      if (!state.currentAssistantBubble) state.currentAssistantBubble = appendChatMessage("witness", "");
+      state.currentAssistantBubble.textContent += message.text_delta;
+      els.witnessTranscript.scrollTop = els.witnessTranscript.scrollHeight;
+    }
+    if (message.audio_data) playFloat32Audio(message.audio_data, message.audio_sample_rate || 24000);
+  } else if (message.type === "turn_done") {
+    state.currentAssistantBubble = null;
+    els.witnessConnection.textContent = state.speechMode === "auto" ? "Listening automatically" : "Push to talk ready";
+  } else if (message.type === "error") {
+    els.witnessConnection.textContent = message.error || "Speech error";
+  }
+}
+
+async function startCapture() {
+  if (state.captureContext || !state.mediaStream) return;
+  const context = new AudioContext();
+  const source = context.createMediaStreamSource(state.mediaStream);
+  const processor = context.createScriptProcessor(4096, 1, 1);
+  const silent = context.createGain();
+  silent.gain.value = 0;
+  processor.onaudioprocess = (event) => {
+    const input = event.inputBuffer.getChannelData(0);
+    let sum = 0;
+    for (const value of input) sum += value * value;
+    els.micLevel.value = Math.min(Math.sqrt(sum / input.length) * 8, 1);
+    const shouldSend = state.speechMode === "auto" || (
+      state.speechMode === "push" && (state.pushRecording || Date.now() < state.pushDrainUntil)
+    );
+    if (!shouldSend || state.witnessSocket?.readyState !== WebSocket.OPEN) return;
+    const audio = resampleAudio(input, context.sampleRate, 16000);
+    state.witnessSocket.send(JSON.stringify({ type: "audio_chunk", audio_base64: float32ToBase64(audio) }));
+  };
+  source.connect(processor); processor.connect(silent); silent.connect(context.destination);
+  state.captureContext = context; state.captureNode = processor;
+}
+
+function resampleAudio(input, sourceRate, targetRate) {
+  if (sourceRate === targetRate) return new Float32Array(input);
+  const ratio = sourceRate / targetRate;
+  const output = new Float32Array(Math.floor(input.length / ratio));
+  for (let i = 0; i < output.length; i += 1) {
+    const start = Math.floor(i * ratio); const end = Math.min(Math.floor((i + 1) * ratio), input.length);
+    let sum = 0; for (let j = start; j < end; j += 1) sum += input[j];
+    output[i] = sum / Math.max(end - start, 1);
+  }
+  return output;
+}
+
+function float32ToBase64(floatArray) {
+  const bytes = new Uint8Array(floatArray.buffer); let binary = "";
+  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+function playFloat32Audio(base64Data, sampleRate) {
+  const binary = atob(base64Data); const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  const usable = bytes.byteLength - (bytes.byteLength % 4);
+  const floats = new Float32Array(bytes.buffer.slice(0, usable));
+  if (!state.playbackContext) state.playbackContext = new AudioContext({ sampleRate });
+  const context = state.playbackContext; const buffer = context.createBuffer(1, floats.length, sampleRate);
+  buffer.copyToChannel(floats, 0);
+  const source = context.createBufferSource(); source.buffer = buffer; source.connect(context.destination);
+  const start = Math.max(context.currentTime + 0.03, state.playbackTime || 0);
+  source.start(start); state.playbackTime = start + buffer.duration; state.playbackSources.push(source);
+  source.onended = () => { state.playbackSources = state.playbackSources.filter((item) => item !== source); };
+}
+
+function stopPlayback() {
+  state.playbackSources.forEach((source) => { try { source.stop(); } catch (_) {} });
+  state.playbackSources = []; state.playbackTime = 0;
+}
+
+function stopCapture() {
+  if (state.captureNode) state.captureNode.disconnect();
+  if (state.captureContext) state.captureContext.close();
+  state.captureNode = null; state.captureContext = null; els.micLevel.value = 0;
+}
+
+function stopSpeechSession() {
+  if (state.witnessSocket?.readyState === WebSocket.OPEN) state.witnessSocket.send(JSON.stringify({ type: "stop" }));
+  if (state.witnessSocket) state.witnessSocket.close();
+  stopCapture(); state.speechMode = null; state.pushRecording = false; state.pushDrainUntil = 0;
+  els.autoSpeechButton.classList.remove("active"); els.autoSpeechButton.textContent = "Start Auto Speech";
+  els.pushToTalkButton.classList.remove("recording"); els.pushToTalkButton.textContent = "Hold to Talk";
+}
+
+function closeWitnessInterview() {
+  stopSpeechSession(); stopPlayback();
+  if (state.mediaStream) state.mediaStream.getTracks().forEach((track) => track.stop());
+  state.mediaStream = null; state.activeWitness = null; els.witnessDialog.close();
 }
 
 boot().catch((error) => {

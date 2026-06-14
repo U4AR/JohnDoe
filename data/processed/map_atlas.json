@@ -1,9 +1,1438 @@
 {
-  "districts": [],
-  "landmarks": [],
-  "notes": [
-    "Add fictional landmarks here as the board is named.",
-    "Lookout parsing should prefer this file over free-form image inference when possible."
+  "schema_version": 2,
+  "map_id": "london_main",
+  "source_image": "data/raw/maps/images/normal.png",
+  "districts": [
+    {
+      "id": "west_garden",
+      "name": "West Garden",
+      "category": "district",
+      "junction_ids": [
+        9,
+        10,
+        11,
+        12,
+        17,
+        23,
+        30,
+        39,
+        40,
+        49,
+        64,
+        65,
+        70,
+        74
+      ],
+      "anchor": {
+        "x": 210,
+        "y": 80
+      }
+    },
+    {
+      "id": "university_hill",
+      "name": "University Hill",
+      "category": "district",
+      "junction_ids": [
+        1,
+        5,
+        6,
+        7,
+        8,
+        13,
+        18,
+        24,
+        25,
+        26,
+        34,
+        35,
+        41,
+        42,
+        55
+      ],
+      "anchor": {
+        "x": 610,
+        "y": 65
+      }
+    },
+    {
+      "id": "observatory_heights",
+      "name": "Observatory Heights",
+      "category": "district",
+      "junction_ids": [
+        2,
+        3,
+        4,
+        14,
+        15,
+        16,
+        19,
+        20,
+        21,
+        27,
+        28,
+        29,
+        32,
+        36,
+        37,
+        44,
+        45,
+        46,
+        52,
+        57
+      ],
+      "anchor": {
+        "x": 850,
+        "y": 135
+      }
+    },
+    {
+      "id": "hill_district",
+      "name": "Hill District",
+      "category": "district",
+      "junction_ids": [
+        22,
+        31,
+        33,
+        38,
+        43,
+        47,
+        48,
+        53,
+        54,
+        59,
+        60,
+        61,
+        62,
+        63,
+        73,
+        80,
+        81,
+        85,
+        92
+      ],
+      "anchor": {
+        "x": 1185,
+        "y": 80
+      }
+    },
+    {
+      "id": "old_quarter",
+      "name": "Old Quarter",
+      "category": "district",
+      "junction_ids": [
+        18,
+        25,
+        26,
+        27,
+        28,
+        34,
+        35,
+        36,
+        40,
+        41,
+        42,
+        43,
+        49,
+        50,
+        51,
+        52,
+        55,
+        56,
+        66,
+        67,
+        68,
+        69,
+        71,
+        72,
+        75,
+        76,
+        77,
+        78,
+        82,
+        83
+      ],
+      "anchor": {
+        "x": 675,
+        "y": 210
+      }
+    },
+    {
+      "id": "lantern_row_district",
+      "name": "Lantern Row",
+      "category": "district",
+      "junction_ids": [
+        32,
+        37,
+        38,
+        44,
+        45,
+        46,
+        53,
+        54,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        68,
+        69,
+        72,
+        73,
+        79,
+        80,
+        81,
+        85,
+        88,
+        92,
+        94,
+        95
+      ],
+      "anchor": {
+        "x": 1055,
+        "y": 245
+      }
+    },
+    {
+      "id": "civic_center",
+      "name": "Civic Center",
+      "category": "district",
+      "junction_ids": [
+        66,
+        67,
+        68,
+        69,
+        71,
+        72,
+        75,
+        76,
+        77,
+        78,
+        82,
+        83,
+        87,
+        88,
+        89,
+        93,
+        94,
+        95
+      ],
+      "anchor": {
+        "x": 660,
+        "y": 395
+      }
+    },
+    {
+      "id": "riverside",
+      "name": "Riverside",
+      "category": "district",
+      "junction_ids": [
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        109,
+        114,
+        115,
+        116,
+        122
+      ],
+      "anchor": {
+        "x": 320,
+        "y": 590
+      }
+    },
+    {
+      "id": "southbank",
+      "name": "Southbank",
+      "category": "district",
+      "junction_ids": [
+        108,
+        110,
+        111,
+        112,
+        113,
+        117,
+        118,
+        119,
+        120,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151
+      ],
+      "anchor": {
+        "x": 710,
+        "y": 720
+      }
+    },
+    {
+      "id": "ironworks",
+      "name": "Ironworks",
+      "category": "district",
+      "junction_ids": [
+        109,
+        114,
+        115,
+        116,
+        121,
+        122,
+        127,
+        132,
+        135,
+        140,
+        142,
+        145,
+        149
+      ],
+      "anchor": {
+        "x": 335,
+        "y": 795
+      }
+    },
+    {
+      "id": "harbor_docks",
+      "name": "Harbor Docks",
+      "category": "district",
+      "junction_ids": [
+        120,
+        121,
+        125,
+        126,
+        131,
+        133,
+        134,
+        138,
+        139,
+        143,
+        144,
+        147
+      ],
+      "anchor": {
+        "x": 1135,
+        "y": 810
+      }
+    }
   ],
-  "schema_version": 1
+  "landmarks": [
+    {
+      "id": "fosglove_park",
+      "name": "Fosglove Park",
+      "category": "park",
+      "junction_id": 9,
+      "nearby_junction_ids": [
+        10
+      ],
+      "district_id": "west_garden",
+      "aliases": [],
+      "story_tags": [
+        "park",
+        "garden",
+        "quiet"
+      ],
+      "anchor": {
+        "x": 116,
+        "y": 128
+      }
+    },
+    {
+      "id": "rosewood_lane",
+      "name": "Rosewood Lane",
+      "category": "street",
+      "junction_id": 12,
+      "nearby_junction_ids": [
+        5,
+        17
+      ],
+      "district_id": "west_garden",
+      "aliases": [],
+      "story_tags": [
+        "residential",
+        "lane"
+      ],
+      "anchor": {
+        "x": 315,
+        "y": 124
+      }
+    },
+    {
+      "id": "garden_pavilion",
+      "name": "Garden Pavilion",
+      "category": "pavilion",
+      "junction_id": 39,
+      "nearby_junction_ids": [
+        9
+      ],
+      "district_id": "west_garden",
+      "aliases": [],
+      "story_tags": [
+        "garden",
+        "public"
+      ],
+      "anchor": {
+        "x": 116,
+        "y": 235
+      }
+    },
+    {
+      "id": "market_square",
+      "name": "Market Square",
+      "category": "market",
+      "junction_id": 40,
+      "nearby_junction_ids": [
+        34,
+        49
+      ],
+      "district_id": "west_garden",
+      "aliases": [],
+      "story_tags": [
+        "market",
+        "busy",
+        "public"
+      ],
+      "anchor": {
+        "x": 280,
+        "y": 237
+      }
+    },
+    {
+      "id": "lantern_market",
+      "name": "Lantern Market",
+      "category": "market",
+      "junction_id": 41,
+      "nearby_junction_ids": [
+        42,
+        55
+      ],
+      "district_id": "university_hill",
+      "aliases": [],
+      "story_tags": [
+        "market",
+        "shops",
+        "busy"
+      ],
+      "anchor": {
+        "x": 360,
+        "y": 257
+      }
+    },
+    {
+      "id": "merchants_row",
+      "name": "Merchants Row",
+      "category": "street",
+      "junction_id": 65,
+      "nearby_junction_ids": [
+        49,
+        40
+      ],
+      "district_id": "west_garden",
+      "aliases": [],
+      "story_tags": [
+        "shops",
+        "street"
+      ],
+      "anchor": {
+        "x": 293,
+        "y": 325
+      }
+    },
+    {
+      "id": "ravenwood",
+      "name": "Ravenwood",
+      "category": "woodland",
+      "junction_id": 64,
+      "nearby_junction_ids": [
+        70
+      ],
+      "district_id": "west_garden",
+      "aliases": [],
+      "story_tags": [
+        "woodland",
+        "quiet"
+      ],
+      "anchor": {
+        "x": 70,
+        "y": 354
+      }
+    },
+    {
+      "id": "sundial_square",
+      "name": "Sundial Square",
+      "category": "square",
+      "junction_id": 74,
+      "nearby_junction_ids": [
+        70,
+        65
+      ],
+      "district_id": "west_garden",
+      "aliases": [],
+      "story_tags": [
+        "square",
+        "public"
+      ],
+      "anchor": {
+        "x": 218,
+        "y": 384
+      }
+    },
+    {
+      "id": "spice_hall",
+      "name": "Spice Hall",
+      "category": "hall",
+      "junction_id": 71,
+      "nearby_junction_ids": [
+        55,
+        75
+      ],
+      "district_id": "old_quarter",
+      "aliases": [],
+      "story_tags": [
+        "market",
+        "indoor"
+      ],
+      "anchor": {
+        "x": 369,
+        "y": 365
+      }
+    },
+    {
+      "id": "cathedral_square",
+      "name": "Cathedral Square",
+      "category": "square",
+      "junction_id": 76,
+      "nearby_junction_ids": [
+        77,
+        66
+      ],
+      "district_id": "old_quarter",
+      "aliases": [],
+      "story_tags": [
+        "religious",
+        "square",
+        "busy"
+      ],
+      "anchor": {
+        "x": 511,
+        "y": 385
+      }
+    },
+    {
+      "id": "bishops_walk",
+      "name": "Bishop's Walk",
+      "category": "street",
+      "junction_id": 35,
+      "nearby_junction_ids": [
+        25,
+        18
+      ],
+      "district_id": "old_quarter",
+      "aliases": [],
+      "story_tags": [
+        "street",
+        "historic"
+      ],
+      "anchor": {
+        "x": 516,
+        "y": 220
+      }
+    },
+    {
+      "id": "scholars_gate",
+      "name": "Scholar's Gate",
+      "category": "gate",
+      "junction_id": 1,
+      "nearby_junction_ids": [
+        6,
+        5
+      ],
+      "district_id": "university_hill",
+      "aliases": [],
+      "story_tags": [
+        "university",
+        "gate"
+      ],
+      "anchor": {
+        "x": 438,
+        "y": 51
+      }
+    },
+    {
+      "id": "iverley_quad",
+      "name": "Iverley Quad",
+      "category": "university",
+      "junction_id": 7,
+      "nearby_junction_ids": [
+        8,
+        18
+      ],
+      "district_id": "university_hill",
+      "aliases": [],
+      "story_tags": [
+        "university",
+        "public"
+      ],
+      "anchor": {
+        "x": 553,
+        "y": 96
+      }
+    },
+    {
+      "id": "stonebridge",
+      "name": "Stonebridge",
+      "category": "bridge",
+      "junction_id": 14,
+      "nearby_junction_ids": [
+        27,
+        26
+      ],
+      "district_id": "observatory_heights",
+      "aliases": [],
+      "story_tags": [
+        "bridge",
+        "street"
+      ],
+      "anchor": {
+        "x": 742,
+        "y": 137
+      }
+    },
+    {
+      "id": "starview_observatory",
+      "name": "Starview Observatory",
+      "category": "observatory",
+      "junction_id": 15,
+      "nearby_junction_ids": [
+        2,
+        28
+      ],
+      "district_id": "observatory_heights",
+      "aliases": [],
+      "story_tags": [
+        "observatory",
+        "tourist"
+      ],
+      "anchor": {
+        "x": 862,
+        "y": 101
+      }
+    },
+    {
+      "id": "hillhide_park",
+      "name": "Hillhide Park",
+      "category": "park",
+      "junction_id": 20,
+      "nearby_junction_ids": [
+        3,
+        16
+      ],
+      "district_id": "hill_district",
+      "aliases": [],
+      "story_tags": [
+        "park",
+        "quiet"
+      ],
+      "anchor": {
+        "x": 994,
+        "y": 126
+      }
+    },
+    {
+      "id": "lookout_point",
+      "name": "Lookout Point",
+      "category": "lookout",
+      "junction_id": 3,
+      "nearby_junction_ids": [
+        4,
+        16
+      ],
+      "district_id": "hill_district",
+      "aliases": [],
+      "story_tags": [
+        "lookout",
+        "public"
+      ],
+      "anchor": {
+        "x": 1058,
+        "y": 54
+      }
+    },
+    {
+      "id": "granite_terrace",
+      "name": "Granite Terrace",
+      "category": "street",
+      "junction_id": 21,
+      "nearby_junction_ids": [
+        16,
+        32
+      ],
+      "district_id": "hill_district",
+      "aliases": [],
+      "story_tags": [
+        "residential",
+        "street"
+      ],
+      "anchor": {
+        "x": 1130,
+        "y": 137
+      }
+    },
+    {
+      "id": "north_bastion",
+      "name": "North Bastion",
+      "category": "fortification",
+      "junction_id": 22,
+      "nearby_junction_ids": [
+        33,
+        47
+      ],
+      "district_id": "hill_district",
+      "aliases": [],
+      "story_tags": [
+        "fortification",
+        "public"
+      ],
+      "anchor": {
+        "x": 1252,
+        "y": 151
+      }
+    },
+    {
+      "id": "fort_eastview",
+      "name": "Fort Eastview",
+      "category": "fortification",
+      "junction_id": 31,
+      "nearby_junction_ids": [
+        33,
+        48
+      ],
+      "district_id": "hill_district",
+      "aliases": [],
+      "story_tags": [
+        "fortification",
+        "harbor"
+      ],
+      "anchor": {
+        "x": 1396,
+        "y": 174
+      }
+    },
+    {
+      "id": "eastgate",
+      "name": "Eastgate",
+      "category": "gate",
+      "junction_id": 33,
+      "nearby_junction_ids": [
+        48,
+        31
+      ],
+      "district_id": "hill_district",
+      "aliases": [],
+      "story_tags": [
+        "gate",
+        "busy"
+      ],
+      "anchor": {
+        "x": 1348,
+        "y": 229
+      }
+    },
+    {
+      "id": "lantern_row",
+      "name": "Lantern Row",
+      "category": "street",
+      "junction_id": 46,
+      "nearby_junction_ids": [
+        32,
+        38
+      ],
+      "district_id": "lantern_row_district",
+      "aliases": [],
+      "story_tags": [
+        "street",
+        "shops"
+      ],
+      "anchor": {
+        "x": 1135,
+        "y": 246
+      }
+    },
+    {
+      "id": "gilded_alley",
+      "name": "Gilded Alley",
+      "category": "alley",
+      "junction_id": 57,
+      "nearby_junction_ids": [
+        58,
+        45
+      ],
+      "district_id": "lantern_row_district",
+      "aliases": [],
+      "story_tags": [
+        "alley",
+        "shops"
+      ],
+      "anchor": {
+        "x": 1054,
+        "y": 296
+      }
+    },
+    {
+      "id": "the_forum",
+      "name": "The Forum",
+      "category": "forum",
+      "junction_id": 61,
+      "nearby_junction_ids": [
+        60,
+        59
+      ],
+      "district_id": "lantern_row_district",
+      "aliases": [],
+      "story_tags": [
+        "public",
+        "busy"
+      ],
+      "anchor": {
+        "x": 1190,
+        "y": 307
+      }
+    },
+    {
+      "id": "harbor_road",
+      "name": "Harbor Road",
+      "category": "street",
+      "junction_id": 48,
+      "nearby_junction_ids": [
+        63,
+        73
+      ],
+      "district_id": "hill_district",
+      "aliases": [],
+      "story_tags": [
+        "harbor",
+        "street"
+      ],
+      "anchor": {
+        "x": 1360,
+        "y": 306
+      }
+    },
+    {
+      "id": "eastgate_plaza",
+      "name": "Eastgate Plaza",
+      "category": "square",
+      "junction_id": 73,
+      "nearby_junction_ids": [
+        80,
+        62
+      ],
+      "district_id": "lantern_row_district",
+      "aliases": [],
+      "story_tags": [
+        "square",
+        "busy"
+      ],
+      "anchor": {
+        "x": 1304,
+        "y": 387
+      }
+    },
+    {
+      "id": "eastgate_market",
+      "name": "Eastgate Market",
+      "category": "market",
+      "junction_id": 92,
+      "nearby_junction_ids": [
+        85,
+        81
+      ],
+      "district_id": "lantern_row_district",
+      "aliases": [],
+      "story_tags": [
+        "market",
+        "busy"
+      ],
+      "anchor": {
+        "x": 1354,
+        "y": 459
+      }
+    },
+    {
+      "id": "harbor_vista",
+      "name": "Harbor Vista",
+      "category": "lookout",
+      "junction_id": 92,
+      "nearby_junction_ids": [
+        91,
+        85
+      ],
+      "district_id": "lantern_row_district",
+      "aliases": [],
+      "story_tags": [
+        "harbor",
+        "lookout"
+      ],
+      "anchor": {
+        "x": 1343,
+        "y": 549
+      }
+    },
+    {
+      "id": "crown_court",
+      "name": "Crown Court",
+      "category": "court",
+      "junction_id": 44,
+      "nearby_junction_ids": [
+        37,
+        29
+      ],
+      "district_id": "old_quarter",
+      "aliases": [],
+      "story_tags": [
+        "official",
+        "public"
+      ],
+      "anchor": {
+        "x": 887,
+        "y": 232
+      }
+    },
+    {
+      "id": "kings_steps",
+      "name": "King's Steps",
+      "category": "steps",
+      "junction_id": 36,
+      "nearby_junction_ids": [
+        52,
+        28
+      ],
+      "district_id": "old_quarter",
+      "aliases": [],
+      "story_tags": [
+        "street",
+        "public"
+      ],
+      "anchor": {
+        "x": 788,
+        "y": 244
+      }
+    },
+    {
+      "id": "clock_tower",
+      "name": "Clock Tower",
+      "category": "tower",
+      "junction_id": 67,
+      "nearby_junction_ids": [
+        52,
+        51
+      ],
+      "district_id": "old_quarter",
+      "aliases": [],
+      "story_tags": [
+        "clock",
+        "public"
+      ],
+      "anchor": {
+        "x": 792,
+        "y": 337
+      }
+    },
+    {
+      "id": "heritage_lane",
+      "name": "Heritage Lane",
+      "category": "street",
+      "junction_id": 68,
+      "nearby_junction_ids": [
+        69,
+        72
+      ],
+      "district_id": "old_quarter",
+      "aliases": [],
+      "story_tags": [
+        "street",
+        "historic"
+      ],
+      "anchor": {
+        "x": 875,
+        "y": 334
+      }
+    },
+    {
+      "id": "city_hall",
+      "name": "City Hall",
+      "category": "civic",
+      "junction_id": 83,
+      "nearby_junction_ids": [
+        67,
+        87
+      ],
+      "district_id": "civic_center",
+      "aliases": [],
+      "story_tags": [
+        "official",
+        "busy",
+        "public"
+      ],
+      "anchor": {
+        "x": 774,
+        "y": 403
+      }
+    },
+    {
+      "id": "sentinel_square",
+      "name": "Sentinel Square",
+      "category": "square",
+      "junction_id": 89,
+      "nearby_junction_ids": [
+        83,
+        72
+      ],
+      "district_id": "civic_center",
+      "aliases": [],
+      "story_tags": [
+        "square",
+        "public"
+      ],
+      "anchor": {
+        "x": 836,
+        "y": 460
+      }
+    },
+    {
+      "id": "opera_house",
+      "name": "Opera House",
+      "category": "theatre",
+      "junction_id": 89,
+      "nearby_junction_ids": [
+        94,
+        72
+      ],
+      "district_id": "civic_center",
+      "aliases": [],
+      "story_tags": [
+        "theatre",
+        "evening",
+        "public"
+      ],
+      "anchor": {
+        "x": 941,
+        "y": 503
+      }
+    },
+    {
+      "id": "museum_row",
+      "name": "Museum Row",
+      "category": "street",
+      "junction_id": 94,
+      "nearby_junction_ids": [
+        88,
+        95
+      ],
+      "district_id": "civic_center",
+      "aliases": [],
+      "story_tags": [
+        "museum",
+        "street"
+      ],
+      "anchor": {
+        "x": 1055,
+        "y": 476
+      }
+    },
+    {
+      "id": "grand_museum",
+      "name": "Grand Museum",
+      "category": "museum",
+      "junction_id": 88,
+      "nearby_junction_ids": [
+        79,
+        94
+      ],
+      "district_id": "lantern_row_district",
+      "aliases": [],
+      "story_tags": [
+        "museum",
+        "tourist",
+        "public"
+      ],
+      "anchor": {
+        "x": 1093,
+        "y": 418
+      }
+    },
+    {
+      "id": "riverswatch",
+      "name": "Riverswatch",
+      "category": "waterfront",
+      "junction_id": 96,
+      "nearby_junction_ids": [
+        74,
+        104
+      ],
+      "district_id": "riverside",
+      "aliases": [],
+      "story_tags": [
+        "river",
+        "public"
+      ],
+      "anchor": {
+        "x": 239,
+        "y": 505
+      }
+    },
+    {
+      "id": "riverside_walk",
+      "name": "Riverside Walk",
+      "category": "promenade",
+      "junction_id": 103,
+      "nearby_junction_ids": [
+        114,
+        98
+      ],
+      "district_id": "riverside",
+      "aliases": [],
+      "story_tags": [
+        "river",
+        "promenade"
+      ],
+      "anchor": {
+        "x": 96,
+        "y": 621
+      }
+    },
+    {
+      "id": "willow_bend",
+      "name": "Willow Bend",
+      "category": "street",
+      "junction_id": 109,
+      "nearby_junction_ids": [
+        107,
+        104
+      ],
+      "district_id": "riverside",
+      "aliases": [],
+      "story_tags": [
+        "river",
+        "street"
+      ],
+      "anchor": {
+        "x": 237,
+        "y": 665
+      }
+    },
+    {
+      "id": "ironworks_gate",
+      "name": "Ironworks Gate",
+      "category": "gate",
+      "junction_id": 122,
+      "nearby_junction_ids": [
+        114,
+        109
+      ],
+      "district_id": "ironworks",
+      "aliases": [],
+      "story_tags": [
+        "industrial",
+        "gate"
+      ],
+      "anchor": {
+        "x": 102,
+        "y": 743
+      }
+    },
+    {
+      "id": "smelters_yard",
+      "name": "Smelter's Yard",
+      "category": "industrial",
+      "junction_id": 135,
+      "nearby_junction_ids": [
+        149,
+        142
+      ],
+      "district_id": "ironworks",
+      "aliases": [],
+      "story_tags": [
+        "industrial",
+        "yard"
+      ],
+      "anchor": {
+        "x": 267,
+        "y": 842
+      }
+    },
+    {
+      "id": "forge_square",
+      "name": "Forge Square",
+      "category": "square",
+      "junction_id": 140,
+      "nearby_junction_ids": [
+        145,
+        132
+      ],
+      "district_id": "ironworks",
+      "aliases": [],
+      "story_tags": [
+        "industrial",
+        "square"
+      ],
+      "anchor": {
+        "x": 457,
+        "y": 842
+      }
+    },
+    {
+      "id": "vanguard_point",
+      "name": "Vanguard Point",
+      "category": "lookout",
+      "junction_id": 145,
+      "nearby_junction_ids": [
+        146,
+        140
+      ],
+      "district_id": "southbank",
+      "aliases": [],
+      "story_tags": [
+        "lookout",
+        "public"
+      ],
+      "anchor": {
+        "x": 503,
+        "y": 938
+      }
+    },
+    {
+      "id": "victory_point",
+      "name": "Victory Point",
+      "category": "lookout",
+      "junction_id": 151,
+      "nearby_junction_ids": [
+        148,
+        150
+      ],
+      "district_id": "southbank",
+      "aliases": [],
+      "story_tags": [
+        "lookout",
+        "waterfront"
+      ],
+      "anchor": {
+        "x": 700,
+        "y": 1003
+      }
+    },
+    {
+      "id": "southbank_plaza",
+      "name": "Southbank Plaza",
+      "category": "square",
+      "junction_id": 124,
+      "nearby_junction_ids": [
+        123,
+        128
+      ],
+      "district_id": "southbank",
+      "aliases": [],
+      "story_tags": [
+        "square",
+        "busy"
+      ],
+      "anchor": {
+        "x": 631,
+        "y": 756
+      }
+    },
+    {
+      "id": "millstream",
+      "name": "Millstream",
+      "category": "waterfront",
+      "junction_id": 128,
+      "nearby_junction_ids": [
+        129,
+        141
+      ],
+      "district_id": "southbank",
+      "aliases": [],
+      "story_tags": [
+        "river",
+        "street"
+      ],
+      "anchor": {
+        "x": 739,
+        "y": 776
+      }
+    },
+    {
+      "id": "dockmasters_way",
+      "name": "Dockmaster's Way",
+      "category": "street",
+      "junction_id": 130,
+      "nearby_junction_ids": [
+        137,
+        129
+      ],
+      "district_id": "southbank",
+      "aliases": [],
+      "story_tags": [
+        "docks",
+        "street"
+      ],
+      "anchor": {
+        "x": 830,
+        "y": 766
+      }
+    },
+    {
+      "id": "dockside",
+      "name": "Dockside",
+      "category": "waterfront",
+      "junction_id": 125,
+      "nearby_junction_ids": [
+        131,
+        120
+      ],
+      "district_id": "harbor_docks",
+      "aliases": [],
+      "story_tags": [
+        "docks",
+        "busy"
+      ],
+      "anchor": {
+        "x": 1029,
+        "y": 741
+      }
+    },
+    {
+      "id": "harbor_gate",
+      "name": "Harbor Gate",
+      "category": "gate",
+      "junction_id": 121,
+      "nearby_junction_ids": [
+        134,
+        125
+      ],
+      "district_id": "harbor_docks",
+      "aliases": [],
+      "story_tags": [
+        "harbor",
+        "gate"
+      ],
+      "anchor": {
+        "x": 1255,
+        "y": 758
+      }
+    },
+    {
+      "id": "iron_pier",
+      "name": "Iron Pier",
+      "category": "pier",
+      "junction_id": 147,
+      "nearby_junction_ids": [
+        144,
+        139
+      ],
+      "district_id": "harbor_docks",
+      "aliases": [],
+      "story_tags": [
+        "pier",
+        "harbor"
+      ],
+      "anchor": {
+        "x": 1062,
+        "y": 947
+      }
+    },
+    {
+      "id": "breakwater_point",
+      "name": "Breakwater Point",
+      "category": "lighthouse",
+      "junction_id": 134,
+      "nearby_junction_ids": [
+        144,
+        121
+      ],
+      "district_id": "harbor_docks",
+      "aliases": [],
+      "story_tags": [
+        "lighthouse",
+        "harbor"
+      ],
+      "anchor": {
+        "x": 1390,
+        "y": 1014
+      }
+    },
+    {
+      "id": "crown_stadium",
+      "name": "Crown Stadium",
+      "category": "stadium",
+      "junction_id": 148,
+      "nearby_junction_ids": [
+        146,
+        151
+      ],
+      "district_id": "southbank",
+      "aliases": [],
+      "story_tags": [
+        "stadium",
+        "crowd"
+      ],
+      "anchor": {
+        "x": 638,
+        "y": 900
+      }
+    },
+    {
+      "id": "police_headquarters",
+      "name": "Police Headquarters",
+      "category": "police",
+      "junction_id": 112,
+      "nearby_junction_ids": [
+        108,
+        113
+      ],
+      "district_id": "southbank",
+      "aliases": [],
+      "story_tags": [
+        "police",
+        "official"
+      ],
+      "anchor": {
+        "x": 761,
+        "y": 589
+      }
+    }
+  ],
+  "notes": [
+    "Canonical names are manually transcribed from the printed map.",
+    "Runtime-generated subvenues are stored in each game state, not in this file."
+  ]
 }

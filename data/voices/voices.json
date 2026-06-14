@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "sample_rate": 22050,
+  "voices": [
+    {"id": "voice_01", "label": "Measured lower voice", "file": "voice_01.wav"},
+    {"id": "voice_02", "label": "Direct lower voice", "file": "voice_02.wav"},
+    {"id": "voice_03", "label": "Quick lower voice", "file": "voice_03.wav"},
+    {"id": "voice_04", "label": "Measured higher voice", "file": "voice_04.wav"},
+    {"id": "voice_05", "label": "Conversational higher voice", "file": "voice_05.wav"},
+    {"id": "voice_06", "label": "Quick higher voice", "file": "voice_06.wav"}
+  ]
+}

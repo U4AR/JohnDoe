@@ -24,6 +24,66 @@ class CulpritState:
 
 
 @dataclass
+class CaseLandmark:
+    venue_id: str
+    name: str
+    category: str
+    junction_id: int
+    canonical_place_id: str | None = None
+    description: str = ""
+
+
+@dataclass
+class ObservableFact:
+    fact_id: str
+    turn_number: int
+    junction_id: int
+    kind: str
+    text: str
+    tags: list[str] = field(default_factory=list)
+    place_id: str | None = None
+
+
+@dataclass
+class StorySegment:
+    segment_id: str
+    turn_number: int
+    from_junction: int
+    to_junction: int
+    mode: str
+    route: list[int]
+    changed_disguise: bool
+    previous_disguise: str
+    new_disguise: str
+    narrative: str
+    private_reasoning: str = ""
+    observable_facts: list[ObservableFact] = field(default_factory=list)
+    context_profile: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class StoryMemory:
+    continuity_synopsis: str = ""
+    recent_segment_ids: list[str] = field(default_factory=list)
+    permanent_facts: list[str] = field(default_factory=list)
+
+
+@dataclass
+class PotentialWitness:
+    potential_id: str
+    turn_created: int
+    junction_id: int
+    observed_fact_ids: list[str]
+    profile: dict[str, Any]
+    reliability: float
+    memory_strength: float
+    voice_id: str
+    summary: str
+    search_tags: list[str] = field(default_factory=list)
+    surfaced_notice_id: str | None = None
+
+
+@dataclass
 class LookoutNotice:
     notice_id: str
     turn_number: int
@@ -58,6 +118,12 @@ class WitnessRecord:
     stable_facts: list[str] = field(default_factory=list)
     fragile_facts: list[str] = field(default_factory=list)
     question_history: list[WitnessQuestion] = field(default_factory=list)
+    name: str = "Unknown witness"
+    occupation: str = "local resident"
+    voice_id: str = "voice_01"
+    observed_fact_ids: list[str] = field(default_factory=list)
+    conversation_summary: str = ""
+    is_false_positive: bool = False
 
 
 @dataclass
@@ -110,6 +176,7 @@ class GameState:
     phase: str
     initial_description: str
     culprit: CulpritState
+    case_introduction: dict[str, Any] = field(default_factory=dict)
     notices: list[LookoutNotice] = field(default_factory=list)
     witness_batches: list[WitnessBatch] = field(default_factory=list)
     active_blocks: list[PoliceBlock] = field(default_factory=list)
@@ -118,6 +185,14 @@ class GameState:
     junction_checks: list[JunctionCheck] = field(default_factory=list)
     game_log: list[dict[str, Any]] = field(default_factory=list)
     result: str | None = None
+    story_segments: list[StorySegment] = field(default_factory=list)
+    story_memory: StoryMemory = field(default_factory=StoryMemory)
+    case_landmarks: list[CaseLandmark] = field(default_factory=list)
+    potential_witnesses: list[PotentialWitness] = field(default_factory=list)
+    user_notes: str = ""
+    last_notice_text: str = ""
+    finalized_reason: str | None = None
+    effective_context_length: int = 8192
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -138,6 +213,10 @@ class GameState:
         blocks = [PoliceBlock(**block) for block in data.get("active_blocks", [])]
         placed_tactics = [PlacedTactic(**tactic) for tactic in data.get("placed_tactics", [])]
         checks = [JunctionCheck(**check) for check in data.get("junction_checks", [])]
+        story_segments = [_story_segment_from_dict(item) for item in data.get("story_segments", [])]
+        story_memory = StoryMemory(**data.get("story_memory", {}))
+        case_landmarks = [CaseLandmark(**item) for item in data.get("case_landmarks", [])]
+        potential_witnesses = [PotentialWitness(**item) for item in data.get("potential_witnesses", [])]
         return cls(
             game_id=data["game_id"],
             turn_number=data["turn_number"],
@@ -145,6 +224,7 @@ class GameState:
             phase=data["phase"],
             initial_description=data["initial_description"],
             culprit=culprit,
+            case_introduction=data.get("case_introduction", {}),
             notices=notices,
             witness_batches=batches,
             active_blocks=blocks,
@@ -153,6 +233,14 @@ class GameState:
             junction_checks=checks,
             game_log=data.get("game_log", []),
             result=data.get("result"),
+            story_segments=story_segments,
+            story_memory=story_memory,
+            case_landmarks=case_landmarks,
+            potential_witnesses=potential_witnesses,
+            user_notes=data.get("user_notes", ""),
+            last_notice_text=data.get("last_notice_text", ""),
+            finalized_reason=data.get("finalized_reason"),
+            effective_context_length=int(data.get("effective_context_length", 8192)),
         )
 
 
@@ -170,3 +258,8 @@ def _witness_batch_from_dict(data: dict[str, Any]) -> WitnessBatch:
         individual_review_allowed=data["individual_review_allowed"],
         witnesses=witnesses,
     )
+
+
+def _story_segment_from_dict(data: dict[str, Any]) -> StorySegment:
+    facts = [ObservableFact(**fact) for fact in data.get("observable_facts", [])]
+    return StorySegment(**{**data, "observable_facts": facts})

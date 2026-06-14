@@ -2,9 +2,11 @@ from pathlib import Path
 
 from app import (
     _SESSIONS,
+    _state_for,
     _active_blocks_text,
     _case_state_text,
     _game_log_text,
+    _witness_locations,
     _witness_batches_text,
     api_check_junctions,
     build_app,
@@ -27,12 +29,19 @@ def test_map_layers_use_overlay_outputs():
     assert Path(image_for_layer("subway")).name == "graph_on_map.png"
 
 
-def test_settings_use_requested_gemma_model():
+def test_settings_expose_minicpm_omni_configuration():
     settings = load_settings()
-    assert settings.llamacpp_model_path == Path(
-        r"C:\Users\ashis\AppData\Roaming\VoiceKeyboard\VoiceKeyboard\config\models\unsloth__gemma-4-E4B-it-GGUF\gemma-4-E4B-it-Q4_K_M.gguf"
-    )
-    assert settings.llamacpp_model_path.exists()
+    assert settings.omni_gateway_url.startswith("http://127.0.0.1:")
+    assert settings.omni_launcher_path.name == "launch_minicpm_omni.py"
+    assert 4096 <= settings.llamacpp_context_length <= 32768
+    assert settings.witness_voice_dir.exists()
+
+
+def test_tests_use_isolated_game_storage(isolated_generated_games):
+    settings = load_settings()
+
+    assert settings.games_dir == isolated_generated_games
+    assert settings.games_dir != settings.project_root / "data" / "games"
 
 
 def test_full_playable_flow_persists_files_and_ui_summaries():
@@ -79,7 +88,31 @@ def test_server_mode_ui_exposes_custom_routes_without_blocks_components():
     assert "/" in route_paths
     assert "/api/new_case" in route_paths
     assert "/assets/maps/{layer}" in route_paths
+    assert "/api/setup/status" in route_paths
+    assert "/api/setup/start" in route_paths
     assert not app.blocks
+
+
+def test_colocated_witnesses_and_tactics_render_as_separate_click_targets():
+    script = (Path(__file__).parents[1] / "ui" / "web" / "static" / "app.js").read_text(encoding="utf-8")
+    styles = (Path(__file__).parents[1] / "ui" / "web" / "static" / "app.css").read_text(encoding="utf-8")
+
+    assert 'token.style.setProperty("--token-offset-x", "-22px")' in script
+    assert "const colocatedWithWitness = witnessJunctions.has(placed.junction_id)" in script
+    assert "calc(-50% + var(--token-offset-x, 0px))" in styles
+    assert 'new URLSearchParams(window.location.search).get("game_id")' in script
+    assert "showOpeningForFreshCase(snapshot)" in script
+    assert "snapshot.game.turn !== 1" in script
+
+
+def test_witness_map_keeps_locations_from_all_lookout_notices():
+    state = new_game("A nervous person in a grey raincoat carrying a red folder.", starting_junction=100)
+    state, _ = issue_notice(state, "Grey raincoat with a red folder", anchor_junction=71)
+    state, _ = issue_notice(state, "Grey raincoat with a red folder", anchor_junction=83)
+
+    locations = _witness_locations(state)
+
+    assert {location["junction_id"] for location in locations} >= {71, 83}
 
 
 def test_api_snapshot_hides_culprit_and_exposes_map_context():
@@ -88,12 +121,26 @@ def test_api_snapshot_hides_culprit_and_exposes_map_context():
 
     assert game_id in _SESSIONS
     assert "culprit" not in snapshot["game"]
+    assert snapshot["case_introduction"]["culprit_alias"]
+    assert len(snapshot["case_introduction"]["last_seen"]) == 3
     assert snapshot["map"]["junctions"]
+    assert any(junction["nearest_landmarks"] for junction in snapshot["map"]["junctions"])
     assert snapshot["asset_prompts"]["suspect_placeholder"]
 
     selected = select_junctions(game_id, [100, 99], 100)
     assert selected["selection"]["focused"] == 100
     assert selected["selection"]["legal_moves"]
+
+
+def test_saved_case_is_rehydrated_after_memory_state_is_cleared():
+    snapshot = new_case("A nervous-looking person in a grey raincoat carrying a red folder.")
+    game_id = snapshot["game"]["game_id"]
+    _SESSIONS.pop(game_id)
+
+    restored = _state_for(game_id)
+
+    assert restored is not None
+    assert restored.game_id == game_id
 
 
 def test_default_lookout_without_selection_creates_map_witness_reports():

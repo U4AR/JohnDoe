@@ -10,6 +10,7 @@ from .police_actions import create_edge_block, create_junction_block, create_mod
 from .rules import checks_remaining_this_turn
 from .save_load import game_dir_for, save_game_state
 from .state import CulpritState, GameState, JunctionCheck, PlacedTactic, PoliceBlock, WitnessBatch
+from .story_engine import initialize_case_story, story_reveal
 from .turn_engine import advance_turn
 from .win_conditions import apply_junction_check
 from .witness_engine import answer_witness_question, generate_witness_batch
@@ -24,7 +25,7 @@ TACTIC_LIMITS = {
 }
 
 
-def new_game(initial_description: str, starting_junction: int | None = None) -> GameState:
+def new_game(initial_description: str, starting_junction: int | None = None, use_model: bool = False) -> GameState:
     settings = load_settings()
     if starting_junction is None:
         starting_junction = random.choice(all_junction_ids())
@@ -41,16 +42,20 @@ def new_game(initial_description: str, starting_junction: int | None = None) -> 
             remaining_disguise_changes=settings.starting_disguise_changes,
         ),
         game_log=[{"turn_number": 1, "kind": "new_game", "message": f"New investigation opened at turn 1."}],
+        effective_context_length=settings.llamacpp_context_length,
+        last_notice_text=initial_description.strip(),
     )
+    initialize_case_story(state, use_model=use_model)
     persist(state)
     return state
 
 
-def issue_notice(state: GameState, text: str) -> tuple[GameState, WitnessBatch]:
-    notice = create_lookout_notice(state, text)
+def issue_notice(state: GameState, text: str, anchor_junction: int | None = None) -> tuple[GameState, WitnessBatch]:
+    notice = create_lookout_notice(state, text, anchor_junction=anchor_junction)
     state.notices.append(notice)
     batch = generate_witness_batch(state, notice)
     state.witness_batches.append(batch)
+    state.last_notice_text = text.strip()
     state.game_log.append(
         {
             "turn_number": state.turn_number,
@@ -96,11 +101,11 @@ def add_block(
     return state, message
 
 
-def question_witness(state: GameState, witness_id: str, question: str) -> tuple[GameState, str]:
+def question_witness(state: GameState, witness_id: str, question: str, use_model: bool = False) -> tuple[GameState, str]:
     witness = find_witness(state, witness_id)
     if witness is None:
         return state, "Witness not found."
-    answer = answer_witness_question(witness, question, state.turn_number)
+    answer = answer_witness_question(witness, question, state.turn_number, use_model=use_model)
     if witness_id not in state.viewed_witness_ids:
         state.viewed_witness_ids.append(witness_id)
     state.game_log.append({"turn_number": state.turn_number, "kind": "witness_question", "message": f"Questioned {witness_id}."})
@@ -167,14 +172,30 @@ def remove_tactic(state: GameState, tactic_id: str) -> tuple[GameState, str]:
     return state, message
 
 
-def end_turn(state: GameState) -> tuple[GameState, str]:
-    message = advance_turn(state)
+def end_turn(state: GameState, use_model: bool = False) -> tuple[GameState, str]:
+    message = advance_turn(state, use_model=use_model)
     persist(state)
     return state, message
 
 
 def persist(state: GameState) -> None:
     save_game_state(game_dir_for(state.game_id), state)
+
+
+def update_notes(state: GameState, notes: str) -> GameState:
+    state.user_notes = notes[:20000]
+    persist(state)
+    return state
+
+
+def finalize_game(state: GameState, reason: str) -> dict:
+    if not state.result:
+        state.result = "abandoned" if reason in {"stopped", "restarted"} else reason
+    state.finalized_reason = reason
+    state.phase = "complete"
+    state.game_log.append({"turn_number": state.turn_number, "kind": "game_finalized", "message": f"Case finalized: {reason}."})
+    persist(state)
+    return story_reveal(state)
 
 
 def find_witness(state: GameState, witness_id: str):
