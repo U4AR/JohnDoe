@@ -25,10 +25,17 @@ TACTIC_LIMITS = {
 }
 
 
-def new_game(initial_description: str, starting_junction: int | None = None, use_model: bool = False) -> GameState:
+def new_game(
+    initial_description: str,
+    starting_junction: int | None = None,
+    use_model: bool = False,
+    case_profile: dict | None = None,
+) -> GameState:
     settings = load_settings()
     if starting_junction is None:
         starting_junction = random.choice(all_junction_ids())
+    previous_candidates = [move.destination for move in legal_moves_from(starting_junction) if move.destination != starting_junction]
+    last_seen_junction = random.choice(previous_candidates) if previous_candidates else starting_junction
     game_id = datetime.now().strftime("game_%Y%m%d_%H%M%S_%f")
     state = GameState(
         game_id=game_id,
@@ -41,6 +48,8 @@ def new_game(initial_description: str, starting_junction: int | None = None, use
             current_disguise=initial_description.strip(),
             remaining_disguise_changes=settings.starting_disguise_changes,
         ),
+        last_seen_junction=last_seen_junction,
+        case_profile=dict(case_profile or {}),
         game_log=[{"turn_number": 1, "kind": "new_game", "message": f"New investigation opened at turn 1."}],
         effective_context_length=settings.llamacpp_context_length,
         last_notice_text=initial_description.strip(),

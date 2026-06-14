@@ -165,6 +165,8 @@ def test_api_snapshot_hides_culprit_and_exposes_map_context():
     assert snapshot["case_introduction"]["culprit_alias"]
     assert len(snapshot["case_introduction"]["last_seen"]) == 3
     assert snapshot["game"]["last_seen"]["confidence"] == "confirmed"
+    assert snapshot["game"]["last_seen"]["junction_id"] != _SESSIONS[game_id].culprit.current_junction
+    assert snapshot["game"]["suspect_image"].startswith("/static/assets/suspects/")
     assert snapshot["map"]["junctions"]
     assert any(junction["nearest_landmarks"] for junction in snapshot["map"]["junctions"])
     assert snapshot["asset_prompts"]["suspect_placeholder"]
@@ -196,7 +198,7 @@ def test_default_lookout_without_selection_creates_map_witness_reports():
         None,
     )
 
-    assert notice["selection"]["focused"] == 100
+    assert notice["selection"]["focused"] == snapshot["game"]["last_seen"]["junction_id"]
     assert notice["lookout"]["raised"] is True
     assert notice["witness_locations"]
     assert "sample_summary" in notice["witness_locations"][0]

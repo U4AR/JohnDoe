@@ -1,4 +1,6 @@
-from game.session import add_block, check_junction, end_turn, issue_notice, new_game, question_witness
+from game.case_catalog import CASE_CATALOG
+from game.session import add_block, check_junction, end_turn, issue_notice, new_game, place_tactic, question_witness
+from game.turn_engine import _search_team_catch
 from grid_map.graph_loader import all_junction_ids
 
 
@@ -53,3 +55,30 @@ def test_default_new_game_starts_at_valid_random_junction(monkeypatch):
 
     assert state.culprit.current_junction == chosen
     assert state.culprit.current_junction in ids
+
+
+def test_opening_last_seen_location_is_not_hidden_current_location():
+    state = new_game("A suspect carrying a document case.", starting_junction=100)
+
+    assert state.last_seen_junction is not None
+    assert state.last_seen_junction != state.culprit.current_junction
+    assert state.case_introduction["last_seen"][-1]["junction_id"] == state.last_seen_junction
+
+
+def test_search_team_on_opening_last_seen_location_does_not_win_immediately():
+    state = new_game("A suspect carrying a document case.", starting_junction=100)
+    state, _ = place_tactic(state, "search_team", state.last_seen_junction, 0, 0)
+
+
+    assert _search_team_catch(state, phase="stakeout") is None
+    assert state.result is None
+
+
+def test_case_catalog_has_fifteen_distinct_complete_cases():
+    assert len(CASE_CATALOG) >= 15
+    assert len({case["case_id"] for case in CASE_CATALOG}) == len(CASE_CATALOG)
+
+    for case in CASE_CATALOG:
+        assert case["description"]
+        assert case["culprit_alias"]
+        assert case["image_url"].startswith("/static/assets/suspects/")

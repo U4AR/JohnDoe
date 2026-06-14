@@ -80,12 +80,13 @@ CRIME_TEMPLATES = [
 
 def initialize_case_story(state: GameState, use_model: bool = False) -> None:
     ensure_case_introduction(state, use_model=use_model)
-    place = primary_place_for_junction(state.culprit.current_junction)
-    place_name = place["name"] if place else f"Junction {state.culprit.current_junction}"
+    last_seen_junction = state.last_seen_junction or state.culprit.current_junction
+    place = primary_place_for_junction(last_seen_junction)
+    place_name = place["name"] if place else f"Junction {last_seen_junction}"
     fact = ObservableFact(
         fact_id="fact_t001_opening",
         turn_number=1,
-        junction_id=state.culprit.current_junction,
+        junction_id=last_seen_junction,
         kind="last_seen",
         text=f"A person matching {state.initial_description} was last seen near {place_name}.",
         tags=_tags(state.initial_description, place_name, "last seen"),
@@ -94,14 +95,17 @@ def initialize_case_story(state: GameState, use_model: bool = False) -> None:
     segment = StorySegment(
         segment_id="story_t001_opening",
         turn_number=1,
-        from_junction=state.culprit.current_junction,
+        from_junction=last_seen_junction,
         to_junction=state.culprit.current_junction,
-        mode="remain",
-        route=[state.culprit.current_junction],
+        mode="unknown",
+        route=[last_seen_junction, state.culprit.current_junction],
         changed_disguise=False,
         previous_disguise=state.initial_description,
         new_disguise=state.initial_description,
-        narrative=f"{state.case_introduction['culprit_alias']} entered the case near {place_name}, dressed as last reported: {state.initial_description}",
+        narrative=(
+            f"{state.case_introduction['culprit_alias']} was last reported near {place_name}, dressed as: "
+            f"{state.initial_description}. Before the investigation opened, the suspect slipped away to another junction."
+        ),
         observable_facts=[fact],
         context_profile=_context_profile(),
     )
@@ -119,10 +123,10 @@ def ensure_case_introduction(state: GameState, use_model: bool = False) -> bool:
 
 
 def _create_case_introduction(state: GameState, use_model: bool) -> dict[str, Any]:
-    current = state.culprit.current_junction
+    current = state.last_seen_junction or state.culprit.current_junction
     rng = random.Random(f"{state.game_id}:{current}")
-    template = rng.choice(CRIME_TEMPLATES)
-    alias = rng.choice(["The Wraith", "Velvet Jack", "The Lantern Thief", "The Grey Fox", "The Night Clerk"])
+    template = state.case_profile or rng.choice(CRIME_TEMPLATES)
+    alias = template.get("culprit_alias") or rng.choice(["The Wraith", "Velvet Jack", "The Lantern Thief", "The Grey Fox", "The Night Clerk"])
     moves = legal_moves_from(current)
     nearby_ids = []
     for move in moves:
@@ -154,6 +158,7 @@ def _create_case_introduction(state: GameState, use_model: bool) -> dict[str, An
     fallback = {
         **template,
         "culprit_alias": alias,
+        "suspect_image": template.get("image_url", "/static/assets/reference/suspect_portrait_placeholder.png"),
         "kicker": f"London wakes to the news that {template['stolen_item']} has vanished.",
         "narrative": (
             f"Before dawn, {alias} slipped into {template['scene']} and stole {template['stolen_item']} "

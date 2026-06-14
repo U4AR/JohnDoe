@@ -40,6 +40,7 @@ from game.save_load import load_state
 from game.state import GameState, WitnessQuestion
 from game.story_engine import compact_story_memory, ensure_case_introduction, story_reveal
 from game.context_budget import ContextBudget, normalize_context_length
+from game.case_catalog import choose_case
 from game.witness_engine import deterministic_witness_answer, witness_by_id
 from grid_map.atlas import public_atlas_payload
 from grid_map.graph_loader import all_junction_ids, legal_moves_from
@@ -97,7 +98,7 @@ def build_app() -> gr.Server:
 
     @app.get("/assets/suspect")
     async def suspect_asset() -> FileResponse:
-        return FileResponse(STATIC_DIR / "default-suspect.svg", media_type="image/svg+xml")
+        return FileResponse(STATIC_DIR / "assets" / "reference" / "suspect_portrait_placeholder.png", media_type="image/png")
 
     @app.get("/assets/voices/{voice_id}")
     async def voice_asset(voice_id: str) -> FileResponse:
@@ -112,7 +113,7 @@ def build_app() -> gr.Server:
 
     @app.post("/api/new_case")
     async def new_case_route(payload: dict[str, Any]) -> dict[str, Any]:
-        return new_case(payload.get("initial_description") or DEFAULT_DESCRIPTION, require_omni=True)
+        return new_case(payload.get("initial_description"), require_omni=True)
 
     @app.post("/api/select_junctions")
     async def select_junctions_route(payload: dict[str, Any]) -> dict[str, Any]:
@@ -269,12 +270,14 @@ def build_app() -> gr.Server:
     return app
 
 
-def new_case(initial_description: str = DEFAULT_DESCRIPTION, require_omni: bool = False) -> dict[str, Any]:
+def new_case(initial_description: str | None = None, require_omni: bool = False) -> dict[str, Any]:
     if require_omni:
         health = OmniClient.from_settings().health()
         if not health.get("ready"):
             raise HTTPException(status_code=503, detail="MiniCPM-o must be healthy before a new case can start.")
-    state = new_game(initial_description or DEFAULT_DESCRIPTION, use_model=require_omni)
+    case_profile = choose_case()
+    description = (initial_description or case_profile["description"]).strip()
+    state = new_game(description, use_model=require_omni, case_profile=case_profile)
     _SESSIONS[state.game_id] = state
     return _snapshot(
         state,
@@ -311,7 +314,7 @@ def api_issue_notice(
     state = _state_for(game_id)
     selected, focused = _selection_context(selected_junctions, focused_junction)
     if focused is None:
-        focused = DEFAULT_SELECTED_JUNCTION
+        focused = state.last_seen_junction or DEFAULT_SELECTED_JUNCTION
         selected = [focused]
     text = _notice_with_selected_junction(notice_text or DEFAULT_NOTICE, focused)
     state, batch = issue_notice(state, text, anchor_junction=focused)
@@ -1152,6 +1155,7 @@ def _visible_game_state(state: GameState | None) -> dict[str, Any] | None:
         "notices": len(state.notices),
         "witness_batches": len(state.witness_batches),
         "initial_description": state.initial_description,
+        "suspect_image": state.case_introduction.get("suspect_image", "/assets/suspect"),
         "last_seen": last_seen,
         "finalized_reason": state.finalized_reason,
         "effective_context_length": state.effective_context_length,

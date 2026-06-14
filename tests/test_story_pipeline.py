@@ -70,7 +70,7 @@ def test_turn_can_surface_route_and_city_witness_reports():
 
 def test_each_turn_guarantees_an_off_route_city_report(monkeypatch):
     state = new_game("a nervous person in a grey raincoat carrying a red folder", 100)
-    route_potential = next(item for item in state.potential_witnesses if item.junction_id == 100)
+    route_potential = next(item for item in state.potential_witnesses if item.junction_id == state.last_seen_junction)
 
     class FixedRandom:
         def __init__(self, seed): pass
@@ -89,9 +89,9 @@ def test_each_turn_guarantees_an_off_route_city_report(monkeypatch):
 
 def test_matching_lookout_board_greatly_boosts_correct_route_witness(monkeypatch):
     state = new_game("a nervous person in a grey raincoat carrying a red folder", 100)
-    state, _ = issue_notice(state, "grey raincoat carrying a red folder", anchor_junction=100)
-    state.placed_tactics.append(PlacedTactic("board", "lookout_board", 1, 100, 0, 0))
-    potential = next(item for item in state.potential_witnesses if item.junction_id == 100)
+    state, _ = issue_notice(state, "grey raincoat carrying a red folder", anchor_junction=state.last_seen_junction)
+    state.placed_tactics.append(PlacedTactic("board", "lookout_board", 1, state.last_seen_junction, 0, 0))
+    potential = next(item for item in state.potential_witnesses if item.junction_id == state.last_seen_junction)
     potential.surfaced_notice_id = None
 
     class FixedRandom:
@@ -116,7 +116,8 @@ def test_new_game_builds_a_public_case_introduction_and_sighting_trail():
     assert intro["crime"]
     assert intro["stolen_item"]
     assert len(intro["last_seen"]) == 3
-    assert intro["last_seen"][-1]["junction_id"] == state.culprit.current_junction
+    assert intro["last_seen"][-1]["junction_id"] == state.last_seen_junction
+    assert state.last_seen_junction != state.culprit.current_junction
     assert intro["last_seen"][-1]["confidence"] == "confirmed"
 
 

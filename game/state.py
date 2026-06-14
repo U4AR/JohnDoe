@@ -176,6 +176,8 @@ class GameState:
     phase: str
     initial_description: str
     culprit: CulpritState
+    last_seen_junction: int | None = None
+    case_profile: dict[str, Any] = field(default_factory=dict)
     case_introduction: dict[str, Any] = field(default_factory=dict)
     notices: list[LookoutNotice] = field(default_factory=list)
     witness_batches: list[WitnessBatch] = field(default_factory=list)
@@ -224,6 +226,8 @@ class GameState:
             phase=data["phase"],
             initial_description=data["initial_description"],
             culprit=culprit,
+            last_seen_junction=data.get("last_seen_junction"),
+            case_profile=data.get("case_profile", {}),
             case_introduction=data.get("case_introduction", {}),
             notices=notices,
             witness_batches=batches,

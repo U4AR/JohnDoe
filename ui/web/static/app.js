@@ -102,6 +102,7 @@ const els = {
   detailPopup: document.querySelector("#detailPopup"),
   wantedDescription: document.querySelector("#wantedDescription"),
   wantedLastSeen: document.querySelector("#wantedLastSeen"),
+  suspectImage: document.querySelector("#suspectImage"),
   wantedAlias: document.querySelector("#wantedAlias"),
   gameTitle: document.querySelector("#gameTitle"),
   gameSubtitle: document.querySelector("#gameSubtitle"),
@@ -685,8 +686,9 @@ async function openNewCase(makeNoise) {
   try {
     const snapshot = await api("new_case", {});
     applySnapshot(snapshot, makeNoise);
-    state.selected = [DEFAULT_FOCUSED_JUNCTION];
-    state.focused = DEFAULT_FOCUSED_JUNCTION;
+    const openingJunction = snapshot.game?.last_seen?.junction_id || DEFAULT_FOCUSED_JUNCTION;
+    state.selected = [openingJunction];
+    state.focused = openingJunction;
     applySnapshot(await api("select_junctions", payload()), makeNoise);
     showCaseIntroduction(snapshot.case_introduction, snapshot.game?.initial_description, snapshot.game?.game_id, true);
   } catch (error) {
@@ -796,6 +798,7 @@ function renderGame(game) {
   els.turnPhase.textContent = turnPhase(game.turn);
   els.wantedDescription.textContent = game.initial_description || els.wantedDescription.textContent;
   els.wantedLastSeen.textContent = game.last_seen?.location || (game.last_seen?.junction_id ? `Junction ${game.last_seen.junction_id}` : "Awaiting confirmed location");
+  if (game.suspect_image && els.suspectImage) els.suspectImage.src = game.suspect_image;
   els.advanceButton.disabled = complete;
   els.stopGameButton.disabled = complete;
 }
