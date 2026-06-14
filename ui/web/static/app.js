@@ -58,6 +58,23 @@ const LAYER_LABELS = {
   subway: "Subway",
 };
 
+const LAYER_Y_OFFSET = {
+  normal: 0,
+  taxi: 86,
+  bus: 86,
+  subway: 86,
+};
+
+const LAYER_MODE = {
+  taxi: "taxi",
+  bus: "bus",
+  subway: "subway",
+};
+
+function currentLayerYOffset() {
+  return LAYER_Y_OFFSET[state.layer] || 0;
+}
+
 const els = {
   caseClock: document.querySelector("#caseClock"),
   turnPhase: document.querySelector("#turnPhase"),
@@ -282,7 +299,10 @@ function bindEvents() {
   els.settingsButton.addEventListener("click", openSettings);
   els.advanceButton.addEventListener("click", async () => {
     if (!state.gameId) return openNewCase(true);
-    applySnapshot(await api("advance_turn", payload()));
+    const snapshot = await api("advance_turn", payload());
+    playSound("turn_advance");
+    if (snapshot?.sound && snapshot.sound !== "turn_advance") playSound(snapshot.sound);
+    applySnapshot(snapshot, false);
   });
   els.raiseLookoutButton.addEventListener("click", publishNotice);
   els.noticeCloseButton.addEventListener("click", () => els.noticeDialog.close());
@@ -814,6 +834,7 @@ function renderLayers() {
       button.dataset.layer = layer;
       button.addEventListener("click", () => {
         state.layer = layer;
+        state.mapView.initialized = false;
         renderLayers();
         renderMap();
         playSound("map_select");
@@ -848,9 +869,11 @@ function resetMapView(force) {
   state.mapView.zoom = 1.45;
   const wrap = { width: els.mapWrap.clientWidth, height: els.mapWrap.clientHeight };
   const base = imageBaseRect();
+  const offset = currentLayerYOffset();
   const focus = junctionById(state.focused || DEFAULT_FOCUSED_JUNCTION);
   const targetX = base.left + ((focus?.x || els.mapImage.naturalWidth / 2) / els.mapImage.naturalWidth) * base.width;
-  const targetY = base.top + ((focus?.y || els.mapImage.naturalHeight / 2) / els.mapImage.naturalHeight) * base.height;
+  const focusY = focus?.y != null ? focus.y + offset : els.mapImage.naturalHeight / 2;
+  const targetY = base.top + (focusY / els.mapImage.naturalHeight) * base.height;
   state.mapView.x = wrap.width / 2 - targetX * state.mapView.zoom;
   state.mapView.y = wrap.height / 2 - targetY * state.mapView.zoom;
   state.mapView.initialized = true;
@@ -864,7 +887,7 @@ function zoomBy(factor, clientX = null, clientY = null) {
   const anchorX = clientX == null ? els.mapWrap.clientWidth / 2 : (clientX - wrap.left) / state.appScale;
   const anchorY = clientY == null ? els.mapWrap.clientHeight / 2 : (clientY - wrap.top) / state.appScale;
   const oldZoom = state.mapView.zoom;
-  const nextZoom = Math.min(Math.max(oldZoom * factor, 0.85), 2.4);
+  const nextZoom = Math.min(Math.max(oldZoom * factor, 0.85), 6);
   const worldX = (anchorX - state.mapView.x) / oldZoom;
   const worldY = (anchorY - state.mapView.y) / oldZoom;
   state.mapView.zoom = nextZoom;
@@ -962,9 +985,9 @@ function renderMapOverlays() {
     const tacticCount = tacticCountsByJunction.get(placed.junction_id) || 1;
     if (colocatedWithWitness || tacticCount > 1) {
       token.classList.add("co-located");
-      const baseOffset = colocatedWithWitness ? 22 : 0;
-      const spreadOffset = (tacticIndex - (tacticCount - 1) / 2) * 34;
-      token.style.setProperty("--token-offset-x", `${baseOffset + spreadOffset}px`);
+      const offset = tacticStackOffset(tacticIndex, tacticCount);
+      token.style.setProperty("--token-offset-x", `${offset.x}px`);
+      token.style.setProperty("--token-offset-y", `${offset.y}px`);
     }
     token.innerHTML = `<img src="${assetUrl(tactic.pin)}" alt="${escapeHtml(tactic.label)}" />`;
     token.addEventListener("dragstart", (event) => {
@@ -974,6 +997,17 @@ function renderMapOverlays() {
     placeAtMapPoint(token, placed.x, placed.y);
     els.tacticLayer.append(token);
   });
+}
+
+function tacticStackOffset(index, total) {
+  if (total <= 1) return { x: 0, y: 0 };
+  if (total === 2) {
+    const spread = 44;
+    return { x: index === 0 ? -spread : spread, y: 0 };
+  }
+  const radius = 46;
+  const angle = (-Math.PI / 2) + (index * Math.PI * 2) / total;
+  return { x: Math.round(Math.cos(angle) * radius), y: Math.round(Math.sin(angle) * radius) };
 }
 
 function witnessReportOffset(index, total, colocatedWithTactic) {
@@ -1271,7 +1305,11 @@ async function placeTacticAt(tacticType, junctionId) {
   renderTacticTray();
   renderActiveUnits();
   try {
-    applySnapshot(await api("place_tactic", payload({ tactic_type: tacticType, junction_id: junctionId })));
+    applySnapshot(await api("place_tactic", payload({
+      tactic_type: tacticType,
+      junction_id: junctionId,
+      layer: state.layer,
+    })));
   } catch (error) {
     optimisticCount(tacticType, 1);
     renderTacticTray();
@@ -1457,15 +1495,16 @@ function naturalPointFromClient(clientX, clientY) {
   if (canvasX < base.left || canvasX > base.right || canvasY < base.top || canvasY > base.bottom) return null;
   return {
     x: ((canvasX - base.left) / base.width) * els.mapImage.naturalWidth,
-    y: ((canvasY - base.top) / base.height) * els.mapImage.naturalHeight,
+    y: ((canvasY - base.top) / base.height) * els.mapImage.naturalHeight - currentLayerYOffset(),
   };
 }
 
 function placeAtMapPoint(node, x, y) {
   const rect = imageBaseRect();
   if (!rect) return;
+  const offset = currentLayerYOffset();
   const left = rect.left + (x / els.mapImage.naturalWidth) * rect.width;
-  const top = rect.top + (y / els.mapImage.naturalHeight) * rect.height;
+  const top = rect.top + ((y + offset) / els.mapImage.naturalHeight) * rect.height;
   node.style.left = `${left}px`;
   node.style.top = `${top}px`;
 }
@@ -1510,6 +1549,10 @@ function playSound(name) {
   if (!state.sound) return;
   audioContext ||= new AudioContext();
   const now = audioContext.currentTime;
+  if (name === "turn_advance") {
+    playChime([523.25, 783.99, 1046.5], 0.7, "sine", 0.32);
+    return;
+  }
   const gain = audioContext.createGain();
   gain.connect(audioContext.destination);
   gain.gain.setValueAtTime(0.0001, now);
@@ -1530,6 +1573,25 @@ function playSound(name) {
   oscillator.connect(gain);
   oscillator.start(now);
   oscillator.stop(now + duration);
+}
+
+function playChime(frequencies, duration, type, peak) {
+  if (!audioContext) return;
+  const now = audioContext.currentTime;
+  frequencies.forEach((frequency, index) => {
+    const start = now + index * 0.12;
+    const gain = audioContext.createGain();
+    gain.connect(audioContext.destination);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(peak, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, start);
+    oscillator.connect(gain);
+    oscillator.start(start);
+    oscillator.stop(start + duration);
+  });
 }
 
 function escapeHtml(value) {

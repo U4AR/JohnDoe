@@ -113,7 +113,14 @@ def question_witness(state: GameState, witness_id: str, question: str, use_model
     return state, answer
 
 
-def place_tactic(state: GameState, tactic_type: str, junction_id: int, x: int, y: int) -> tuple[GameState, str]:
+def place_tactic(
+    state: GameState,
+    tactic_type: str,
+    junction_id: int,
+    x: int,
+    y: int,
+    layer: str | None = None,
+) -> tuple[GameState, str]:
     if tactic_type not in TACTIC_LIMITS:
         return state, "Unknown tactic."
     if _remaining_tactic_count(state, tactic_type) <= 0:
@@ -127,7 +134,14 @@ def place_tactic(state: GameState, tactic_type: str, junction_id: int, x: int, y
 
     if tactic_type == "roadblock":
         moves = legal_moves_from(junction_id, [block.__dict__ for block in state.active_blocks])
-        open_move = next((move for move in moves if not move.blocked), None)
+        layer_mode = layer if layer in {"taxi", "bus", "subway"} else None
+        candidates = [move for move in moves if not move.blocked]
+        if layer_mode is not None:
+            scoped = [move for move in candidates if move.mode == layer_mode]
+            if not scoped:
+                return state, f"No open {layer_mode} route at Junction {junction_id}."
+            candidates = scoped
+        open_move = candidates[0] if candidates else None
         if open_move is None:
             return state, "No open route is available for a roadblock here."
         state, message = add_block(

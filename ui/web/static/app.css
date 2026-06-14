@@ -642,7 +642,10 @@ button:disabled {
 .map-token {
   width: 40px;
   height: 48px;
-  transform: translate(calc(-50% + var(--token-offset-x, 0px)), -82%);
+  transform: translate(
+    calc(-50% + var(--token-offset-x, 0px)),
+    calc(-82% + var(--token-offset-y, 0px))
+  );
 }
 
 .map-token.junction_lockdown {
@@ -651,8 +654,8 @@ button:disabled {
 }
 
 .map-token.roadblock {
-  width: 62px;
-  height: 48px;
+  width: 32px;
+  height: 26px;
 }
 
 .map-token.patrol_unit {

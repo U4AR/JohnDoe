@@ -151,6 +151,7 @@ def build_app() -> gr.Server:
             payload.get("junction_id"),
             payload.get("selected_junctions") or [],
             payload.get("focused_junction"),
+            layer=payload.get("layer"),
         )
 
     @app.post("/api/remove_tactic")
@@ -365,6 +366,7 @@ def api_place_tactic(
     junction_id: int | None,
     selected_junctions: list[int] | None = None,
     focused_junction: int | None = None,
+    layer: str | None = None,
 ) -> dict[str, Any]:
     state = _state_for(game_id)
     selected, focused = _selection_context(selected_junctions, focused_junction)
@@ -374,7 +376,7 @@ def api_place_tactic(
     junction = _junction_by_id(target)
     if junction is None:
         return _snapshot(state, selected, focused, "Drop the tactic on a valid junction.", sound="map_select")
-    state, message = place_tactic(state, str(tactic_type or ""), target, int(junction["x"]), int(junction["y"]))
+    state, message = place_tactic(state, str(tactic_type or ""), target, int(junction["x"]), int(junction["y"]), layer=layer)
     _SESSIONS[state.game_id] = state
     snapshot = _snapshot(state, [*selected, target], target, message, sound="blockade_set")
     if tactic_type == "lookout_board" and "No lookout" not in message:
