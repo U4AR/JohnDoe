@@ -375,7 +375,8 @@ button:disabled {
   background: linear-gradient(180deg, #1d6796, #0c436e);
 }
 
-.advance-button.processing {
+.advance-button.processing,
+.new-case-button.processing {
   background: linear-gradient(180deg, #c8862c, #7a4e0d);
   color: #1a0e02;
   cursor: progress;
@@ -774,6 +775,15 @@ button:disabled {
 .cluster-report-button span {
   font-size: 0.76rem;
   line-height: 1.25;
+}
+
+.cluster-report-button em {
+  font-style: normal;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b3812;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .map-message {

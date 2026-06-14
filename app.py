@@ -489,6 +489,7 @@ def api_witness_detail(game_id: str, witness_id: str) -> dict[str, Any]:
             "voice_id": witness.voice_id,
             "voice_url": f"/assets/voices/{witness.voice_id}",
             "transcript": [asdict(item) for item in witness.question_history],
+            "observed_turn": witness.turn_created,
         },
     }
 
@@ -1228,6 +1229,7 @@ def _witness_locations(state: GameState | None) -> list[dict[str, Any]]:
                     "relevance": witness.relevance_score,
                     "name": witness.name,
                     "occupation": witness.occupation,
+                    "observed_turn": witness.turn_created,
                 }
             )
             location["inspectable"] = location["inspectable"] or batch.individual_review_allowed
@@ -1266,6 +1268,7 @@ def _witness_cards(state: GameState | None) -> list[dict[str, Any]]:
                     "summary": witness.current_summary,
                     "questions": [asdict(question) for question in witness.question_history[-2:]],
                     "viewed": witness.witness_id in state.viewed_witness_ids,
+                    "observed_turn": witness.turn_created,
                 }
             )
     return cards[-18:]
@@ -1290,6 +1293,7 @@ def _previous_statements(state: GameState | None) -> list[dict[str, Any]]:
                     "question": latest.question,
                     "answer": latest.answer,
                     "viewed": True,
+                    "observed_turn": witness.turn_created,
                 }
             )
     return statements[-8:]

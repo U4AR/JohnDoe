@@ -298,8 +298,9 @@ function bindEvents() {
   els.restartGameButton.addEventListener("click", () => restartGame());
   els.settingsButton.addEventListener("click", openSettings);
   els.advanceButton.addEventListener("click", async () => {
+    if (state.busy) return;
     if (!state.gameId) return openNewCase(true);
-    beginTurnProcessing();
+    if (!beginTurnProcessing()) return;
     try {
       const snapshot = await api("advance_turn", payload());
       playSound("turn_advance");
@@ -678,7 +679,9 @@ function renderLlamaStatus(llama, settings) {
 }
 
 async function openNewCase(makeNoise) {
+  if (state.busy) return;
   closePopup();
+  if (!beginNewCaseProcessing()) return;
   try {
     const snapshot = await api("new_case", {});
     applySnapshot(snapshot, makeNoise);
@@ -689,6 +692,8 @@ async function openNewCase(makeNoise) {
   } catch (error) {
     flash(error.message || "MiniCPM-o must be ready before a case can start.", "map_select");
     await openSettings();
+  } finally {
+    endNewCaseProcessing();
   }
 }
 
@@ -1077,10 +1082,11 @@ function renderStatements() {
   state.previousStatements.slice().reverse().forEach((statement) => {
     const card = document.createElement("article");
     card.className = "statement-card";
+    const observedTurn = statement.observed_turn ?? statement.turn;
     card.innerHTML = `
       <div>
         <strong>${String(statement.junction_id).padStart(2, "0")} Junction ${statement.junction_id}</strong>
-        <span>${escapeHtml(statement.time_label || "")}</span>
+        <span>Saw on Turn ${observedTurn} - ${escapeHtml(statement.time_label || "")}</span>
       </div>
       <p>${escapeHtml(shortSummary(statement.answer || statement.summary, 118))}</p>
       <mark aria-label="Viewed">OK</mark>
@@ -1405,6 +1411,7 @@ function showWitnessPopup(location, card, x, y) {
   state.focused = location.junction_id;
   state.selected = [location.junction_id];
   renderMapOverlays();
+  const observedTurn = card?.observed_turn ?? location.reports?.[0]?.observed_turn ?? null;
   els.detailPopup.innerHTML = `
     <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">X</button>
     <img src="${assetUrl(location.viewed ? "pin_viewed_witness.png" : "pin_unviewed_witness.png")}" alt="" />
@@ -1413,6 +1420,7 @@ function showWitnessPopup(location, card, x, y) {
     <dl>
       <dt>Junction</dt><dd>${location.junction_id}</dd>
       <dt>Reports</dt><dd>${location.count}</dd>
+      ${observedTurn != null ? `<dt>Saw on Turn</dt><dd>${observedTurn}</dd>` : ""}
     </dl>
     ${canAsk ? `<button class="ask-button" type="button" data-action="ask-witness" data-witness-id="${escapeHtml(witnessId)}">Ask Statement</button>` : ""}
   `;
@@ -1427,6 +1435,7 @@ function showWitnessClusterPopup(location, x, y) {
   const reportButtons = location.reports.map((report, index) => `
     <button class="cluster-report-button ${report.viewed ? "viewed" : "unviewed"}" type="button" data-action="open-witness" data-witness-id="${escapeHtml(report.id)}">
       <strong>Report ${index + 1}: ${escapeHtml(report.name || report.style || "Witness")}</strong>
+      <em>Saw on Turn ${report.observed_turn ?? "?"}</em>
       <span>${escapeHtml(shortSummary(report.summary || "Potential witness report.", 92))}</span>
     </button>
   `).join("");
@@ -1548,23 +1557,65 @@ function flash(message, sound, makeNoise = true) {
   if (makeNoise && sound) playSound(sound);
 }
 
-function beginTurnProcessing() {
-  state.turnProcessing = true;
-  state.advanceButtonLabel = els.advanceButton.textContent;
-  els.advanceButton.classList.add("processing");
-  els.advanceButton.disabled = true;
-  els.advanceButton.textContent = "Processing Turn...";
-  els.eventTicker.textContent = "Generating the next turn... this can take a while.";
-  els.mapMessage.textContent = "Generating the next turn... this can take a while.";
+function beginBusy(kind, message) {
+  if (state.busy) return false;
+  state.busy = kind;
+  const targets = [
+    { button: els.advanceButton, busyLabel: "Processing Turn..." },
+    { button: els.newCaseButton, busyLabel: "Opening Case..." },
+    { button: els.stopGameButton, busyLabel: "" },
+    { button: els.restartGameButton, busyLabel: "" },
+  ];
+  state.busyTargets = targets.map(({ button, busyLabel }) => ({
+    button,
+    label: button.textContent,
+    disabledBefore: button.disabled,
+    busyLabel,
+  }));
+  state.busyTargets.forEach(({ button, busyLabel }) => {
+    button.disabled = true;
+    if (button === (kind === "new_case" ? els.newCaseButton : els.advanceButton)) {
+      button.classList.add("processing");
+      if (busyLabel) button.textContent = busyLabel;
+    }
+  });
+  els.eventTicker.textContent = message;
+  els.mapMessage.textContent = message;
   playSound("blockade_set");
+  return true;
+}
+
+function endBusy() {
+  if (!state.busyTargets) {
+    state.busy = null;
+    return;
+  }
+  state.busyTargets.forEach(({ button, label, disabledBefore }) => {
+    button.classList.remove("processing");
+    button.textContent = label;
+    button.disabled = disabledBefore;
+  });
+  state.busy = null;
+  state.busyTargets = null;
+  const complete = Boolean(state.game?.result || state.game?.phase === "complete");
+  els.advanceButton.disabled = complete;
+  els.stopGameButton.disabled = complete;
+}
+
+function beginTurnProcessing() {
+  return beginBusy("advance_turn", "Generating the next turn... this can take a while. Please wait.");
 }
 
 function endTurnProcessing() {
-  state.turnProcessing = false;
-  els.advanceButton.classList.remove("processing");
-  els.advanceButton.textContent = state.advanceButtonLabel || "Advance Turn";
-  const complete = Boolean(state.game?.result || state.game?.phase === "complete");
-  els.advanceButton.disabled = complete;
+  endBusy();
+}
+
+function beginNewCaseProcessing() {
+  return beginBusy("new_case", "Opening a new case... please wait.");
+}
+
+function endNewCaseProcessing() {
+  endBusy();
 }
 
 let audioContext = null;
@@ -1682,7 +1733,8 @@ async function openWitnessInterview(witnessId) {
     if (!response.ok) throw new Error(data.detail || "Could not open witness.");
     state.activeWitness = data.witness;
     els.witnessName.textContent = data.witness.name;
-    els.witnessProfile.textContent = `${data.witness.occupation} | Junction ${data.witness.junction_id} | ${data.witness.personality.style || "measured"}`;
+    const observedTurn = data.witness.observed_turn != null ? ` | Saw on Turn ${data.witness.observed_turn}` : "";
+    els.witnessProfile.textContent = `${data.witness.occupation} | Junction ${data.witness.junction_id} | ${data.witness.personality.style || "measured"}${observedTurn}`;
     els.witnessSummary.textContent = data.witness.summary;
     els.witnessConnection.textContent = "Text ready | speech disconnected";
     els.witnessTranscript.innerHTML = "";
