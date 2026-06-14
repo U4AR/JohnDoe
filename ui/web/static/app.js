@@ -30,8 +30,8 @@ const TACTICS = {
     countLabel: "2 units",
     icon: "icon_patrol_unit.png",
     pin: "pin_patrol_unit.png",
-    preview: "Discourages the suspect from passing through this junction. Place where they might be heading.",
-    details: "Adds heavy deterrent — the culprit avoids this junction when planning a move.",
+    preview: "Deters the suspect AND files a high-reliability sighting if they pass through or near this junction.",
+    details: "The culprit avoids this junction. If they still pass through or next to it, the patrol officer files a witness report.",
   },
   search_team: {
     label: "Search Team",

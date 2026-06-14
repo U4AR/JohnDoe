@@ -98,6 +98,82 @@ def generate_ambient_witness_batch(state: GameState, potential_ids: list[str]) -
     )
 
 
+def generate_patrol_witness_batch(
+    state: GameState,
+    move,
+) -> WitnessBatch | None:
+    """Surface high-reliability patrol-officer reports if the culprit passed near a patrol unit."""
+    patrol_junctions = [
+        tactic.junction_id for tactic in state.placed_tactics if tactic.tactic_type == "patrol_unit"
+    ]
+    if not patrol_junctions:
+        return None
+    route_set = set(move.route or []) | {move.from_junction, move.to_junction}
+    nearby_set: set[int] = set()
+    for junction in route_set:
+        nearby_set.add(junction)
+        nearby_set.update(adjacent_junctions(junction))
+    source_id = f"patrol_t{state.turn_number:03d}"
+    witnesses: list[WitnessRecord] = []
+    for index, patrol_junction in enumerate(patrol_junctions):
+        if patrol_junction not in nearby_set:
+            continue
+        on_route = patrol_junction in route_set
+        summary = _patrol_summary(state, move, patrol_junction, on_route)
+        witnesses.append(WitnessRecord(
+            witness_id=f"w_patrol_{state.turn_number:03d}_{patrol_junction}_{index + 1:02d}",
+            notice_id=source_id,
+            turn_created=state.turn_number,
+            junction_id=patrol_junction,
+            personality={"style": "observant", "confidence": "high", "quirk": "trained to recall clothing and direction"},
+            reliability=0.96 if on_route else 0.88,
+            memory_strength=0.92,
+            corruption_level=0.0,
+            relevance_score=0.95 if on_route else 0.75,
+            original_summary=summary,
+            current_summary=summary,
+            stable_facts=[
+                f"patrol officer was posted at Junction {patrol_junction}",
+                f"culprit was last seen wearing {move.previous_disguise if hasattr(move, 'previous_disguise') else state.culprit.current_disguise}",
+                "patrol report from turn " + str(state.turn_number),
+            ],
+            fragile_facts=["exact time of sighting", "secondary clothing detail"],
+            name=f"Constable on Patrol at J{patrol_junction}",
+            occupation="police constable",
+            voice_id=f"voice_{(patrol_junction % 6) + 1:02d}",
+            observed_fact_ids=[],
+            is_false_positive=False,
+        ))
+    if not witnesses:
+        return None
+    return WitnessBatch(
+        batch_id=f"batch_{source_id}",
+        notice_id=source_id,
+        turn_number=state.turn_number,
+        total_witnesses=len(witnesses),
+        individual_review_allowed=True,
+        witnesses=witnesses,
+    )
+
+
+def _patrol_summary(state, move, patrol_junction: int, on_route: bool) -> str:
+    disguise = getattr(move, "previous_disguise", None) or state.culprit.current_disguise
+    if move.from_junction == move.to_junction:
+        return (
+            f"Patrol at Junction {patrol_junction} reports a person matching {disguise} lingered near "
+            f"Junction {move.to_junction} this turn. They did not appear to board any transport."
+        )
+    if on_route:
+        return (
+            f"Patrol at Junction {patrol_junction} clearly saw a person matching {disguise} pass through, "
+            f"heading from Junction {move.from_junction} toward Junction {move.to_junction} by {move.mode}."
+        )
+    return (
+        f"Patrol at Junction {patrol_junction} caught a partial sighting of someone matching {disguise} "
+        f"moving by {move.mode} toward Junction {move.to_junction}, but did not see them directly."
+    )
+
+
 def answer_witness_question(witness: WitnessRecord, question: str, turn_number: int, use_model: bool = False) -> str:
     if use_model:
         answer = _model_witness_answer(witness, question)

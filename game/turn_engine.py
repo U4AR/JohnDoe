@@ -3,7 +3,11 @@ from __future__ import annotations
 from .police_actions import tick_blocks
 from .state import GameState, JunctionCheck
 from .story_engine import apply_turn_bundle, generate_turn_bundle
-from .witness_engine import corrupt_witnesses_slightly, generate_ambient_witness_batch
+from .witness_engine import (
+    corrupt_witnesses_slightly,
+    generate_ambient_witness_batch,
+    generate_patrol_witness_batch,
+)
 from .win_conditions import apply_junction_check, culprit_has_escaped
 
 
@@ -16,7 +20,11 @@ def advance_turn(state: GameState, use_model: bool = False) -> str:
         return _finalize_capture(state, pre_catch, "A search team was already watching this junction when the turn opened.")
 
     move, story, witnesses, venues = generate_turn_bundle(state, use_model=use_model)
+    setattr(move, "previous_disguise", state.culprit.current_disguise)
     apply_turn_bundle(state, move, story, witnesses, venues)
+    patrol_batch = generate_patrol_witness_batch(state, move)
+    if patrol_batch:
+        state.witness_batches.append(patrol_batch)
     ambient_batch = generate_ambient_witness_batch(state, [witness.potential_id for witness in witnesses])
     if ambient_batch:
         state.witness_batches.append(ambient_batch)
@@ -43,6 +51,8 @@ def advance_turn(state: GameState, use_model: bool = False) -> str:
         message = f"Turn advanced. Public report: no confirmed capture. Turns remaining: {state.max_turns - state.turn_number + 1}."
     if ambient_batch:
         message += f" {ambient_batch.total_witnesses} new witness report(s) surfaced across the city."
+    if patrol_batch:
+        message += f" {patrol_batch.total_witnesses} patrol officer report(s) logged."
 
     state.game_log.append({"turn_number": state.turn_number, "kind": "turn_advance", "message": message})
     return message
