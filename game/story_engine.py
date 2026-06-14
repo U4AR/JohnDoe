@@ -326,6 +326,8 @@ def _validated_decision(state: GameState, moves: list[Any], data: dict[str, Any]
         risk_level=str(data.get("risk_level") or "unknown"),
     )
     setattr(move, "proposed_disguise", new_disguise)
+    if change:
+        _force_stationary(move, state.culprit.current_junction)
     return move
 
 
@@ -333,7 +335,15 @@ def _maybe_change_disguise(state: GameState, move: CulpritMove) -> CulpritMove:
     if state.culprit.remaining_disguise_changes and state.turn_number % 4 == 0:
         move.changed_disguise = True
         setattr(move, "proposed_disguise", "a brown leather jacket over dark trousers, carrying no visible folder")
+        _force_stationary(move, state.culprit.current_junction)
     return move
+
+
+def _force_stationary(move: CulpritMove, current_junction: int) -> None:
+    move.to_junction = current_junction
+    move.from_junction = current_junction
+    move.mode = "remain"
+    move.route = [current_junction]
 
 
 def _create_story(state: GameState, move: CulpritMove, previous_disguise: str, use_model: bool) -> tuple[StorySegment, list[CaseLandmark]]:
@@ -380,12 +390,21 @@ def _create_story(state: GameState, move: CulpritMove, previous_disguise: str, u
 def _deterministic_story(state: GameState, move: CulpritMove, previous: str, new: str, place: dict[str, Any] | None, venue: CaseLandmark | None) -> StorySegment:
     place_name = place["name"] if place else f"Junction {move.to_junction}"
     venue_name = venue.name if venue else place_name
-    action = f"John Doe travelled by {move.mode} from Junction {move.from_junction} to {place_name} at Junction {move.to_junction}."
+    stationary = move.from_junction == move.to_junction
+    if stationary:
+        action = f"John Doe stayed at {place_name} near Junction {move.to_junction} this turn."
+    else:
+        action = f"John Doe travelled by {move.mode} from Junction {move.from_junction} to {place_name} at Junction {move.to_junction}."
     facts = [ObservableFact(
         fact_id=f"fact_t{state.turn_number:03d}_001", turn_number=state.turn_number,
-        junction_id=move.to_junction, kind="movement",
-        text=f"A person matching {previous} arrived near {place_name} by {move.mode}.",
-        tags=_tags(previous, place_name, move.mode, "arrived"), place_id=place.get("id") if place else None,
+        junction_id=move.to_junction, kind="movement" if not stationary else "lingered",
+        text=(
+            f"A person matching {previous} was seen lingering near {place_name}."
+            if stationary
+            else f"A person matching {previous} arrived near {place_name} by {move.mode}."
+        ),
+        tags=_tags(previous, place_name, move.mode if not stationary else "lingered", "arrived" if not stationary else "lingered"),
+        place_id=place.get("id") if place else None,
     )]
     if move.changed_disguise:
         action += f" At {venue_name}, he replaced his visible clothing and emerged wearing {new}."

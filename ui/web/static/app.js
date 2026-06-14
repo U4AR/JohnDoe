@@ -30,16 +30,16 @@ const TACTICS = {
     countLabel: "2 units",
     icon: "icon_patrol_unit.png",
     pin: "pin_patrol_unit.png",
-    preview: "Watches this junction and raises pressure nearby. Best where the suspect may pass through.",
-    details: "Marks a watched junction for visible patrol pressure.",
+    preview: "Discourages the suspect from passing through this junction. Place where they might be heading.",
+    details: "Adds heavy deterrent — the culprit avoids this junction when planning a move.",
   },
   search_team: {
     label: "Search Team",
     countLabel: "2 units",
     icon: "icon_search_team.png",
     pin: "pin_search_team.png",
-    preview: "Investigates this junction for stronger confirmation. Best for checking promising witness clusters.",
-    details: "Marks this junction as under focused investigation.",
+    preview: "Stakes out this junction. If the suspect passes through, the case ends instantly.",
+    details: "Wins the case if the culprit is at this junction at any point during the next turn.",
   },
   lookout_board: {
     label: "Lookout Board",
@@ -299,10 +299,15 @@ function bindEvents() {
   els.settingsButton.addEventListener("click", openSettings);
   els.advanceButton.addEventListener("click", async () => {
     if (!state.gameId) return openNewCase(true);
-    const snapshot = await api("advance_turn", payload());
-    playSound("turn_advance");
-    if (snapshot?.sound && snapshot.sound !== "turn_advance") playSound(snapshot.sound);
-    applySnapshot(snapshot, false);
+    beginTurnProcessing();
+    try {
+      const snapshot = await api("advance_turn", payload());
+      playSound("turn_advance");
+      if (snapshot?.sound && snapshot.sound !== "turn_advance") playSound(snapshot.sound);
+      applySnapshot(snapshot, false);
+    } finally {
+      endTurnProcessing();
+    }
   });
   els.raiseLookoutButton.addEventListener("click", publishNotice);
   els.noticeCloseButton.addEventListener("click", () => els.noticeDialog.close());
@@ -1541,6 +1546,25 @@ function flash(message, sound, makeNoise = true) {
   els.eventTicker.textContent = message;
   els.mapMessage.textContent = message;
   if (makeNoise && sound) playSound(sound);
+}
+
+function beginTurnProcessing() {
+  state.turnProcessing = true;
+  state.advanceButtonLabel = els.advanceButton.textContent;
+  els.advanceButton.classList.add("processing");
+  els.advanceButton.disabled = true;
+  els.advanceButton.textContent = "Processing Turn...";
+  els.eventTicker.textContent = "Generating the next turn... this can take a while.";
+  els.mapMessage.textContent = "Generating the next turn... this can take a while.";
+  playSound("blockade_set");
+}
+
+function endTurnProcessing() {
+  state.turnProcessing = false;
+  els.advanceButton.classList.remove("processing");
+  els.advanceButton.textContent = state.advanceButtonLabel || "Advance Turn";
+  const complete = Boolean(state.game?.result || state.game?.phase === "complete");
+  els.advanceButton.disabled = complete;
 }
 
 let audioContext = null;

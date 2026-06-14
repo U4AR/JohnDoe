@@ -26,11 +26,17 @@ def choose_rule_based_move(state: GameState) -> CulpritMove:
         for notice in state.notices[-3:]
         for plan in notice.response_plan
     }
+    search_team_junctions = {t.junction_id for t in state.placed_tactics if t.tactic_type == "search_team"}
+    patrol_unit_junctions = {t.junction_id for t in state.placed_tactics if t.tactic_type == "patrol_unit"}
 
     def score(move) -> tuple[int, int, str]:
         pressure = 0
+        if move.destination in search_team_junctions:
+            pressure += 10
         if move.destination in checked:
             pressure += 5
+        if move.destination in patrol_unit_junctions:
+            pressure += 4
         if move.destination in notice_junctions:
             pressure += 2
         mode_preference = {"subway": 0, "bus": 1, "taxi": 2}.get(move.mode, 3)
