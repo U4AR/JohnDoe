@@ -4,8 +4,9 @@ import pytest
 
 from game.context_budget import ContextBudget, normalize_context_length
 from game.session import end_turn, issue_notice, new_game
+from game.state import PlacedTactic
 from game.story_engine import _validated_decision, ensure_case_introduction
-from game.witness_engine import answer_witness_question
+from game.witness_engine import answer_witness_question, generate_ambient_witness_batch
 from grid_map.graph_loader import legal_moves_from
 from llm.omni_client import scan_minicpm_models
 
@@ -43,6 +44,67 @@ def test_turn_story_matches_the_committed_decision_and_witness_facts():
     ]
     assert turn_witnesses
     assert all(set(witness.observed_fact_ids) <= fact_ids for witness in turn_witnesses)
+
+
+def test_turn_can_surface_route_and_city_witness_reports():
+    state = new_game("a nervous person in a grey raincoat carrying a red folder", 100)
+
+    class FixedRandom:
+        def __init__(self, seed): pass
+        def random(self): return 0.01
+        def randrange(self, size): return 0
+        def choice(self, values): return values[0]
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr("game.witness_engine.random.Random", FixedRandom)
+        state, message = end_turn(state)
+
+    ambient = [batch for batch in state.witness_batches if batch.notice_id.startswith("ambient_t")]
+    assert "Turn advanced" in message
+    assert ambient
+    assert any(not witness.is_false_positive for witness in ambient[-1].witnesses)
+    assert any(witness.is_false_positive for witness in ambient[-1].witnesses)
+    route = set(state.culprit.route_history[-1].route)
+    assert any(witness.junction_id in route for witness in ambient[-1].witnesses if not witness.is_false_positive)
+
+
+def test_each_turn_guarantees_an_off_route_city_report(monkeypatch):
+    state = new_game("a nervous person in a grey raincoat carrying a red folder", 100)
+    route_potential = next(item for item in state.potential_witnesses if item.junction_id == 100)
+
+    class FixedRandom:
+        def __init__(self, seed): pass
+        def random(self): return 0.99
+        def randrange(self, size): return 0
+        def choice(self, values): return values[0]
+
+    monkeypatch.setattr("game.witness_engine.random.Random", FixedRandom)
+    batch = generate_ambient_witness_batch(state, [route_potential.potential_id])
+
+    assert batch is not None
+    city_reports = [witness for witness in batch.witnesses if witness.is_false_positive]
+    assert city_reports
+    assert all(witness.junction_id != route_potential.junction_id for witness in city_reports)
+
+
+def test_matching_lookout_board_greatly_boosts_correct_route_witness(monkeypatch):
+    state = new_game("a nervous person in a grey raincoat carrying a red folder", 100)
+    state, _ = issue_notice(state, "grey raincoat carrying a red folder", anchor_junction=100)
+    state.placed_tactics.append(PlacedTactic("board", "lookout_board", 1, 100, 0, 0))
+    potential = next(item for item in state.potential_witnesses if item.junction_id == 100)
+    potential.surfaced_notice_id = None
+
+    class FixedRandom:
+        def __init__(self, seed): pass
+        def random(self): return 0.9
+        def randrange(self, size): return 0
+        def choice(self, values): return values[0]
+
+    monkeypatch.setattr("game.witness_engine.random.Random", FixedRandom)
+    batch = generate_ambient_witness_batch(state, [potential.potential_id])
+
+    assert batch is not None
+    assert any(not witness.is_false_positive for witness in batch.witnesses)
 
 
 def test_new_game_builds_a_public_case_introduction_and_sighting_trail():

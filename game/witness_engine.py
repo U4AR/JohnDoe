@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import random
+
 from config import load_settings
 from llm.omni_client import OmniClient
 from game.context_budget import ContextBudget, trim_text_to_tokens
-from grid_map.graph_loader import adjacent_junctions
+from grid_map.graph_loader import adjacent_junctions, all_junction_ids
 
 from .rules import can_review_individual_witnesses
-from .state import GameState, LookoutNotice, WitnessBatch, WitnessQuestion, WitnessRecord
+from .state import GameState, LookoutNotice, PotentialWitness, WitnessBatch, WitnessQuestion, WitnessRecord
 
 
 PERSONALITIES = [
@@ -52,6 +54,47 @@ def generate_witness_batch(state: GameState, notice: LookoutNotice) -> WitnessBa
         total_witnesses=total,
         individual_review_allowed=can_review_individual_witnesses(total),
         witnesses=witnesses,
+    )
+
+
+def generate_ambient_witness_batch(state: GameState, potential_ids: list[str]) -> WitnessBatch | None:
+    """Surface sparse public reports after a turn, favoring the culprit's route."""
+    rng = random.Random(f"{state.game_id}:ambient:{state.turn_number}")
+    candidates = [
+        potential for potential in state.potential_witnesses
+        if potential.potential_id in potential_ids and not potential.surfaced_notice_id
+    ]
+    witnesses: list[WitnessRecord] = []
+    source_id = f"ambient_t{state.turn_number:03d}"
+
+    for potential in candidates:
+        board, description_matches = _board_influence_for_potential(state, potential)
+        probability = _ambient_route_probability(board, description_matches)
+        if rng.random() <= probability:
+            potential.surfaced_notice_id = source_id
+            witnesses.append(_record_from_potential(potential, source_id, state.turn_number, probability))
+
+    # Sample several places at a low rate so reports can emerge across London,
+    # while ensuring players see at least one off-route report every two turns.
+    excluded = {potential.junction_id for potential in candidates}
+    for tactic in state.placed_tactics:
+        if tactic.tactic_type == "lookout_board":
+            excluded.update({tactic.junction_id, *adjacent_junctions(tactic.junction_id)[:4]})
+    city_report_count = sum(1 for _ in range(6) if rng.random() < 0.08)
+    if city_report_count == 0:
+        city_report_count = 1
+    for _ in range(city_report_count):
+        witnesses.append(_ambient_false_witness(state, source_id, rng, len(witnesses), None, excluded))
+    for tactic in state.placed_tactics:
+        if tactic.tactic_type == "lookout_board" and rng.random() < 0.42:
+            witnesses.append(_ambient_false_witness(state, source_id, rng, len(witnesses), tactic.junction_id))
+
+    if not witnesses:
+        return None
+    return WitnessBatch(
+        batch_id=f"batch_{source_id}", notice_id=source_id, turn_number=state.turn_number,
+        total_witnesses=len(witnesses),
+        individual_review_allowed=can_review_individual_witnesses(len(witnesses)), witnesses=witnesses,
     )
 
 
@@ -118,21 +161,90 @@ def _surface_matching_witnesses(state: GameState, notice: LookoutNotice) -> list
     witnesses: list[WitnessRecord] = []
     for index, (score, potential) in enumerate(candidates[:18], start=1):
         potential.surfaced_notice_id = notice.notice_id
-        profile = potential.profile
-        personality = _complete_personality(profile)
-        witnesses.append(WitnessRecord(
-            witness_id=f"w_{potential.potential_id}", notice_id=notice.notice_id,
-            turn_created=state.turn_number, junction_id=potential.junction_id,
-            personality=personality, reliability=potential.reliability,
-            memory_strength=potential.memory_strength, corruption_level=0.0,
-            relevance_score=_bounded(score), original_summary=potential.summary,
-            current_summary=potential.summary,
-            stable_facts=[f"witness was at Junction {potential.junction_id}", *potential.observed_fact_ids],
-            fragile_facts=_fragile_facts_from_notice(notice), name=profile.get("name", f"Witness {index}"),
-            occupation=profile.get("occupation", "local resident"), voice_id=potential.voice_id,
-            observed_fact_ids=potential.observed_fact_ids, is_false_positive=False,
-        ))
+        witnesses.append(_record_from_potential(potential, notice.notice_id, state.turn_number, score, notice))
     return witnesses
+
+
+def _record_from_potential(
+    potential: PotentialWitness,
+    source_id: str,
+    turn_number: int,
+    relevance: float,
+    notice: LookoutNotice | None = None,
+) -> WitnessRecord:
+    profile = potential.profile
+    return WitnessRecord(
+        witness_id=f"w_{potential.potential_id}", notice_id=source_id,
+        turn_created=turn_number, junction_id=potential.junction_id,
+        personality=_complete_personality(profile), reliability=potential.reliability,
+        memory_strength=potential.memory_strength, corruption_level=0.0,
+        relevance_score=_bounded(relevance), original_summary=potential.summary,
+        current_summary=potential.summary,
+        stable_facts=[f"witness was at Junction {potential.junction_id}", *potential.observed_fact_ids],
+        fragile_facts=_fragile_facts_from_notice(notice) if notice else ["clothing detail", "direction of travel"],
+        name=profile.get("name", "Witness"), occupation=profile.get("occupation", "local resident"),
+        voice_id=potential.voice_id, observed_fact_ids=potential.observed_fact_ids, is_false_positive=False,
+    )
+
+
+def _ambient_route_probability(board: bool, description_matches: bool) -> float:
+    if description_matches:
+        return 0.98
+    return 0.8 if board else 0.6
+
+
+def _board_influence_for_potential(state: GameState, potential: PotentialWitness) -> tuple[bool, bool]:
+    potential_words = set(_distinctive_words(" ".join(potential.search_tags) + " " + potential.summary))
+    influenced = False
+    matched = False
+    for tactic in state.placed_tactics:
+        if tactic.tactic_type != "lookout_board":
+            continue
+        covered = {tactic.junction_id, *adjacent_junctions(tactic.junction_id)[:4]}
+        if potential.junction_id not in covered:
+            continue
+        influenced = True
+        board_notice = next(
+            (
+                notice for notice in reversed(state.notices)
+                if notice.response_plan and int(notice.response_plan[0]["junction_id"]) == tactic.junction_id
+            ),
+            None,
+        )
+        if board_notice:
+            notice_words = set(_distinctive_words(board_notice.text))
+            if len(notice_words & potential_words) >= 2:
+                matched = True
+    return influenced, matched
+
+
+def _ambient_false_witness(
+    state: GameState,
+    source_id: str,
+    rng: random.Random,
+    offset: int,
+    anchor: int | None,
+    excluded: set[int] | None = None,
+) -> WitnessRecord:
+    profile_index = rng.randrange(len(FALSE_WITNESS_PROFILES))
+    name, occupation, personality = FALSE_WITNESS_PROFILES[profile_index]
+    if anchor is None:
+        choices = [junction_id for junction_id in all_junction_ids() if junction_id not in (excluded or set())]
+        junction_id = rng.choice(choices or all_junction_ids())
+    else:
+        nearby = [anchor, *adjacent_junctions(anchor)[:4]]
+        junction_id = rng.choice(nearby)
+    summary = FALSE_ACCOUNT_TEMPLATES[profile_index].format(junction=junction_id, name=name)
+    return WitnessRecord(
+        witness_id=f"w_false_{source_id}_{junction_id}_{offset + 1:02d}", notice_id=source_id,
+        turn_created=state.turn_number, junction_id=junction_id, personality=dict(personality),
+        reliability=round(0.42 + profile_index * 0.05, 2), memory_strength=0.55,
+        corruption_level=0.0, relevance_score=0.16, original_summary=summary, current_summary=summary,
+        stable_facts=[f"witness was at Junction {junction_id}", f"unprompted report from turn {state.turn_number}"],
+        fragile_facts=["clothing detail", "object detail", "direction of travel"],
+        name=name, occupation=occupation, voice_id=f"voice_{profile_index + 1:02d}",
+        observed_fact_ids=[], is_false_positive=True,
+    )
 
 
 def _false_positive_witnesses(state: GameState, notice: LookoutNotice, real_count: int) -> list[WitnessRecord]:

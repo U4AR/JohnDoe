@@ -96,13 +96,50 @@ def test_server_mode_ui_exposes_custom_routes_without_blocks_components():
 def test_colocated_witnesses_and_tactics_render_as_separate_click_targets():
     script = (Path(__file__).parents[1] / "ui" / "web" / "static" / "app.js").read_text(encoding="utf-8")
     styles = (Path(__file__).parents[1] / "ui" / "web" / "static" / "app.css").read_text(encoding="utf-8")
+    html = (Path(__file__).parents[1] / "ui" / "web" / "index.html").read_text(encoding="utf-8")
 
-    assert 'token.style.setProperty("--token-offset-x", "-22px")' in script
+    assert 'token.style.setProperty("--token-offset-x", `${offset.x}px`)' in script
+    assert 'token.style.setProperty("--token-offset-y", `${offset.y}px`)' in script
     assert "const colocatedWithWitness = witnessJunctions.has(placed.junction_id)" in script
     assert "calc(-50% + var(--token-offset-x, 0px))" in styles
     assert 'new URLSearchParams(window.location.search).get("game_id")' in script
     assert "showOpeningForFreshCase(snapshot)" in script
     assert "snapshot.game.turn !== 1" in script
+    assert 'id="wantedLastSeen"' in html
+    assert "game.last_seen?.location" in script
+    assert 'id="witnessModeButton"' in html
+    assert "witnessReportOffset" in script
+    assert "report.id ||" in script
+    assert "20260614-complete-icons-v3" in script
+    assert "witness-cluster-token" in script
+    assert "showWitnessClusterPopup" in script
+    assert "data-action=\"open-witness\"" in script
+    assert "witness-cluster-member" in script
+    assert 'pin_unviewed_witness.png" : "pin_viewed_witness.png' in script
+
+
+def test_tactic_map_pins_are_normalized_transparent_assets():
+    from PIL import Image
+
+    asset_dir = Path(__file__).parents[1] / "ui" / "web" / "static" / "assets" / "reference"
+    for name in (
+        "icon_roadblock.png",
+        "icon_junction_lockdown.png",
+        "icon_patrol_unit.png",
+        "icon_search_team.png",
+        "icon_lookout_board.png",
+        "pin_roadblock.png",
+        "pin_junction_lockdown.png",
+        "pin_patrol_unit.png",
+        "pin_search_team.png",
+        "pin_lookout_board.png",
+        "pin_unviewed_witness.png",
+        "pin_viewed_witness.png",
+    ):
+        with Image.open(asset_dir / name) as image:
+            assert image.size == (128, 128)
+            assert image.mode == "RGBA"
+            assert image.getpixel((0, 0))[3] == 0
 
 
 def test_witness_map_keeps_locations_from_all_lookout_notices():
@@ -113,6 +150,10 @@ def test_witness_map_keeps_locations_from_all_lookout_notices():
     locations = _witness_locations(state)
 
     assert {location["junction_id"] for location in locations} >= {71, 83}
+    assert all(location["reports"] for location in locations)
+    assert all(report["id"] for location in locations for report in location["reports"])
+    report_ids = [report["id"] for location in locations for report in location["reports"]]
+    assert len(report_ids) == len(set(report_ids))
 
 
 def test_api_snapshot_hides_culprit_and_exposes_map_context():
@@ -123,6 +164,7 @@ def test_api_snapshot_hides_culprit_and_exposes_map_context():
     assert "culprit" not in snapshot["game"]
     assert snapshot["case_introduction"]["culprit_alias"]
     assert len(snapshot["case_introduction"]["last_seen"]) == 3
+    assert snapshot["game"]["last_seen"]["confidence"] == "confirmed"
     assert snapshot["map"]["junctions"]
     assert any(junction["nearest_landmarks"] for junction in snapshot["map"]["junctions"])
     assert snapshot["asset_prompts"]["suspect_placeholder"]

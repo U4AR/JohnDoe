@@ -39,6 +39,8 @@
               <dd id="wantedAlias">John Doe</dd>
               <dt>Description</dt>
               <dd id="wantedDescription">Male, approx. 35-45. Gray raincoat. Carries red folder.</dd>
+              <dt>Last Seen</dt>
+              <dd id="wantedLastSeen">Awaiting confirmed location</dd>
             </dl>
             <strong>&pound;5,000 Reward</strong>
             <small>Dead or Alive</small>
@@ -78,6 +80,11 @@
                 <output id="zoomValue">145%</output>
                 <button id="zoomInButton" type="button" aria-label="Zoom in">+</button>
                 <button id="zoomResetButton" type="button">Reset</button>
+                <span class="map-control-divider" aria-hidden="true"></span>
+                <button id="toggleWitnessesButton" class="map-visibility-toggle active" type="button" aria-pressed="true">Witnesses</button>
+                <button id="toggleTacticsButton" class="map-visibility-toggle active" type="button" aria-pressed="true">Tactics</button>
+                <button id="toggleFocusButton" class="map-visibility-toggle active" type="button" aria-pressed="true">Focus</button>
+                <button id="witnessModeButton" type="button">Witness Mode</button>
               </div>
               <div id="mapMessage" class="map-message">Drop tactics on junctions. Drag the map to navigate.</div>
             </div>

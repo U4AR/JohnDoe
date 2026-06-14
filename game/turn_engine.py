@@ -3,7 +3,7 @@ from __future__ import annotations
 from .police_actions import tick_blocks
 from .state import GameState
 from .story_engine import apply_turn_bundle, generate_turn_bundle
-from .witness_engine import corrupt_witnesses_slightly
+from .witness_engine import corrupt_witnesses_slightly, generate_ambient_witness_batch
 from .win_conditions import culprit_has_escaped
 
 
@@ -13,6 +13,9 @@ def advance_turn(state: GameState, use_model: bool = False) -> str:
 
     move, story, witnesses, venues = generate_turn_bundle(state, use_model=use_model)
     apply_turn_bundle(state, move, story, witnesses, venues)
+    ambient_batch = generate_ambient_witness_batch(state, [witness.potential_id for witness in witnesses])
+    if ambient_batch:
+        state.witness_batches.append(ambient_batch)
     corrupt_witnesses_slightly(state)
     state.active_blocks = tick_blocks(state.active_blocks)
     active_block_ids = {block.block_id for block in state.active_blocks}
@@ -30,6 +33,8 @@ def advance_turn(state: GameState, use_model: bool = False) -> str:
         message = "The culprit avoided detection until the turn limit expired."
     else:
         message = f"Turn advanced. Public report: no confirmed capture. Turns remaining: {state.max_turns - state.turn_number + 1}."
+    if ambient_batch:
+        message += f" {ambient_batch.total_witnesses} new witness report(s) surfaced across the city."
 
     state.game_log.append({"turn_number": state.turn_number, "kind": "turn_advance", "message": message})
     return message

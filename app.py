@@ -458,9 +458,11 @@ def api_advance_turn(
         _require_omni_ready()
     state.effective_context_length = load_settings().llamacpp_context_length
     compact_story_memory(state)
+    previous_batch_count = len(state.witness_batches)
     state, message = end_turn(state, use_model=use_model)
     _SESSIONS[state.game_id] = state
-    return _snapshot(state, selected, focused, message, sound="turn_advance")
+    sound = "witness_popup" if len(state.witness_batches) > previous_batch_count else "turn_advance"
+    return _snapshot(state, selected, focused, message, sound=sound)
 
 
 def api_witness_detail(game_id: str, witness_id: str) -> dict[str, Any]:
@@ -1132,6 +1134,11 @@ def _snapshot(
 def _visible_game_state(state: GameState | None) -> dict[str, Any] | None:
     if state is None:
         return None
+    confirmed_sightings = [
+        sighting for sighting in state.case_introduction.get("last_seen", [])
+        if sighting.get("confidence") == "confirmed"
+    ]
+    last_seen = confirmed_sightings[-1] if confirmed_sightings else None
     return {
         "game_id": state.game_id,
         "turn": state.turn_number,
@@ -1142,6 +1149,7 @@ def _visible_game_state(state: GameState | None) -> dict[str, Any] | None:
         "notices": len(state.notices),
         "witness_batches": len(state.witness_batches),
         "initial_description": state.initial_description,
+        "last_seen": last_seen,
         "finalized_reason": state.finalized_reason,
         "effective_context_length": state.effective_context_length,
     }
@@ -1173,9 +1181,11 @@ def _legal_moves_payload(focused_junction: int | None, state: GameState | None) 
 
 
 def _lookout_payload(state: GameState | None) -> dict[str, Any]:
-    if state is None or not state.witness_batches:
+    if state is None:
         return {"raised": False, "witness_count": 0, "review_allowed": False, "notice": None}
-    batch = state.witness_batches[-1]
+    batch = next((item for item in reversed(state.witness_batches) if item.notice_id.startswith("notice_")), None)
+    if batch is None:
+        return {"raised": False, "witness_count": 0, "review_allowed": False, "notice": None}
     notice = next((item for item in state.notices if item.notice_id == batch.notice_id), None)
     return {
         "raised": True,
@@ -1197,6 +1207,7 @@ def _witness_locations(state: GameState | None) -> list[dict[str, Any]]:
                 {
                     "junction_id": witness.junction_id,
                     "count": 0,
+                    "reports": [],
                     "inspectable": False,
                     "sample_witness_id": witness.witness_id,
                     "sample_style": witness.personality.get("style", "witness"),
@@ -1206,6 +1217,17 @@ def _witness_locations(state: GameState | None) -> list[dict[str, Any]]:
                 },
             )
             location["count"] += 1
+            location["reports"].append(
+                {
+                    "id": witness.witness_id,
+                    "viewed": witness.witness_id in state.viewed_witness_ids,
+                    "style": witness.personality.get("style", "witness"),
+                    "summary": witness.current_summary,
+                    "relevance": witness.relevance_score,
+                    "name": witness.name,
+                    "occupation": witness.occupation,
+                }
+            )
             location["inspectable"] = location["inspectable"] or batch.individual_review_allowed
             is_viewed = witness.witness_id in state.viewed_witness_ids
             location["viewed"] = location["viewed"] or is_viewed

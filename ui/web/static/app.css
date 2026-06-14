@@ -279,6 +279,10 @@ button:disabled {
   line-height: 1.02;
 }
 
+#wantedLastSeen {
+  color: #8b2217;
+}
+
 .wanted-card strong {
   color: #4b2109;
   font-size: 1.55rem;
@@ -567,6 +571,7 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 5px;
+  max-width: calc(100% - 24px);
   padding: 5px;
   color: var(--ink);
   background: rgba(242, 217, 156, 0.94);
@@ -589,6 +594,30 @@ button:disabled {
 .map-controls output {
   min-width: 52px;
   background: #fff0bc;
+}
+
+.map-control-divider {
+  width: 1px;
+  height: 24px;
+  background: #8f5d18;
+}
+
+.map-controls .map-visibility-toggle,
+.map-controls #witnessModeButton {
+  min-width: auto;
+  padding: 0 8px;
+  font-size: 0.72rem;
+}
+
+.map-controls .map-visibility-toggle:not(.active) {
+  color: #6c5c42;
+  background: #c8b98f;
+  text-decoration: line-through;
+}
+
+.map-controls #witnessModeButton.active {
+  color: #fff4c2;
+  background: #176e5e;
 }
 
 .focus-marker {
@@ -616,11 +645,43 @@ button:disabled {
   transform: translate(calc(-50% + var(--token-offset-x, 0px)), -82%);
 }
 
+.map-token.junction_lockdown {
+  width: 58px;
+  height: 44px;
+}
+
+.map-token.roadblock {
+  width: 62px;
+  height: 48px;
+}
+
+.map-token.patrol_unit {
+  width: 48px;
+  height: 54px;
+}
+
+.map-token.search_team {
+  width: 50px;
+  height: 50px;
+}
+
+.map-token.lookout_board {
+  width: 48px;
+  height: 58px;
+}
+
 .witness-token {
   width: 38px;
   height: 52px;
-  transform: translate(calc(-50% + var(--token-offset-x, 0px)), -86%);
+  transform: translate(
+    calc(-50% + var(--token-offset-x, 0px)),
+    calc(-86% + var(--token-offset-y, 0px))
+  );
 }
+
+#selectionLayer { z-index: 10; }
+#tacticLayer { z-index: 11; }
+#witnessLayer { z-index: 12; }
 
 .map-token.co-located,
 .witness-token.co-located {
@@ -651,6 +712,53 @@ button:disabled {
 
 .witness-token.viewed strong {
   background: #176e5e;
+}
+
+.witness-cluster-token {
+  z-index: 4;
+  width: 42px;
+  height: 56px;
+  transform: translate(-50%, -86%);
+}
+
+.witness-cluster-token strong {
+  right: -3px;
+  top: 1px;
+  min-width: 19px;
+  min-height: 19px;
+  font-size: 0.68rem;
+}
+
+.witness-cluster-member {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cluster-report-list {
+  display: grid;
+  gap: 7px;
+  max-height: 230px;
+  overflow: auto;
+}
+
+.cluster-report-button {
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+  color: #251304;
+  text-align: left;
+  background: #fff0bc;
+  border: 2px solid #a97522;
+}
+
+.cluster-report-button.viewed {
+  border-color: #176e5e;
+  background: #d7eee0;
+}
+
+.cluster-report-button span {
+  font-size: 0.76rem;
+  line-height: 1.25;
 }
 
 .map-message {

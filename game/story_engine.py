@@ -197,8 +197,27 @@ def generate_turn_bundle(state: GameState, use_model: bool = False) -> tuple[Cul
         raise ValueError("Model requested a disguise change when none remain.")
     story, venues = _create_story(working, move, previous_disguise, use_model=use_model)
     _validate_story_against_move(story, move)
+    _ensure_route_facts(story)
     witnesses = _derive_witnesses(working, story, use_model=use_model)
     return move, story, witnesses, venues
+
+
+def _ensure_route_facts(story: StorySegment) -> None:
+    if story.from_junction == story.to_junction:
+        return
+    if any(fact.junction_id == story.from_junction for fact in story.observable_facts):
+        return
+    story.observable_facts.insert(0, ObservableFact(
+        fact_id=f"fact_t{story.turn_number:03d}_departure",
+        turn_number=story.turn_number,
+        junction_id=story.from_junction,
+        kind="departure",
+        text=(
+            f"A person matching {story.previous_disguise} left Junction {story.from_junction} "
+            f"by {story.mode}."
+        ),
+        tags=_tags(story.previous_disguise, story.mode, "left", "departure"),
+    ))
 
 
 def apply_turn_bundle(

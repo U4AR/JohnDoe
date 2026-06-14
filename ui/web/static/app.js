@@ -2,6 +2,11 @@ const DEFAULT_NOTICE = "Request high-confidence reports of a grey raincoat carry
 const DEFAULT_FOCUSED_JUNCTION = 100;
 
 const ASSET = "/static/assets/reference/";
+const ASSET_VERSION = "20260614-complete-icons-v3";
+
+function assetUrl(filename) {
+  return `${ASSET}${filename}?v=${ASSET_VERSION}`;
+}
 
 const TACTICS = {
   roadblock: {
@@ -79,6 +84,7 @@ const els = {
   eventTicker: document.querySelector("#eventTicker"),
   detailPopup: document.querySelector("#detailPopup"),
   wantedDescription: document.querySelector("#wantedDescription"),
+  wantedLastSeen: document.querySelector("#wantedLastSeen"),
   wantedAlias: document.querySelector("#wantedAlias"),
   gameTitle: document.querySelector("#gameTitle"),
   gameSubtitle: document.querySelector("#gameSubtitle"),
@@ -86,6 +92,10 @@ const els = {
   zoomInButton: document.querySelector("#zoomInButton"),
   zoomResetButton: document.querySelector("#zoomResetButton"),
   zoomValue: document.querySelector("#zoomValue"),
+  toggleWitnessesButton: document.querySelector("#toggleWitnessesButton"),
+  toggleTacticsButton: document.querySelector("#toggleTacticsButton"),
+  toggleFocusButton: document.querySelector("#toggleFocusButton"),
+  witnessModeButton: document.querySelector("#witnessModeButton"),
   settingsDialog: document.querySelector("#settingsDialog"),
   settingsCloseButton: document.querySelector("#settingsCloseButton"),
   soundSetting: document.querySelector("#soundSetting"),
@@ -203,6 +213,7 @@ const state = {
   runtimeOptions: null,
   pickerHydrated: false,
   activeIntroGameId: null,
+  mapVisibility: { witnesses: true, tactics: true, focus: true },
 };
 
 function emptyCounts() {
@@ -286,6 +297,10 @@ function bindEvents() {
   els.zoomOutButton.addEventListener("click", () => zoomBy(0.86));
   els.zoomInButton.addEventListener("click", () => zoomBy(1.16));
   els.zoomResetButton.addEventListener("click", () => resetMapView(true));
+  els.toggleWitnessesButton.addEventListener("click", () => toggleMapVisibility("witnesses"));
+  els.toggleTacticsButton.addEventListener("click", () => toggleMapVisibility("tactics"));
+  els.toggleFocusButton.addEventListener("click", () => toggleMapVisibility("focus"));
+  els.witnessModeButton.addEventListener("click", enableWitnessMode);
   els.tacticTray.addEventListener("pointerdown", startTrayPointerDrag);
   els.tacticLayer.addEventListener("pointerdown", startPlacedPointerDrag);
   els.witnessLayer.addEventListener("click", handleWitnessClick);
@@ -750,6 +765,7 @@ function renderGame(game) {
   els.caseClock.textContent = `${game.turn} / ${game.max_turns}`;
   els.turnPhase.textContent = turnPhase(game.turn);
   els.wantedDescription.textContent = game.initial_description || els.wantedDescription.textContent;
+  els.wantedLastSeen.textContent = game.last_seen?.location || (game.last_seen?.junction_id ? `Junction ${game.last_seen.junction_id}` : "Awaiting confirmed location");
   els.advanceButton.disabled = complete;
   els.stopGameButton.disabled = complete;
 }
@@ -768,7 +784,7 @@ function renderTacticTray() {
     card.dataset.tacticType = type;
     card.setAttribute("aria-label", `${tactic.label}, ${remaining} of ${limit} remaining. ${tactic.preview}`);
     card.innerHTML = `
-      <img src="${ASSET}${tactic.icon}" alt="" />
+      <img src="${assetUrl(tactic.icon)}" alt="" />
       <span>${escapeHtml(tactic.label)}</span>
       <strong>${remaining} / ${limit}</strong>
       <em class="tactic-preview">${escapeHtml(tactic.preview)}<br><b>${remaining} left</b></em>
@@ -878,39 +894,61 @@ function renderMapOverlays() {
   state.placedTactics.forEach((placed) => {
     tacticCountsByJunction.set(placed.junction_id, (tacticCountsByJunction.get(placed.junction_id) || 0) + 1);
   });
-  const witnessJunctions = new Set(state.witnesses.map((witness) => witness.junction_id));
+  const witnessJunctions = new Set(
+    state.mapVisibility.witnesses ? state.witnesses.map((witness) => witness.junction_id) : [],
+  );
 
   const focused = junctionById(state.focused);
-  if (focused) {
+  if (focused && state.mapVisibility.focus) {
     const marker = document.createElement("div");
     marker.className = "focus-marker";
     placeAtMapPoint(marker, focused.x, focused.y);
     els.selectionLayer.append(marker);
   }
 
-  state.witnesses.forEach((witness) => {
+  if (state.mapVisibility.witnesses) state.witnesses.forEach((witness) => {
     const junction = junctionById(witness.junction_id);
     if (!junction) return;
-    const token = document.createElement("button");
-    token.type = "button";
-    token.className = `witness-token ${witness.viewed ? "viewed" : "unviewed"}`;
-    token.dataset.junctionId = String(witness.junction_id);
-    token.dataset.witnessId = witness.sample_witness_id || "";
-    if (tacticCountsByJunction.has(witness.junction_id)) {
-      token.classList.add("co-located");
-      token.style.setProperty("--token-offset-x", "-22px");
+    const reports = witness.reports?.length ? witness.reports : [{
+      id: witness.sample_witness_id,
+      viewed: witness.viewed,
+      summary: witness.sample_summary,
+    }];
+    if (reports.length > 1) {
+      const cluster = document.createElement("button");
+      cluster.type = "button";
+      cluster.className = "witness-token witness-cluster-token";
+      cluster.dataset.witnessClusterJunction = String(witness.junction_id);
+      cluster.setAttribute("aria-label", `${reports.length} separate witness reports at Junction ${witness.junction_id}. Open report list.`);
+      cluster.innerHTML = `
+        <img src="${assetUrl(reports.some((report) => !report.viewed) ? "pin_unviewed_witness.png" : "pin_viewed_witness.png")}" alt="" />
+        <strong>${reports.length}</strong>
+      `;
+      placeAtMapPoint(cluster, junction.x, junction.y);
+      els.witnessLayer.append(cluster);
     }
-    token.setAttribute("aria-label", `${witness.viewed ? "Viewed" : "Unviewed"} witness at Junction ${witness.junction_id}; ${witness.count} report${witness.count === 1 ? "" : "s"}`);
-    token.innerHTML = `
-      <img src="${ASSET}${witness.viewed ? "pin_viewed_witness.png" : "pin_unviewed_witness.png"}" alt="" />
-      <strong>${witness.count}</strong>
-    `;
-    placeAtMapPoint(token, junction.x, junction.y);
-    els.witnessLayer.append(token);
+    reports.forEach((report, reportIndex) => {
+      const token = document.createElement("button");
+      const offset = witnessReportOffset(reportIndex, reports.length, tacticCountsByJunction.has(witness.junction_id));
+      token.type = "button";
+      token.className = `witness-token witness-cluster-member ${report.viewed ? "viewed" : "unviewed"}`;
+      token.dataset.junctionId = String(witness.junction_id);
+      token.dataset.witnessId = report.id || "";
+      token.style.setProperty("--token-offset-x", `${offset.x}px`);
+      token.style.setProperty("--token-offset-y", `${offset.y}px`);
+      if (reports.length > 1 || tacticCountsByJunction.has(witness.junction_id)) token.classList.add("co-located");
+      token.setAttribute("aria-label", `${report.viewed ? "Viewed" : "Unviewed"} witness ${reportIndex + 1} of ${reports.length} at Junction ${witness.junction_id}`);
+      token.innerHTML = `
+        <img src="${assetUrl(report.viewed ? "pin_viewed_witness.png" : "pin_unviewed_witness.png")}" alt="" />
+        ${reports.length > 1 ? `<strong>${reportIndex + 1}</strong>` : ""}
+      `;
+      placeAtMapPoint(token, junction.x, junction.y);
+      els.witnessLayer.append(token);
+    });
   });
 
   const renderedTacticsByJunction = new Map();
-  state.placedTactics.forEach((placed) => {
+  if (state.mapVisibility.tactics) state.placedTactics.forEach((placed) => {
     const tactic = TACTICS[placed.tactic_type];
     if (!tactic) return;
     const token = document.createElement("button");
@@ -928,7 +966,7 @@ function renderMapOverlays() {
       const spreadOffset = (tacticIndex - (tacticCount - 1) / 2) * 34;
       token.style.setProperty("--token-offset-x", `${baseOffset + spreadOffset}px`);
     }
-    token.innerHTML = `<img src="${ASSET}${tactic.pin}" alt="${escapeHtml(tactic.label)}" />`;
+    token.innerHTML = `<img src="${assetUrl(tactic.pin)}" alt="${escapeHtml(tactic.label)}" />`;
     token.addEventListener("dragstart", (event) => {
       event.dataTransfer.setData("application/x-placed-tactic-id", placed.tactic_id);
       event.dataTransfer.effectAllowed = "move";
@@ -936,6 +974,47 @@ function renderMapOverlays() {
     placeAtMapPoint(token, placed.x, placed.y);
     els.tacticLayer.append(token);
   });
+}
+
+function witnessReportOffset(index, total, colocatedWithTactic) {
+  if (total === 1) return { x: colocatedWithTactic ? -28 : 0, y: 0 };
+  const ringIndex = Math.floor(index / 8);
+  const position = index % 8;
+  const itemsInRing = Math.min(8, total - ringIndex * 8);
+  const radius = 26 + ringIndex * 18 + (colocatedWithTactic ? 8 : 0);
+  const angle = (-Math.PI / 2) + (position * Math.PI * 2) / itemsInRing;
+  return { x: Math.round(Math.cos(angle) * radius), y: Math.round(Math.sin(angle) * radius) };
+}
+
+function toggleMapVisibility(category) {
+  state.mapVisibility[category] = !state.mapVisibility[category];
+  renderMapVisibilityControls();
+  renderMapOverlays();
+}
+
+function enableWitnessMode() {
+  state.mapVisibility.witnesses = true;
+  state.mapVisibility.tactics = false;
+  state.mapVisibility.focus = false;
+  renderMapVisibilityControls();
+  renderMapOverlays();
+}
+
+function renderMapVisibilityControls() {
+  const controls = [
+    [els.toggleWitnessesButton, "witnesses"],
+    [els.toggleTacticsButton, "tactics"],
+    [els.toggleFocusButton, "focus"],
+  ];
+  controls.forEach(([button, category]) => {
+    const visible = state.mapVisibility[category];
+    button.classList.toggle("active", visible);
+    button.setAttribute("aria-pressed", String(visible));
+  });
+  els.witnessModeButton.classList.toggle(
+    "active",
+    state.mapVisibility.witnesses && !state.mapVisibility.tactics && !state.mapVisibility.focus,
+  );
 }
 
 function renderLookout(lookout) {
@@ -997,7 +1076,7 @@ function renderLegend() {
   items.forEach(([icon, label, detail]) => {
     const item = document.createElement("div");
     item.className = "legend-item";
-    item.innerHTML = `<img src="${ASSET}${icon}" alt="" /><strong>${label}</strong><span>${detail}</span>`;
+    item.innerHTML = `<img src="${assetUrl(icon)}" alt="" /><strong>${label}</strong><span>${detail}</span>`;
     els.legendStrip.append(item);
   });
 }
@@ -1126,7 +1205,7 @@ function beginPointerDrag(event, detail) {
   closePopup();
   const ghost = document.createElement("div");
   ghost.className = "drag-ghost";
-  ghost.innerHTML = `<img src="${ASSET}${detail.icon}" alt="" /><span>${escapeHtml(detail.label)}</span>`;
+  ghost.innerHTML = `<img src="${assetUrl(detail.icon)}" alt="" /><span>${escapeHtml(detail.label)}</span>`;
   document.body.append(ghost);
   state.pointerDrag = {
     ...detail,
@@ -1212,6 +1291,15 @@ function handleTacticClick(event) {
 }
 
 function handleWitnessClick(event) {
+  const cluster = event.target.closest("[data-witness-cluster-junction]");
+  if (cluster) {
+    event.preventDefault();
+    event.stopPropagation();
+    const junctionId = Number(cluster.dataset.witnessClusterJunction);
+    const location = state.witnesses.find((item) => item.junction_id === junctionId);
+    showWitnessClusterPopup(location, event.clientX, event.clientY);
+    return;
+  }
   const token = event.target.closest("[data-witness-id]");
   if (!token) return;
   event.preventDefault();
@@ -1239,6 +1327,11 @@ function handlePopupClick(event) {
   const ask = event.target.closest("[data-action='ask-witness']");
   if (ask) {
     askWitness(ask.dataset.witnessId);
+    return;
+  }
+  const openWitness = event.target.closest("[data-action='open-witness']");
+  if (openWitness) {
+    openWitnessInterview(openWitness.dataset.witnessId);
   }
 }
 
@@ -1250,7 +1343,7 @@ function showTacticPopup(placed, x, y) {
   renderMapOverlays();
   els.detailPopup.innerHTML = `
     <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">X</button>
-    <img src="${ASSET}${tactic.pin}" alt="" />
+    <img src="${assetUrl(tactic.pin)}" alt="" />
     <h3>${escapeHtml(tactic.label)}</h3>
     <p>${escapeHtml(tactic.details)}</p>
     <dl>
@@ -1271,7 +1364,7 @@ function showWitnessPopup(location, card, x, y) {
   renderMapOverlays();
   els.detailPopup.innerHTML = `
     <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">X</button>
-    <img src="${ASSET}${location.viewed ? "pin_viewed_witness.png" : "pin_unviewed_witness.png"}" alt="" />
+    <img src="${assetUrl(location.viewed ? "pin_viewed_witness.png" : "pin_unviewed_witness.png")}" alt="" />
     <h3>${location.viewed ? "Viewed Witness" : "Unviewed Witness"}</h3>
     <p>${escapeHtml(shortSummary(card?.summary || location.sample_summary || "Potential witness report.", 160))}</p>
     <dl>
@@ -1279,6 +1372,26 @@ function showWitnessPopup(location, card, x, y) {
       <dt>Reports</dt><dd>${location.count}</dd>
     </dl>
     ${canAsk ? `<button class="ask-button" type="button" data-action="ask-witness" data-witness-id="${escapeHtml(witnessId)}">Ask Statement</button>` : ""}
+  `;
+  placePopup(x, y);
+}
+
+function showWitnessClusterPopup(location, x, y) {
+  if (!location?.reports?.length) return;
+  state.focused = location.junction_id;
+  state.selected = [location.junction_id];
+  renderMapOverlays();
+  const reportButtons = location.reports.map((report, index) => `
+    <button class="cluster-report-button ${report.viewed ? "viewed" : "unviewed"}" type="button" data-action="open-witness" data-witness-id="${escapeHtml(report.id)}">
+      <strong>Report ${index + 1}: ${escapeHtml(report.name || report.style || "Witness")}</strong>
+      <span>${escapeHtml(shortSummary(report.summary || "Potential witness report.", 92))}</span>
+    </button>
+  `).join("");
+  els.detailPopup.innerHTML = `
+    <button class="popup-close" type="button" data-action="close-popup" aria-label="Close">X</button>
+    <h3>${location.reports.length} Witness Reports</h3>
+    <p>Junction ${location.junction_id}. Select a report to interview that witness.</p>
+    <div class="cluster-report-list">${reportButtons}</div>
   `;
   placePopup(x, y);
 }
