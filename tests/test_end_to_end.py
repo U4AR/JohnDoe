@@ -104,6 +104,8 @@ def test_colocated_witnesses_and_tactics_render_as_separate_click_targets():
     assert "calc(-50% + var(--token-offset-x, 0px))" in styles
     assert 'new URLSearchParams(window.location.search).get("game_id")' in script
     assert "showOpeningForFreshCase(snapshot)" in script
+    assert 'caseIntroImage: document.querySelector("#caseIntroImage")' in script
+    assert "versionedSuspectImage(intro.suspect_image, gameId)" in script
     assert "snapshot.game.turn !== 1" in script
     assert 'id="wantedLastSeen"' in html
     assert "game.last_seen?.location" in script

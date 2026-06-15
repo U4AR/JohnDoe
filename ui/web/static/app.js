@@ -173,6 +173,7 @@ const els = {
   caseIntroVictim: document.querySelector("#caseIntroVictim"),
   caseIntroAlias: document.querySelector("#caseIntroAlias"),
   caseIntroDescription: document.querySelector("#caseIntroDescription"),
+  caseIntroImage: document.querySelector("#caseIntroImage"),
   caseIntroSightings: document.querySelector("#caseIntroSightings"),
   beginInvestigationButton: document.querySelector("#beginInvestigationButton"),
   setupOverlay: document.querySelector("#setupOverlay"),
@@ -724,6 +725,9 @@ function showCaseIntroduction(intro, description, gameId, force = false) {
   els.caseIntroVictim.textContent = intro.victim || "Name withheld";
   els.caseIntroAlias.textContent = intro.culprit_alias || "John Doe";
   els.caseIntroDescription.textContent = description || "Description unavailable.";
+  if (intro.suspect_image && els.caseIntroImage) {
+    els.caseIntroImage.src = versionedSuspectImage(intro.suspect_image, gameId);
+  }
   els.caseIntroSightings.innerHTML = (intro.last_seen || []).map((sighting, index) => `
     <li class="sighting-${escapeHtml(sighting.confidence || "unconfirmed")}">
       <span>${String(index + 1).padStart(2, "0")}</span>
@@ -798,9 +802,16 @@ function renderGame(game) {
   els.turnPhase.textContent = turnPhase(game.turn);
   els.wantedDescription.textContent = game.initial_description || els.wantedDescription.textContent;
   els.wantedLastSeen.textContent = game.last_seen?.location || (game.last_seen?.junction_id ? `Junction ${game.last_seen.junction_id}` : "Awaiting confirmed location");
-  if (game.suspect_image && els.suspectImage) els.suspectImage.src = game.suspect_image;
+  if (game.suspect_image && els.suspectImage) {
+    els.suspectImage.src = versionedSuspectImage(game.suspect_image, game.game_id);
+  }
   els.advanceButton.disabled = complete;
   els.stopGameButton.disabled = complete;
+}
+
+function versionedSuspectImage(url, gameId) {
+  const separator = String(url).includes("?") ? "&" : "?";
+  return `${url}${separator}case=${encodeURIComponent(gameId || "current")}`;
 }
 
 function renderTacticTray() {
