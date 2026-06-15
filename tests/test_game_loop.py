@@ -1,3 +1,4 @@
+from game import case_catalog
 from game.case_catalog import CASE_CATALOG
 from game.session import add_block, check_junction, end_turn, issue_notice, new_game, place_tactic, question_witness
 from game.turn_engine import _search_team_catch
@@ -82,3 +83,19 @@ def test_case_catalog_has_fifteen_distinct_complete_cases():
         assert case["description"]
         assert case["culprit_alias"]
         assert case["image_url"].startswith("/static/assets/suspects/")
+
+
+def test_case_selection_uses_every_case_before_repeating(monkeypatch):
+    class StableRandom:
+        def shuffle(self, values):
+            values.reverse()
+
+    monkeypatch.setattr(case_catalog.random, "SystemRandom", StableRandom)
+    monkeypatch.setattr(case_catalog, "_CASE_ROTATION", [])
+    monkeypatch.setattr(case_catalog, "_LAST_CASE_ID", None)
+
+    first_cycle = [case_catalog.choose_case()["case_id"] for _ in CASE_CATALOG]
+    next_case = case_catalog.choose_case()["case_id"]
+
+    assert len(set(first_cycle)) == len(CASE_CATALOG)
+    assert next_case != first_cycle[-1]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+import threading
 from typing import Any
 
 
@@ -188,5 +189,19 @@ CASE_CATALOG: list[dict[str, Any]] = [
 ]
 
 
+_CASE_ROTATION: list[dict[str, Any]] = []
+_LAST_CASE_ID: str | None = None
+_CASE_ROTATION_LOCK = threading.Lock()
+
+
 def choose_case() -> dict[str, Any]:
-    return dict(random.choice(CASE_CATALOG))
+    global _CASE_ROTATION, _LAST_CASE_ID
+    with _CASE_ROTATION_LOCK:
+        if not _CASE_ROTATION:
+            _CASE_ROTATION = list(CASE_CATALOG)
+            random.SystemRandom().shuffle(_CASE_ROTATION)
+            if len(_CASE_ROTATION) > 1 and _CASE_ROTATION[-1]["case_id"] == _LAST_CASE_ID:
+                _CASE_ROTATION[0], _CASE_ROTATION[-1] = _CASE_ROTATION[-1], _CASE_ROTATION[0]
+        selected = _CASE_ROTATION.pop()
+        _LAST_CASE_ID = selected["case_id"]
+        return dict(selected)
